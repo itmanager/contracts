@@ -3,6 +3,7 @@ D:\control_project\contracts\src\main\java\com\contract\domain\TestReport.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\MonthlyPhaseProgressResource.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\errors\EmailNotFoundException.java
 D:\control_project\contracts\src\main\java\com\contract\service\dto\OutsourcingContractDTO.java
+D:\control_project\contracts\src\main\java\com\contract\service\ThirdPartyService.java
 D:\control_project\contracts\src\main\java\com\contract\domain\OverheadCost.java
 D:\control_project\contracts\src\main\java\com\contract\repository\ContractPhaseRepository.java
 D:\control_project\contracts\src\main\java\com\contract\service\dto\ContractPhaseDTO.java
@@ -80,19 +81,23 @@ D:\control_project\contracts\src\main\java\com\contract\service\mapper\Equipment
 D:\control_project\contracts\src\main\java\com\contract\service\dto\OverheadCostDTO.java
 D:\control_project\contracts\src\main\java\com\contract\domain\Contract.java
 D:\control_project\contracts\src\main\java\com\contract\utils\dataBase\DatabaseInitializer.java
+D:\control_project\contracts\src\main\java\com\contract\repository\ThirdPartyRepository.java
 D:\control_project\contracts\src\main\java\com\contract\repository\CostCategoryRepository.java
 D:\control_project\contracts\src\main\java\com\contract\service\mapper\QualityImprovementMapper.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\TestReportResource.java
 D:\control_project\contracts\src\main\java\com\contract\domain\enumeration\EmployeeType.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\OutsourcingContractResource.java
+D:\control_project\contracts\src\main\java\com\contract\domain\ThirdPartyEntity.java
 D:\control_project\contracts\src\main\java\com\contract\service\EmailAlreadyUsedException.java
 D:\control_project\contracts\src\main\java\com\contract\repository\BudgetAllocationRepository.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\errors\GlobalExceptionHandler.java
 D:\control_project\contracts\src\main\java\com\contract\service\dto\QualityAssessmentDTO.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\EquipmentResource.java
+D:\control_project\contracts\src\main\java\com\contract\domain\enumeration\ThirdPartyType.java
 D:\control_project\contracts\src\main\java\com\contract\service\dto\BudgetAllocationDTO.java
 D:\control_project\contracts\src\main\java\com\contract\service\SupervisorCommentService.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\errors\UsernameAlreadyUsedException.java
+D:\control_project\contracts\src\main\java\com\contract\service\dto\ThirdPartyDTO.java
 D:\control_project\contracts\src\main\java\com\contract\ContractApplication.java
 D:\control_project\contracts\src\main\java\com\contract\service\mapper\EmployeeMapper.java
 D:\control_project\contracts\src\main\java\com\contract\domain\AbstractAuditingEntity.java
@@ -108,6 +113,7 @@ D:\control_project\contracts\src\main\java\com\contract\repository\CostItemRepos
 D:\control_project\contracts\src\main\java\com\contract\service\mapper\RevisionHistoryMapper.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\ContractPhaseResource.java
 D:\control_project\contracts\src\main\java\com\contract\service\mapper\QualityAssessmentMapper.java
+D:\control_project\contracts\src\main\java\com\contract\web\rest\ThirdPartyResource.java
 D:\control_project\contracts\src\main\java\com\contract\domain\CostCategory.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\ContractResource.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\SupervisorResource.java
@@ -163,6 +169,7 @@ D:\control_project\contracts\src\main\java\com\contract\web\rest\DocumentAttachm
 D:\control_project\contracts\src\main\java\com\contract\web\rest\package-info.java
 D:\control_project\contracts\src\main\java\com\contract\domain\package-info.java
 D:\control_project\contracts\src\main\java\com\contract\domain\QualityAssessment.java
+D:\control_project\contracts\src\main\java\com\contract\service\mapper\ThirdPartyMapper.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\errors\InvalidPasswordException.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\QualityImprovementResource.java
 D:\control_project\contracts\src\main\java\com\contract\web\rest\errors\LoginAlreadyUsedException.java

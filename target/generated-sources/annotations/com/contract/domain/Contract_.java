@@ -3,8 +3,6 @@ package com.contract.domain;
 import com.contract.domain.enumeration.ContractStatus;
 import com.contract.domain.enumeration.QualityStatus;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -16,7 +14,7 @@ public abstract class Contract_ {
 	public static volatile SingularAttribute<Contract, String> notes;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalOutsourcingCost;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalBudget;
-	public static volatile SingularAttribute<Contract, LocalDate> endDate;
+	public static volatile SingularAttribute<Contract, BigDecimal> endDate;
 	public static volatile SingularAttribute<Contract, BigDecimal> currentBudget;
 	public static volatile SingularAttribute<Contract, BigDecimal> costVariance;
 	public static volatile SingularAttribute<Contract, String> contractNumber;
@@ -28,8 +26,8 @@ public abstract class Contract_ {
 	public static volatile SingularAttribute<Contract, QualityStatus> qualityStatus;
 	public static volatile SingularAttribute<Contract, Long> id;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalEquipmentCost;
-	public static volatile SingularAttribute<Contract, ZonedDateTime> lastQualityAssessment;
-	public static volatile SingularAttribute<Contract, LocalDate> startDate;
+	public static volatile SingularAttribute<Contract, BigDecimal> lastQualityAssessment;
+	public static volatile SingularAttribute<Contract, BigDecimal> startDate;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalLaborCost;
 	public static volatile SingularAttribute<Contract, Supervisor> supervisor;
 	public static volatile SingularAttribute<Contract, ContractStatus> status;

@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -31,9 +30,9 @@ public class ContractDTO implements Serializable {
     private String description;
 
     @NotNull
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @NotNull
     private BigDecimal totalBudget;
@@ -54,7 +53,7 @@ public class ContractDTO implements Serializable {
 
     private QualityStatus qualityStatus;
 
-    private ZonedDateTime lastQualityAssessment;
+    private BigDecimal lastQualityAssessment;
 
     private BigDecimal totalLaborCost;
 
@@ -102,19 +101,19 @@ public class ContractDTO implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 
@@ -174,11 +173,11 @@ public class ContractDTO implements Serializable {
         this.qualityStatus = qualityStatus;
     }
 
-    public ZonedDateTime getLastQualityAssessment() {
+    public BigDecimal getLastQualityAssessment() {
         return lastQualityAssessment;
     }
 
-    public void setLastQualityAssessment(ZonedDateTime lastQualityAssessment) {
+    public void setLastQualityAssessment(BigDecimal lastQualityAssessment) {
         this.lastQualityAssessment = lastQualityAssessment;
     }
 

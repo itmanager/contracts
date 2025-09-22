@@ -43,10 +43,10 @@ public class Contract implements Serializable {
 
     @NotNull
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @NotNull
     @Column(name = "total_budget", precision = 21, scale = 2, nullable = false)
@@ -77,7 +77,7 @@ public class Contract implements Serializable {
     private QualityStatus qualityStatus;
 
     @Column(name = "last_quality_assessment")
-    private ZonedDateTime lastQualityAssessment;
+    private BigDecimal lastQualityAssessment;
 
     @Column(name = "total_labor_cost", precision = 21, scale = 2)
     private BigDecimal totalLaborCost;
@@ -154,29 +154,29 @@ public class Contract implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return this.startDate;
     }
 
-    public Contract startDate(LocalDate startDate) {
+    public Contract startDate(BigDecimal startDate) {
         this.setStartDate(startDate);
         return this;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return this.endDate;
     }
 
-    public Contract endDate(LocalDate endDate) {
+    public Contract endDate(BigDecimal endDate) {
         this.setEndDate(endDate);
         return this;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 
@@ -271,16 +271,16 @@ public class Contract implements Serializable {
         this.qualityStatus = qualityStatus;
     }
 
-    public ZonedDateTime getLastQualityAssessment() {
+    public BigDecimal getLastQualityAssessment() {
         return this.lastQualityAssessment;
     }
 
-    public Contract lastQualityAssessment(ZonedDateTime lastQualityAssessment) {
+    public Contract lastQualityAssessment(BigDecimal lastQualityAssessment) {
         this.setLastQualityAssessment(lastQualityAssessment);
         return this;
     }
 
-    public void setLastQualityAssessment(ZonedDateTime lastQualityAssessment) {
+    public void setLastQualityAssessment(BigDecimal lastQualityAssessment) {
         this.lastQualityAssessment = lastQualityAssessment;
     }
 
