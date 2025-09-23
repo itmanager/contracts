@@ -68,6 +68,8 @@ public class ContractDTO implements Serializable {
     private BigDecimal costVariance;
 
     private SupervisorDTO supervisor;
+    private ThirdPartyDTO employer;
+    private ThirdPartyDTO contractor;
 
     public Long getId() {
         return id;
@@ -252,7 +254,21 @@ public class ContractDTO implements Serializable {
         }
         return Objects.equals(this.id, contractDTO.id);
     }
+    public ThirdPartyDTO getEmployer() {
+        return employer;
+    }
 
+    public void setEmployer(ThirdPartyDTO employer) {
+        this.employer = employer;
+    }
+
+    public ThirdPartyDTO getContractor() {
+        return contractor;
+    }
+
+    public void setContractor(ThirdPartyDTO contractor) {
+        this.contractor = contractor;
+    }
     @Override
     public int hashCode() {
         return Objects.hash(this.id);
@@ -285,4 +301,6 @@ public class ContractDTO implements Serializable {
             ", supervisor=" + getSupervisor() +
             "}";
     }
+
+
 }

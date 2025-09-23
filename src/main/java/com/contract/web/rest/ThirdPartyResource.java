@@ -58,7 +58,12 @@ public class ThirdPartyResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
+    @GetMapping("/all")
+    public ResponseEntity<List<ThirdPartyDTO>> getAll() {
+        log.debug("REST request to get a page of ThirdParties");
+        List<ThirdPartyDTO> page = thirdPartyService.findAll();
+        return ResponseEntity.ok().body(page);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ThirdPartyDTO> getOne(@PathVariable Long id) {
         log.debug("REST request to get ThirdParty: {}", id);

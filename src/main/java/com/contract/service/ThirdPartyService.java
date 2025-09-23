@@ -119,4 +119,10 @@ public class ThirdPartyService{
         return thirdPartyRepository.findByRegistrationNumber(registrationNumber)
                 .map(thirdPartyMapper::entityToDto);
     }
+
+    public List<ThirdPartyDTO> findAll() {
+        log.debug("Request to get All ThirdParty : {}");
+        return thirdPartyRepository.findAll().stream()
+                .map(thirdPartyMapper::entityToDto).collect(Collectors.toList());
+    }
 }

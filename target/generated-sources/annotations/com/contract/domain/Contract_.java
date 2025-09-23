@@ -11,6 +11,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Contract.class)
 public abstract class Contract_ {
 
+	public static volatile SingularAttribute<Contract, ThirdPartyEntity> contractor;
 	public static volatile SingularAttribute<Contract, String> notes;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalOutsourcingCost;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalBudget;
@@ -24,6 +25,7 @@ public abstract class Contract_ {
 	public static volatile SingularAttribute<Contract, String> physicalAddress;
 	public static volatile SingularAttribute<Contract, Double> qualityScore;
 	public static volatile SingularAttribute<Contract, QualityStatus> qualityStatus;
+	public static volatile SingularAttribute<Contract, ThirdPartyEntity> employer;
 	public static volatile SingularAttribute<Contract, Long> id;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalEquipmentCost;
 	public static volatile SingularAttribute<Contract, BigDecimal> lastQualityAssessment;
@@ -33,6 +35,7 @@ public abstract class Contract_ {
 	public static volatile SingularAttribute<Contract, ContractStatus> status;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalOverheadCost;
 
+	public static final String CONTRACTOR = "contractor";
 	public static final String NOTES = "notes";
 	public static final String TOTAL_OUTSOURCING_COST = "totalOutsourcingCost";
 	public static final String TOTAL_BUDGET = "totalBudget";
@@ -46,6 +49,7 @@ public abstract class Contract_ {
 	public static final String PHYSICAL_ADDRESS = "physicalAddress";
 	public static final String QUALITY_SCORE = "qualityScore";
 	public static final String QUALITY_STATUS = "qualityStatus";
+	public static final String EMPLOYER = "employer";
 	public static final String ID = "id";
 	public static final String TOTAL_EQUIPMENT_COST = "totalEquipmentCost";
 	public static final String LAST_QUALITY_ASSESSMENT = "lastQualityAssessment";

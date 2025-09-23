@@ -3,10 +3,12 @@ package com.contract.web.rest;
 import com.contract.repository.SupervisorRepository;
 import com.contract.service.SupervisorService;
 import com.contract.service.dto.SupervisorDTO;
+import com.contract.service.dto.ThirdPartyDTO;
 import com.contract.web.rest.errors.BadRequestAlertException;
 import com.contract.web.utils.HeaderUtil;
 import com.contract.web.utils.PaginationUtil;
 import com.contract.web.utils.ResponseUtil;
+import org.apache.juli.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -177,5 +179,12 @@ public class SupervisorResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<SupervisorDTO>> getAll() {
+        LOG.debug("REST request to get a page of supervisors");
+        List<SupervisorDTO> page = supervisorService.findAll();
+        return ResponseEntity.ok().body(page);
     }
 }

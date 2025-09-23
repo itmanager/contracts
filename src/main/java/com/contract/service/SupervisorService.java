@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Supervisor}.
@@ -109,5 +111,11 @@ public class SupervisorService {
     public void delete(Long id) {
         LOG.debug("Request to delete Supervisor : {}", id);
         supervisorRepository.deleteById(id);
+    }
+
+    public List<SupervisorDTO> findAll() {
+        LOG.debug("Request to get All ThirdParty : {}");
+        return supervisorRepository.findAll().stream()
+                .map(supervisorMapper::toDto).collect(Collectors.toList());
     }
 }

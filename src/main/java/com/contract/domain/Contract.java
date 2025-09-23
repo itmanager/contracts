@@ -100,6 +100,12 @@ public class Contract implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Supervisor supervisor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ThirdPartyEntity employer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ThirdPartyEntity contractor;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -394,6 +400,14 @@ public class Contract implements Serializable {
         return getClass().hashCode();
     }
 
+    public ThirdPartyEntity getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(ThirdPartyEntity employer) {
+        this.employer = employer;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -419,5 +433,14 @@ public class Contract implements Serializable {
             ", totalActualCost=" + getTotalActualCost() +
             ", costVariance=" + getCostVariance() +
             "}";
+    }
+
+
+    public ThirdPartyEntity getContractor() {
+        return contractor;
+    }
+
+    public void setContractor(ThirdPartyEntity contractor) {
+        this.contractor = contractor;
     }
 }
