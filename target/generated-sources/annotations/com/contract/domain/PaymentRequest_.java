@@ -2,7 +2,6 @@ package com.contract.domain;
 
 import com.contract.domain.enumeration.PaymentStatus;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -13,12 +12,12 @@ public abstract class PaymentRequest_ {
 
 	public static volatile SingularAttribute<PaymentRequest, BigDecimal> amount;
 	public static volatile SingularAttribute<PaymentRequest, String> notes;
-	public static volatile SingularAttribute<PaymentRequest, LocalDate> dueDate;
+	public static volatile SingularAttribute<PaymentRequest, BigDecimal> dueDate;
 	public static volatile SingularAttribute<PaymentRequest, String> description;
 	public static volatile SingularAttribute<PaymentRequest, String> bankAccountDetails;
-	public static volatile SingularAttribute<PaymentRequest, LocalDate> paidDate;
+	public static volatile SingularAttribute<PaymentRequest, BigDecimal> paidDate;
 	public static volatile SingularAttribute<PaymentRequest, ContractPhase> contractPhase;
-	public static volatile SingularAttribute<PaymentRequest, LocalDate> requestDate;
+	public static volatile SingularAttribute<PaymentRequest, BigDecimal> requestDate;
 	public static volatile SingularAttribute<PaymentRequest, String> invoiceNumber;
 	public static volatile SingularAttribute<PaymentRequest, Double> qualityScore;
 	public static volatile SingularAttribute<PaymentRequest, String> paymentMethod;

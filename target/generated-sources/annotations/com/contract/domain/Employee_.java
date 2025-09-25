@@ -2,7 +2,6 @@ package com.contract.domain;
 
 import com.contract.domain.enumeration.EmployeeType;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -13,7 +12,7 @@ public abstract class Employee_ {
 
 	public static volatile SingularAttribute<Employee, EmployeeType> employeeType;
 	public static volatile SingularAttribute<Employee, String> phone;
-	public static volatile SingularAttribute<Employee, LocalDate> endDate;
+	public static volatile SingularAttribute<Employee, BigDecimal> endDate;
 	public static volatile SingularAttribute<Employee, String> name;
 	public static volatile SingularAttribute<Employee, Boolean> active;
 	public static volatile SingularAttribute<Employee, String> employeeId;
@@ -22,7 +21,7 @@ public abstract class Employee_ {
 	public static volatile SingularAttribute<Employee, String> department;
 	public static volatile SingularAttribute<Employee, BigDecimal> hourlyRate;
 	public static volatile SingularAttribute<Employee, String> email;
-	public static volatile SingularAttribute<Employee, LocalDate> startDate;
+	public static volatile SingularAttribute<Employee, BigDecimal> startDate;
 
 	public static final String EMPLOYEE_TYPE = "employeeType";
 	public static final String PHONE = "phone";

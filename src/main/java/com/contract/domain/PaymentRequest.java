@@ -10,7 +10,6 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 /**
  * درخواست پرداخت
@@ -35,10 +34,10 @@ public class PaymentRequest implements Serializable {
 
     @NotNull
     @Column(name = "request_date", nullable = false)
-    private LocalDate requestDate;
+    private BigDecimal requestDate;
 
     @Column(name = "due_date")
-    private LocalDate dueDate;
+    private BigDecimal dueDate;
 
     @Column(name = "description")
     private String description;
@@ -52,7 +51,7 @@ public class PaymentRequest implements Serializable {
     private String invoiceNumber;
 
     @Column(name = "paid_date")
-    private LocalDate paidDate;
+    private BigDecimal paidDate;
 
     @Lob
     @Column(name = "notes")
@@ -101,29 +100,29 @@ public class PaymentRequest implements Serializable {
         this.amount = amount;
     }
 
-    public LocalDate getRequestDate() {
+    public BigDecimal getRequestDate() {
         return this.requestDate;
     }
 
-    public PaymentRequest requestDate(LocalDate requestDate) {
+    public PaymentRequest requestDate(BigDecimal requestDate) {
         this.setRequestDate(requestDate);
         return this;
     }
 
-    public void setRequestDate(LocalDate requestDate) {
+    public void setRequestDate(BigDecimal requestDate) {
         this.requestDate = requestDate;
     }
 
-    public LocalDate getDueDate() {
+    public BigDecimal getDueDate() {
         return this.dueDate;
     }
 
-    public PaymentRequest dueDate(LocalDate dueDate) {
+    public PaymentRequest dueDate(BigDecimal dueDate) {
         this.setDueDate(dueDate);
         return this;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(BigDecimal dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -166,16 +165,16 @@ public class PaymentRequest implements Serializable {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public LocalDate getPaidDate() {
+    public BigDecimal getPaidDate() {
         return this.paidDate;
     }
 
-    public PaymentRequest paidDate(LocalDate paidDate) {
+    public PaymentRequest paidDate(BigDecimal paidDate) {
         this.setPaidDate(paidDate);
         return this;
     }
 
-    public void setPaidDate(LocalDate paidDate) {
+    public void setPaidDate(BigDecimal paidDate) {
         this.paidDate = paidDate;
     }
 

@@ -11,7 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 /**
  * فاز قرارداد
@@ -38,10 +38,10 @@ public class ContractPhase implements Serializable {
     private String description;
 
     @Column(name = "start_date")
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @NotNull
     @Column(name = "budget", precision = 21, scale = 2, nullable = false)
@@ -99,6 +99,21 @@ public class ContractPhase implements Serializable {
     @Column(name = "overhead_cost", precision = 21, scale = 2)
     private BigDecimal overheadCost;
 
+
+
+    @Column(name = "labor_Budget", precision = 21, scale = 2)
+    private BigDecimal laborBudget;
+
+    @Column(name = "equipment_Budget", precision = 21, scale = 2)
+    private BigDecimal equipmentBudget;
+
+    @Column(name = "outsourcing_Budget", precision = 21, scale = 2)
+    private BigDecimal outsourcingBudget;
+
+    @Column(name = "overhead_Budget", precision = 21, scale = 2)
+    private BigDecimal overheadBudget;
+
+
     @Column(name = "cost_performance_index")
     private Double costPerformanceIndex;
 
@@ -147,29 +162,29 @@ public class ContractPhase implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return this.startDate;
     }
 
-    public ContractPhase startDate(LocalDate startDate) {
+    public ContractPhase startDate(BigDecimal startDate) {
         this.setStartDate(startDate);
         return this;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return this.endDate;
     }
 
-    public ContractPhase endDate(LocalDate endDate) {
+    public ContractPhase endDate(BigDecimal endDate) {
         this.setEndDate(endDate);
         return this;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 
@@ -354,6 +369,42 @@ public class ContractPhase implements Serializable {
     public void setOverheadCost(BigDecimal overheadCost) {
         this.overheadCost = overheadCost;
     }
+
+
+    public BigDecimal getLaborBudget() {
+        return laborBudget;
+    }
+
+    public void setLaborBudget(BigDecimal laborBudget) {
+        this.laborBudget = laborBudget;
+    }
+
+    public BigDecimal getEquipmentBudget() {
+        return equipmentBudget;
+    }
+
+    public void setEquipmentBudget(BigDecimal equipmentBudget) {
+        this.equipmentBudget = equipmentBudget;
+    }
+
+    public BigDecimal getOutsourcingBudget() {
+        return outsourcingBudget;
+    }
+
+    public void setOutsourcingBudget(BigDecimal outsourcingBudget) {
+        this.outsourcingBudget = outsourcingBudget;
+    }
+
+    public BigDecimal getOverheadBudget() {
+        return overheadBudget;
+    }
+
+    public void setOverheadBudget(BigDecimal overheadBudget) {
+        this.overheadBudget = overheadBudget;
+    }
+
+
+
 
     public Double getCostPerformanceIndex() {
         return this.costPerformanceIndex;

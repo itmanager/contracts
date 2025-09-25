@@ -2,7 +2,6 @@ package com.contract.domain;
 
 import com.contract.domain.enumeration.CostType;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -16,7 +15,7 @@ public abstract class CostItem_ {
 	public static volatile SingularAttribute<CostItem, Boolean> approved;
 	public static volatile SingularAttribute<CostItem, CostCategory> costCategory;
 	public static volatile SingularAttribute<CostItem, Integer> quantity;
-	public static volatile SingularAttribute<CostItem, LocalDate> costDate;
+	public static volatile SingularAttribute<CostItem, BigDecimal> costDate;
 	public static volatile SingularAttribute<CostItem, String> notes;
 	public static volatile SingularAttribute<CostItem, ContractPhase> contractPhase;
 	public static volatile SingularAttribute<CostItem, CostType> costType;

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 /**
  * هزینه‌های سربار
@@ -35,7 +35,7 @@ public class OverheadCost implements Serializable {
 
     @NotNull
     @Column(name = "cost_date", nullable = false)
-    private LocalDate costDate;
+    private BigDecimal costDate;
 
     @NotNull
     @Column(name = "amount", precision = 21, scale = 2, nullable = false)
@@ -96,16 +96,16 @@ public class OverheadCost implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getCostDate() {
+    public BigDecimal getCostDate() {
         return this.costDate;
     }
 
-    public OverheadCost costDate(LocalDate costDate) {
+    public OverheadCost costDate(BigDecimal costDate) {
         this.setCostDate(costDate);
         return this;
     }
 
-    public void setCostDate(LocalDate costDate) {
+    public void setCostDate(BigDecimal costDate) {
         this.costDate = costDate;
     }
 

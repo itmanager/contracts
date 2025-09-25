@@ -2,7 +2,8 @@ package com.contract.service.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
+
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ public class WorkTimeEntryDTO implements Serializable {
     private Long id;
 
     @NotNull
-    private LocalDate entryDate;
+    private BigDecimal entryDate;
 
     @NotNull
     private Integer hoursWorked;
@@ -41,11 +42,11 @@ public class WorkTimeEntryDTO implements Serializable {
         this.id = id;
     }
 
-    public LocalDate getEntryDate() {
+    public BigDecimal getEntryDate() {
         return entryDate;
     }
 
-    public void setEntryDate(LocalDate entryDate) {
+    public void setEntryDate(BigDecimal entryDate) {
         this.entryDate = entryDate;
     }
 

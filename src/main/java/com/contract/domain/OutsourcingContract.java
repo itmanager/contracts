@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 /**
  * قراردادهای برون سپاری
@@ -38,10 +38,10 @@ public class OutsourcingContract implements Serializable {
 
     @NotNull
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @NotNull
     @Column(name = "total_value", precision = 21, scale = 2, nullable = false)
@@ -113,29 +113,29 @@ public class OutsourcingContract implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return this.startDate;
     }
 
-    public OutsourcingContract startDate(LocalDate startDate) {
+    public OutsourcingContract startDate(BigDecimal startDate) {
         this.setStartDate(startDate);
         return this;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return this.endDate;
     }
 
-    public OutsourcingContract endDate(LocalDate endDate) {
+    public OutsourcingContract endDate(BigDecimal endDate) {
         this.setEndDate(endDate);
         return this;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 

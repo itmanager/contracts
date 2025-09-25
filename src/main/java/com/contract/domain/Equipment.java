@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 /**
  * تجهیزات
@@ -37,7 +37,7 @@ public class Equipment implements Serializable {
     private String description;
 
     @Column(name = "purchase_date")
-    private LocalDate purchaseDate;
+    private BigDecimal purchaseDate;
 
     @Column(name = "purchase_cost", precision = 21, scale = 2)
     private BigDecimal purchaseCost;
@@ -105,16 +105,16 @@ public class Equipment implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getPurchaseDate() {
+    public BigDecimal getPurchaseDate() {
         return this.purchaseDate;
     }
 
-    public Equipment purchaseDate(LocalDate purchaseDate) {
+    public Equipment purchaseDate(BigDecimal purchaseDate) {
         this.setPurchaseDate(purchaseDate);
         return this;
     }
 
-    public void setPurchaseDate(LocalDate purchaseDate) {
+    public void setPurchaseDate(BigDecimal purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 

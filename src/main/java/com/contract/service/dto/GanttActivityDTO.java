@@ -3,7 +3,7 @@ package com.contract.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -21,10 +21,10 @@ public class GanttActivityDTO implements Serializable {
     private String description;
 
     @NotNull
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
     @NotNull
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @DecimalMin(value = "0")
     @DecimalMax(value = "100")
@@ -78,19 +78,19 @@ public class GanttActivityDTO implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 

@@ -1,7 +1,6 @@
 package com.contract.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -12,7 +11,7 @@ public abstract class OverheadCost_ {
 
 	public static volatile SingularAttribute<OverheadCost, BigDecimal> amount;
 	public static volatile SingularAttribute<OverheadCost, ContractPhase> allocatedToPhase;
-	public static volatile SingularAttribute<OverheadCost, LocalDate> costDate;
+	public static volatile SingularAttribute<OverheadCost, BigDecimal> costDate;
 	public static volatile SingularAttribute<OverheadCost, String> allocationMethod;
 	public static volatile SingularAttribute<OverheadCost, Contract> allocatedTo;
 	public static volatile SingularAttribute<OverheadCost, String> name;

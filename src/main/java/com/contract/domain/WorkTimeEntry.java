@@ -6,7 +6,8 @@ import com.sun.istack.NotNull;
 import javax.persistence.*;
 import javax.persistence.Column;
 import java.io.Serializable;
-import java.time.LocalDate;
+
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 /**
@@ -28,7 +29,7 @@ public class WorkTimeEntry implements Serializable {
 
     @NotNull
     @Column(name = "entry_date", nullable = false)
-    private LocalDate entryDate;
+    private BigDecimal entryDate;
 
     @NotNull
     @Column(name = "hours_worked", nullable = false)
@@ -68,16 +69,16 @@ public class WorkTimeEntry implements Serializable {
         this.id = id;
     }
 
-    public LocalDate getEntryDate() {
+    public BigDecimal getEntryDate() {
         return this.entryDate;
     }
 
-    public WorkTimeEntry entryDate(LocalDate entryDate) {
+    public WorkTimeEntry entryDate(BigDecimal entryDate) {
         this.setEntryDate(entryDate);
         return this;
     }
 
-    public void setEntryDate(LocalDate entryDate) {
+    public void setEntryDate(BigDecimal entryDate) {
         this.entryDate = entryDate;
     }
 

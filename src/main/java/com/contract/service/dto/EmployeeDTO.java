@@ -5,7 +5,7 @@ import com.contract.domain.enumeration.EmployeeType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -38,9 +38,9 @@ public class EmployeeDTO implements Serializable {
     @NotNull
     private BigDecimal hourlyRate;
 
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     private Boolean active;
 
@@ -116,19 +116,19 @@ public class EmployeeDTO implements Serializable {
         this.hourlyRate = hourlyRate;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 

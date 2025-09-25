@@ -3,7 +3,7 @@ package com.contract.service.dto;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 /**
  * A DTO for the {@link com.contract.domain.OverheadCost} entity.
@@ -20,7 +20,7 @@ public class OverheadCostDTO implements Serializable {
     private String description;
 
     @NotNull
-    private LocalDate costDate;
+    private BigDecimal costDate;
 
     @NotNull
     private BigDecimal amount;
@@ -57,11 +57,11 @@ public class OverheadCostDTO implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getCostDate() {
+    public BigDecimal getCostDate() {
         return costDate;
     }
 
-    public void setCostDate(LocalDate costDate) {
+    public void setCostDate(BigDecimal costDate) {
         this.costDate = costDate;
     }
 

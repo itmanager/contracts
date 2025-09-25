@@ -1,6 +1,6 @@
 package com.contract.domain;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
@@ -12,7 +12,7 @@ public abstract class WorkTimeEntry_ {
 
 	public static volatile SingularAttribute<WorkTimeEntry, Boolean> approved;
 	public static volatile SingularAttribute<WorkTimeEntry, ZonedDateTime> approvalDate;
-	public static volatile SingularAttribute<WorkTimeEntry, LocalDate> entryDate;
+	public static volatile SingularAttribute<WorkTimeEntry, BigDecimal> entryDate;
 	public static volatile SingularAttribute<WorkTimeEntry, GanttActivity> ganttActivity;
 	public static volatile SingularAttribute<WorkTimeEntry, Supervisor> approvedBy;
 	public static volatile SingularAttribute<WorkTimeEntry, String> description;

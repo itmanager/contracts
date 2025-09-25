@@ -8,7 +8,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -32,7 +32,7 @@ public class CostItemDTO implements Serializable {
     private BigDecimal totalAmount;
 
     @NotNull
-    private LocalDate costDate;
+    private BigDecimal costDate;
 
     @Lob
     private String notes;
@@ -90,11 +90,11 @@ public class CostItemDTO implements Serializable {
         this.totalAmount = totalAmount;
     }
 
-    public LocalDate getCostDate() {
+    public BigDecimal getCostDate() {
         return costDate;
     }
 
-    public void setCostDate(LocalDate costDate) {
+    public void setCostDate(BigDecimal costDate) {
         this.costDate = costDate;
     }
 

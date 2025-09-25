@@ -6,7 +6,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -35,9 +35,9 @@ public class MonthlyPhaseProgressDTO implements Serializable {
     @Lob
     private String notes;
 
-    private LocalDate submissionDate;
+    private BigDecimal submissionDate;
 
-    private LocalDate approvalDate;
+    private BigDecimal approvalDate;
 
     @DecimalMin(value = "0")
     @DecimalMax(value = "100")
@@ -103,19 +103,19 @@ public class MonthlyPhaseProgressDTO implements Serializable {
         this.notes = notes;
     }
 
-    public LocalDate getSubmissionDate() {
+    public BigDecimal getSubmissionDate() {
         return submissionDate;
     }
 
-    public void setSubmissionDate(LocalDate submissionDate) {
+    public void setSubmissionDate(BigDecimal submissionDate) {
         this.submissionDate = submissionDate;
     }
 
-    public LocalDate getApprovalDate() {
+    public BigDecimal getApprovalDate() {
         return approvalDate;
     }
 
-    public void setApprovalDate(LocalDate approvalDate) {
+    public void setApprovalDate(BigDecimal approvalDate) {
         this.approvalDate = approvalDate;
     }
 

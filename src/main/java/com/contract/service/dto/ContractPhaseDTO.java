@@ -6,7 +6,7 @@ import javax.persistence.Lob;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -23,9 +23,9 @@ public class ContractPhaseDTO implements Serializable {
 
     private String description;
 
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @NotNull
     private BigDecimal budget;
@@ -68,6 +68,16 @@ public class ContractPhaseDTO implements Serializable {
 
     private BigDecimal overheadCost;
 
+    private BigDecimal laborBudget;
+
+    private BigDecimal equipmentBudget;
+
+    private BigDecimal outsourcingBudget;
+
+    private BigDecimal overheadBudget;
+
+
+
     private Double costPerformanceIndex;
 
     private ContractDTO contract;
@@ -96,19 +106,19 @@ public class ContractPhaseDTO implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 
@@ -223,6 +233,40 @@ public class ContractPhaseDTO implements Serializable {
     public void setOverheadCost(BigDecimal overheadCost) {
         this.overheadCost = overheadCost;
     }
+
+
+    public BigDecimal getLaborBudget() {
+        return laborBudget;
+    }
+
+    public void setLaborBudget(BigDecimal laborBudget) {
+        this.laborBudget = laborBudget;
+    }
+
+    public BigDecimal getEquipmentBudget() {
+        return equipmentBudget;
+    }
+
+    public void setEquipmentBudget(BigDecimal equipmentBudget) {
+        this.equipmentBudget = equipmentBudget;
+    }
+
+    public BigDecimal getOutsourcingBudget() {
+        return outsourcingBudget;
+    }
+
+    public void setOutsourcingBudget(BigDecimal outsourcingBudget) {
+        this.outsourcingBudget = outsourcingBudget;
+    }
+
+    public BigDecimal getOverheadBudget() {
+        return overheadBudget;
+    }
+
+    public void setOverheadBudget(BigDecimal overheadBudget) {
+        this.overheadBudget = overheadBudget;
+    }
+
 
     public Double getCostPerformanceIndex() {
         return costPerformanceIndex;

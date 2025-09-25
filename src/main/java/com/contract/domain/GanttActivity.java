@@ -11,7 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 /**
  * فعالیت گانت چارت
@@ -39,11 +39,11 @@ public class GanttActivity implements Serializable {
 
     @NotNull
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
     @NotNull
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @DecimalMin(value = "0")
     @DecimalMax(value = "100")
@@ -126,29 +126,29 @@ public class GanttActivity implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return this.startDate;
     }
 
-    public GanttActivity startDate(LocalDate startDate) {
+    public GanttActivity startDate(BigDecimal startDate) {
         this.setStartDate(startDate);
         return this;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return this.endDate;
     }
 
-    public GanttActivity endDate(LocalDate endDate) {
+    public GanttActivity endDate(BigDecimal endDate) {
         this.setEndDate(endDate);
         return this;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 

@@ -8,7 +8,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -24,9 +24,9 @@ public class PaymentRequestDTO implements Serializable {
     private BigDecimal amount;
 
     @NotNull
-    private LocalDate requestDate;
+    private BigDecimal requestDate;
 
-    private LocalDate dueDate;
+    private BigDecimal dueDate;
 
     private String description;
 
@@ -35,7 +35,7 @@ public class PaymentRequestDTO implements Serializable {
 
     private String invoiceNumber;
 
-    private LocalDate paidDate;
+    private BigDecimal paidDate;
 
     @Lob
     private String notes;
@@ -66,19 +66,19 @@ public class PaymentRequestDTO implements Serializable {
         this.amount = amount;
     }
 
-    public LocalDate getRequestDate() {
+    public BigDecimal getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(LocalDate requestDate) {
+    public void setRequestDate(BigDecimal requestDate) {
         this.requestDate = requestDate;
     }
 
-    public LocalDate getDueDate() {
+    public BigDecimal getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(BigDecimal dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -106,11 +106,11 @@ public class PaymentRequestDTO implements Serializable {
         this.invoiceNumber = invoiceNumber;
     }
 
-    public LocalDate getPaidDate() {
+    public BigDecimal getPaidDate() {
         return paidDate;
     }
 
-    public void setPaidDate(LocalDate paidDate) {
+    public void setPaidDate(BigDecimal paidDate) {
         this.paidDate = paidDate;
     }
 

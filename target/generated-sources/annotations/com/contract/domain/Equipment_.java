@@ -1,7 +1,6 @@
 package com.contract.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -10,7 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(Equipment.class)
 public abstract class Equipment_ {
 
-	public static volatile SingularAttribute<Equipment, LocalDate> purchaseDate;
+	public static volatile SingularAttribute<Equipment, BigDecimal> purchaseDate;
 	public static volatile SingularAttribute<Equipment, BigDecimal> purchaseCost;
 	public static volatile SingularAttribute<Equipment, String> name;
 	public static volatile SingularAttribute<Equipment, String> description;

@@ -3,7 +3,7 @@ package com.contract.service.dto;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -23,7 +23,7 @@ public class EquipmentDTO implements Serializable {
 
     private String description;
 
-    private LocalDate purchaseDate;
+    private BigDecimal purchaseDate;
 
     private BigDecimal purchaseCost;
 
@@ -65,11 +65,11 @@ public class EquipmentDTO implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getPurchaseDate() {
+    public BigDecimal getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(LocalDate purchaseDate) {
+    public void setPurchaseDate(BigDecimal purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 

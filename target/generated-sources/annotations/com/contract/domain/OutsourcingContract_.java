@@ -1,7 +1,6 @@
 package com.contract.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -12,14 +11,14 @@ public abstract class OutsourcingContract_ {
 
 	public static volatile SingularAttribute<OutsourcingContract, BigDecimal> totalValue;
 	public static volatile SingularAttribute<OutsourcingContract, String> contactInfo;
-	public static volatile SingularAttribute<OutsourcingContract, LocalDate> endDate;
+	public static volatile SingularAttribute<OutsourcingContract, BigDecimal> endDate;
 	public static volatile SingularAttribute<OutsourcingContract, String> companyName;
 	public static volatile SingularAttribute<OutsourcingContract, String> contractNumber;
 	public static volatile SingularAttribute<OutsourcingContract, String> description;
 	public static volatile SingularAttribute<OutsourcingContract, String> contactPerson;
 	public static volatile SingularAttribute<OutsourcingContract, Long> id;
 	public static volatile SingularAttribute<OutsourcingContract, String> deliverables;
-	public static volatile SingularAttribute<OutsourcingContract, LocalDate> startDate;
+	public static volatile SingularAttribute<OutsourcingContract, BigDecimal> startDate;
 	public static volatile SingularAttribute<OutsourcingContract, String> paymentTerms;
 
 	public static final String TOTAL_VALUE = "totalValue";

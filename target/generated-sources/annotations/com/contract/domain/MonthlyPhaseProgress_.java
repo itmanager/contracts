@@ -1,7 +1,6 @@
 package com.contract.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -11,10 +10,10 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class MonthlyPhaseProgress_ {
 
 	public static volatile SingularAttribute<MonthlyPhaseProgress, String> notes;
-	public static volatile SingularAttribute<MonthlyPhaseProgress, LocalDate> approvalDate;
+	public static volatile SingularAttribute<MonthlyPhaseProgress, BigDecimal> approvalDate;
 	public static volatile SingularAttribute<MonthlyPhaseProgress, Integer> year;
 	public static volatile SingularAttribute<MonthlyPhaseProgress, BigDecimal> equipmentCost;
-	public static volatile SingularAttribute<MonthlyPhaseProgress, LocalDate> submissionDate;
+	public static volatile SingularAttribute<MonthlyPhaseProgress, BigDecimal> submissionDate;
 	public static volatile SingularAttribute<MonthlyPhaseProgress, BigDecimal> outsourcingCost;
 	public static volatile SingularAttribute<MonthlyPhaseProgress, Double> verifiedProgress;
 	public static volatile SingularAttribute<MonthlyPhaseProgress, Integer> month;

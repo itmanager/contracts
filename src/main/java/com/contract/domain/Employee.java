@@ -7,7 +7,6 @@ import javax.persistence.*;
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 /**
  * نیروی انسانی
@@ -57,10 +56,10 @@ public class Employee implements Serializable {
     private BigDecimal hourlyRate;
 
     @Column(name = "start_date")
-    private LocalDate startDate;
+    private BigDecimal startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
+    private BigDecimal endDate;
 
     @Column(name = "active")
     private Boolean active;
@@ -184,29 +183,29 @@ public class Employee implements Serializable {
         this.hourlyRate = hourlyRate;
     }
 
-    public LocalDate getStartDate() {
+    public BigDecimal getStartDate() {
         return this.startDate;
     }
 
-    public Employee startDate(LocalDate startDate) {
+    public Employee startDate(BigDecimal startDate) {
         this.setStartDate(startDate);
         return this;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(BigDecimal startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public BigDecimal getEndDate() {
         return this.endDate;
     }
 
-    public Employee endDate(LocalDate endDate) {
+    public Employee endDate(BigDecimal endDate) {
         this.setEndDate(endDate);
         return this;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(BigDecimal endDate) {
         this.endDate = endDate;
     }
 

@@ -9,7 +9,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 /**
  * پیشرفت ماهانه فاز
@@ -51,10 +51,10 @@ public class MonthlyPhaseProgress implements Serializable {
     private String notes;
 
     @Column(name = "submission_date")
-    private LocalDate submissionDate;
+    private BigDecimal submissionDate;
 
     @Column(name = "approval_date")
-    private LocalDate approvalDate;
+    private BigDecimal approvalDate;
 
     @DecimalMin(value = "0")
     @DecimalMax(value = "100")
@@ -160,29 +160,29 @@ public class MonthlyPhaseProgress implements Serializable {
         this.notes = notes;
     }
 
-    public LocalDate getSubmissionDate() {
+    public BigDecimal getSubmissionDate() {
         return this.submissionDate;
     }
 
-    public MonthlyPhaseProgress submissionDate(LocalDate submissionDate) {
+    public MonthlyPhaseProgress submissionDate(BigDecimal submissionDate) {
         this.setSubmissionDate(submissionDate);
         return this;
     }
 
-    public void setSubmissionDate(LocalDate submissionDate) {
+    public void setSubmissionDate(BigDecimal submissionDate) {
         this.submissionDate = submissionDate;
     }
 
-    public LocalDate getApprovalDate() {
+    public BigDecimal getApprovalDate() {
         return this.approvalDate;
     }
 
-    public MonthlyPhaseProgress approvalDate(LocalDate approvalDate) {
+    public MonthlyPhaseProgress approvalDate(BigDecimal approvalDate) {
         this.setApprovalDate(approvalDate);
         return this;
     }
 
-    public void setApprovalDate(LocalDate approvalDate) {
+    public void setApprovalDate(BigDecimal approvalDate) {
         this.approvalDate = approvalDate;
     }
 

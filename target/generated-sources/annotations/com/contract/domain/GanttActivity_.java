@@ -1,7 +1,6 @@
 package com.contract.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -10,7 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(GanttActivity.class)
 public abstract class GanttActivity_ {
 
-	public static volatile SingularAttribute<GanttActivity, LocalDate> endDate;
+	public static volatile SingularAttribute<GanttActivity, BigDecimal> endDate;
 	public static volatile SingularAttribute<GanttActivity, Boolean> isMilestone;
 	public static volatile SingularAttribute<GanttActivity, String> description;
 	public static volatile SingularAttribute<GanttActivity, Integer> weight;
@@ -25,7 +24,7 @@ public abstract class GanttActivity_ {
 	public static volatile SingularAttribute<GanttActivity, Integer> estimatedHours;
 	public static volatile SingularAttribute<GanttActivity, Long> id;
 	public static volatile SingularAttribute<GanttActivity, BigDecimal> hourlyRate;
-	public static volatile SingularAttribute<GanttActivity, LocalDate> startDate;
+	public static volatile SingularAttribute<GanttActivity, BigDecimal> startDate;
 
 	public static final String END_DATE = "endDate";
 	public static final String IS_MILESTONE = "isMilestone";

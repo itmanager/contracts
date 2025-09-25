@@ -11,7 +11,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 /**
  * آیتم هزینه
  * ریز هزینه‌های انجام شده در پروژه
@@ -46,7 +46,7 @@ public class CostItem implements Serializable {
 
     @NotNull
     @Column(name = "cost_date", nullable = false)
-    private LocalDate costDate;
+    private BigDecimal costDate;
 
     @Lob
     @Column(name = "notes")
@@ -139,16 +139,16 @@ public class CostItem implements Serializable {
         this.totalAmount = totalAmount;
     }
 
-    public LocalDate getCostDate() {
+    public BigDecimal getCostDate() {
         return this.costDate;
     }
 
-    public CostItem costDate(LocalDate costDate) {
+    public CostItem costDate(BigDecimal costDate) {
         this.setCostDate(costDate);
         return this;
     }
 
-    public void setCostDate(LocalDate costDate) {
+    public void setCostDate(BigDecimal costDate) {
         this.costDate = costDate;
     }
 
