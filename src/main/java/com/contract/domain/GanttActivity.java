@@ -82,8 +82,16 @@ public class GanttActivity implements Serializable {
     private BigDecimal laborCost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"contract"}, allowSetters = true)
+    @JsonIgnoreProperties(value = {"contract-phase"}, allowSetters = true)
     private ContractPhase contractPhase;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"contracts"}, allowSetters = true)
+    private Contract contract;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"milestone"}, allowSetters = true)
+    private GanttActivity milestone;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -334,5 +342,22 @@ public class GanttActivity implements Serializable {
             ", hourlyRate=" + getHourlyRate() +
             ", laborCost=" + getLaborCost() +
             "}";
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
+
+
+    public GanttActivity getMilestone() {
+        return milestone;
+    }
+
+    public void setMilestone(GanttActivity milestone) {
+        this.milestone = milestone;
     }
 }

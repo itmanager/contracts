@@ -54,6 +54,10 @@ public class GanttActivityDTO implements Serializable {
 
     private ContractPhaseDTO contractPhase;
 
+    private ContractDTO contract;
+
+    private GanttActivityDTO  milestone;
+
     public Long getId() {
         return id;
     }
@@ -224,5 +228,21 @@ public class GanttActivityDTO implements Serializable {
             ", laborCost=" + getLaborCost() +
             ", contractPhase=" + getContractPhase() +
             "}";
+    }
+
+    public ContractDTO getContract() {
+        return contract;
+    }
+
+    public void setContract(ContractDTO contract) {
+        this.contract = contract;
+    }
+
+    public GanttActivityDTO getMilestone() {
+        return milestone;
+    }
+
+    public void setMilestone(GanttActivityDTO milestone) {
+        this.milestone = milestone;
     }
 }

@@ -11,11 +11,13 @@ public abstract class GanttActivity_ {
 
 	public static volatile SingularAttribute<GanttActivity, BigDecimal> endDate;
 	public static volatile SingularAttribute<GanttActivity, Boolean> isMilestone;
+	public static volatile SingularAttribute<GanttActivity, Contract> contract;
 	public static volatile SingularAttribute<GanttActivity, String> description;
 	public static volatile SingularAttribute<GanttActivity, Integer> weight;
 	public static volatile SingularAttribute<GanttActivity, Boolean> criticalPath;
 	public static volatile SingularAttribute<GanttActivity, Integer> actualHours;
 	public static volatile SingularAttribute<GanttActivity, String> dependencies;
+	public static volatile SingularAttribute<GanttActivity, GanttActivity> milestone;
 	public static volatile SingularAttribute<GanttActivity, ContractPhase> contractPhase;
 	public static volatile SingularAttribute<GanttActivity, String> name;
 	public static volatile SingularAttribute<GanttActivity, Double> qualityScore;
@@ -28,11 +30,13 @@ public abstract class GanttActivity_ {
 
 	public static final String END_DATE = "endDate";
 	public static final String IS_MILESTONE = "isMilestone";
+	public static final String CONTRACT = "contract";
 	public static final String DESCRIPTION = "description";
 	public static final String WEIGHT = "weight";
 	public static final String CRITICAL_PATH = "criticalPath";
 	public static final String ACTUAL_HOURS = "actualHours";
 	public static final String DEPENDENCIES = "dependencies";
+	public static final String MILESTONE = "milestone";
 	public static final String CONTRACT_PHASE = "contractPhase";
 	public static final String NAME = "name";
 	public static final String QUALITY_SCORE = "qualityScore";

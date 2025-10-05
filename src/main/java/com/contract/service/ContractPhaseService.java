@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link ContractPhase}.
@@ -109,5 +111,9 @@ public class ContractPhaseService {
     public void delete(Long id) {
         LOG.debug("Request to delete ContractPhase : {}", id);
         contractPhaseRepository.deleteById(id);
+    }
+
+    public List<ContractPhaseDTO> findByContractId(Long contractId) {
+        return contractPhaseRepository.findByContractId(contractId).stream().map(contractPhaseMapper::toDto).collect(Collectors.toList());
     }
 }

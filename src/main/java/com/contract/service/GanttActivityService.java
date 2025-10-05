@@ -2,6 +2,7 @@ package com.contract.service;
 
 import com.contract.domain.GanttActivity;
 import com.contract.repository.GanttActivityRepository;
+import com.contract.service.dto.ContractPhaseDTO;
 import com.contract.service.dto.GanttActivityDTO;
 import com.contract.service.mapper.GanttActivityMapper;
 import org.slf4j.Logger;
@@ -11,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link GanttActivity}.
@@ -109,5 +112,14 @@ public class GanttActivityService {
     public void delete(Long id) {
         LOG.debug("Request to delete GanttActivity : {}", id);
         ganttActivityRepository.deleteById(id);
+    }
+
+    public List<GanttActivityDTO> findByContractPhaseIds(Long[] contractPhaseIds) {
+        return ganttActivityRepository.findByContractPhaseIn(contractPhaseIds).stream().map(ganttActivityMapper::toDto).collect(Collectors.toList());
+    }
+
+    public List<GanttActivityDTO> findByContractId(Long contractId) {
+        return ganttActivityRepository.findByContractId(contractId).stream().map(ganttActivityMapper::toDto).collect(Collectors.toList());
+
     }
 }

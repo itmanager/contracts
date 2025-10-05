@@ -179,4 +179,18 @@ public class ContractPhaseResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+
+    /**
+     * {@code GET  /contract-phases/:id} : get the "id" contractPhase.
+     *
+     * @param contractId the id of the contractPhaseDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contractPhaseDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/contract/{contractId}")
+    public ResponseEntity<List<ContractPhaseDTO>> getContractPhaseByContractId(@PathVariable("contractId") Long contractId) {
+        LOG.debug("REST request to get ContractPhase : {}", contractId);
+        List<ContractPhaseDTO> page = contractPhaseService.findByContractId(contractId);
+        return ResponseEntity.ok().body(page);
+    }
 }
