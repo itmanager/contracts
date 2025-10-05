@@ -15,6 +15,7 @@ import org.mapstruct.*;
 public interface GanttActivityMapper extends EntityMapper<GanttActivityDTO, GanttActivity> {
     @Mapping(target = "contractPhase", source = "contractPhase", qualifiedByName = "contractPhaseId")
     @Mapping(target = "contract", source = "contract", qualifiedByName = "contractId")
+    @Mapping(target = "milestone", source = "milestone", qualifiedByName = "milestoneId")
     GanttActivityDTO toDto(GanttActivity s);
 
     @Named("contractPhaseId")
@@ -26,4 +27,9 @@ public interface GanttActivityMapper extends EntityMapper<GanttActivityDTO, Gant
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     ContractDTO toDtoContractId(Contract contract);
+
+    @Named("milestoneId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    GanttActivityDTO toDtoContractId(GanttActivity milestone);
 }
