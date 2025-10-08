@@ -50,6 +50,8 @@ public class CostItemDTO implements Serializable {
 
     private ContractPhaseDTO contractPhase;
 
+    private ContractDTO contract;
+
     public Long getId() {
         return id;
     }
@@ -184,5 +186,13 @@ public class CostItemDTO implements Serializable {
             ", costCategory=" + getCostCategory() +
             ", contractPhase=" + getContractPhase() +
             "}";
+    }
+
+    public ContractDTO getContract() {
+        return contract;
+    }
+
+    public void setContract(ContractDTO contract) {
+        this.contract = contract;
     }
 }

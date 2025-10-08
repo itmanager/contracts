@@ -1,8 +1,10 @@
 package com.contract.service.mapper;
 
+import com.contract.domain.Contract;
 import com.contract.domain.ContractPhase;
 import com.contract.domain.CostCategory;
 import com.contract.domain.CostItem;
+import com.contract.service.dto.ContractDTO;
 import com.contract.service.dto.ContractPhaseDTO;
 import com.contract.service.dto.CostCategoryDTO;
 import com.contract.service.dto.CostItemDTO;
@@ -15,6 +17,7 @@ import org.mapstruct.*;
 public interface CostItemMapper extends EntityMapper<CostItemDTO, CostItem> {
     @Mapping(target = "costCategory", source = "costCategory", qualifiedByName = "costCategoryId")
     @Mapping(target = "contractPhase", source = "contractPhase", qualifiedByName = "contractPhaseId")
+    @Mapping(target = "contract", source = "contract", qualifiedByName = "contractId")
     CostItemDTO toDto(CostItem s);
 
     @Named("costCategoryId")
@@ -26,4 +29,10 @@ public interface CostItemMapper extends EntityMapper<CostItemDTO, CostItem> {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     ContractPhaseDTO toDtoContractPhaseId(ContractPhase contractPhase);
+
+    @Named("contractId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    ContractDTO toDtoContractPhaseId(Contract contract);
+
 }

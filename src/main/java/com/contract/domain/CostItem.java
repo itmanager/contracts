@@ -72,6 +72,10 @@ public class CostItem implements Serializable {
     @JsonIgnoreProperties(value = {"contract"}, allowSetters = true)
     private ContractPhase contractPhase;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"contract"}, allowSetters = true)
+    private Contract contract;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -264,5 +268,13 @@ public class CostItem implements Serializable {
             ", qualityScore=" + getQualityScore() +
             ", costType='" + getCostType() + "'" +
             "}";
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 }
