@@ -181,4 +181,18 @@ public class BudgetAllocationResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+
+    /**
+     * {@code GET  /budget-allocations} : get all the budgetAllocations.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of budgetAllocations in body.
+     */
+    @GetMapping("/contractPhase/{contractPhaseId}")
+    public ResponseEntity<List<BudgetAllocationDTO>> getAllBudgetAllocationsByContractPhaseId(@PathVariable("contractPhaseId") Long contractPhaseId) {
+        LOG.debug("REST request to get a page of BudgetAllocations");
+        List<BudgetAllocationDTO> page = budgetAllocationService.findByContractPhaseId(contractPhaseId);
+        return ResponseEntity.ok().body(page);
+    }
 }

@@ -26,29 +26,41 @@ public class EquipmentUsage implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @Column(name = "start_date", nullable = false)
-    private ZonedDateTime startDate;
+    @Column(name = "group")
+    private String group;
 
-    @NotNull
-    @Column(name = "end_date", nullable = false)
-    private ZonedDateTime endDate;
+    @Column(name = "class_field")
+    private String classField;
 
-    @Column(name = "hours_used")
-    private Integer hoursUsed;
+    @Column(name = "function")
+    private String function;
 
-    @Column(name = "cost", precision = 21, scale = 2)
-    private BigDecimal cost;
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "model")
+    private String model;
+
+    @Column(name = "name")
+    private String name;
+
+
+    @Column(name = "count")
+    private Integer count;
+
+    @Column(name = "wholesalePrice")
+    private BigDecimal wholesalePrice;
+
+    @Column(name = "specifications")
+    private String specifications;
 
     @Column(name = "notes")
     private String notes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Equipment equipment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "contractPhase" }, allowSetters = true)
-    private GanttActivity ganttActivity;
+    private Contract contract;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -65,98 +77,96 @@ public class EquipmentUsage implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getStartDate() {
-        return this.startDate;
+    public String getGroup() {
+        return group;
     }
 
-    public EquipmentUsage startDate(ZonedDateTime startDate) {
-        this.setStartDate(startDate);
-        return this;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
-    public void setStartDate(ZonedDateTime startDate) {
-        this.startDate = startDate;
+    public String getClassField() {
+        return classField;
     }
 
-    public ZonedDateTime getEndDate() {
-        return this.endDate;
+    public void setClassField(String classField) {
+        this.classField = classField;
     }
 
-    public EquipmentUsage endDate(ZonedDateTime endDate) {
-        this.setEndDate(endDate);
-        return this;
+    public String getFunction() {
+        return function;
     }
 
-    public void setEndDate(ZonedDateTime endDate) {
-        this.endDate = endDate;
+    public void setFunction(String function) {
+        this.function = function;
     }
 
-    public Integer getHoursUsed() {
-        return this.hoursUsed;
+    public String getCountry() {
+        return country;
     }
 
-    public EquipmentUsage hoursUsed(Integer hoursUsed) {
-        this.setHoursUsed(hoursUsed);
-        return this;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
-    public void setHoursUsed(Integer hoursUsed) {
-        this.hoursUsed = hoursUsed;
+    public String getModel() {
+        return model;
     }
 
-    public BigDecimal getCost() {
-        return this.cost;
+    public void setModel(String model) {
+        this.model = model;
     }
 
-    public EquipmentUsage cost(BigDecimal cost) {
-        this.setCost(cost);
-        return this;
+    public String getName() {
+        return name;
     }
 
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public BigDecimal getWholesalePrice() {
+        return wholesalePrice;
+    }
+
+    public void setWholesalePrice(BigDecimal wholesalePrice) {
+        this.wholesalePrice = wholesalePrice;
+    }
+
+    public String getSpecifications() {
+        return specifications;
+    }
+
+    public void setSpecifications(String specifications) {
+        this.specifications = specifications;
     }
 
     public String getNotes() {
-        return this.notes;
-    }
-
-    public EquipmentUsage notes(String notes) {
-        this.setNotes(notes);
-        return this;
+        return notes;
     }
 
     public void setNotes(String notes) {
         this.notes = notes;
     }
 
-    public Equipment getEquipment() {
-        return this.equipment;
+    public Contract getContract() {
+        return contract;
     }
 
-    public void setEquipment(Equipment equipment) {
-        this.equipment = equipment;
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 
-    public EquipmentUsage equipment(Equipment equipment) {
-        this.setEquipment(equipment);
-        return this;
-    }
 
-    public GanttActivity getGanttActivity() {
-        return this.ganttActivity;
-    }
-
-    public void setGanttActivity(GanttActivity ganttActivity) {
-        this.ganttActivity = ganttActivity;
-    }
-
-    public EquipmentUsage ganttActivity(GanttActivity ganttActivity) {
-        this.setGanttActivity(ganttActivity);
-        return this;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+// jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
@@ -180,10 +190,6 @@ public class EquipmentUsage implements Serializable {
     public String toString() {
         return "EquipmentUsage{" +
             "id=" + getId() +
-            ", startDate='" + getStartDate() + "'" +
-            ", endDate='" + getEndDate() + "'" +
-            ", hoursUsed=" + getHoursUsed() +
-            ", cost=" + getCost() +
             ", notes='" + getNotes() + "'" +
             "}";
     }

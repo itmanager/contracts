@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link BudgetAllocation}.
@@ -109,5 +111,10 @@ public class BudgetAllocationService {
     public void delete(Long id) {
         LOG.debug("Request to delete BudgetAllocation : {}", id);
         budgetAllocationRepository.deleteById(id);
+    }
+
+    public List<BudgetAllocationDTO> findByContractPhaseId(Long contractPhaseId) {
+        return budgetAllocationRepository.findAllByContractPhaseId(contractPhaseId).
+                stream().map(budgetAllocationMapper::toDto).collect(Collectors.toList());
     }
 }

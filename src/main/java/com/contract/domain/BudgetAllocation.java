@@ -8,7 +8,6 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 
 /**
  * تخصیص بودجه
@@ -38,7 +37,7 @@ public class BudgetAllocation implements Serializable {
     private BigDecimal remainingBudget;
 
     @Column(name = "last_updated")
-    private ZonedDateTime lastUpdated;
+    private BigDecimal lastUpdated;
 
     @Column(name = "revision_number")
     private Integer revisionNumber;
@@ -110,16 +109,16 @@ public class BudgetAllocation implements Serializable {
         this.remainingBudget = remainingBudget;
     }
 
-    public ZonedDateTime getLastUpdated() {
+    public BigDecimal getLastUpdated() {
         return this.lastUpdated;
     }
 
-    public BudgetAllocation lastUpdated(ZonedDateTime lastUpdated) {
+    public BudgetAllocation lastUpdated(BigDecimal lastUpdated) {
         this.setLastUpdated(lastUpdated);
         return this;
     }
 
-    public void setLastUpdated(ZonedDateTime lastUpdated) {
+    public void setLastUpdated(BigDecimal lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

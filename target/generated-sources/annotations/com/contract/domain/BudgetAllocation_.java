@@ -1,7 +1,6 @@
 package com.contract.domain;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
@@ -10,7 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(BudgetAllocation.class)
 public abstract class BudgetAllocation_ {
 
-	public static volatile SingularAttribute<BudgetAllocation, ZonedDateTime> lastUpdated;
+	public static volatile SingularAttribute<BudgetAllocation, BigDecimal> lastUpdated;
 	public static volatile SingularAttribute<BudgetAllocation, BigDecimal> allocatedBudget;
 	public static volatile SingularAttribute<BudgetAllocation, BigDecimal> spentBudget;
 	public static volatile SingularAttribute<BudgetAllocation, BigDecimal> remainingBudget;

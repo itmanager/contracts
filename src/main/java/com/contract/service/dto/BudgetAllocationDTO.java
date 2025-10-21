@@ -24,7 +24,7 @@ public class BudgetAllocationDTO implements Serializable {
 
     private BigDecimal remainingBudget;
 
-    private ZonedDateTime lastUpdated;
+    private BigDecimal lastUpdated;
 
     private Integer revisionNumber;
 
@@ -68,11 +68,11 @@ public class BudgetAllocationDTO implements Serializable {
         this.remainingBudget = remainingBudget;
     }
 
-    public ZonedDateTime getLastUpdated() {
+    public BigDecimal getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(ZonedDateTime lastUpdated) {
+    public void setLastUpdated(BigDecimal lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

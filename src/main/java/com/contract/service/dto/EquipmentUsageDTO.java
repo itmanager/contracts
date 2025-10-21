@@ -1,5 +1,8 @@
 package com.contract.service.dto;
 
+import com.contract.domain.Contract;
+
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -15,21 +18,29 @@ public class EquipmentUsageDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
-    private ZonedDateTime startDate;
+    private String group;
 
-    @NotNull
-    private ZonedDateTime endDate;
+    private String classField;
 
-    private Integer hoursUsed;
+    private String function;
 
-    private BigDecimal cost;
+    private String country;
+
+    private String model;
+
+    private String name;
+
+    private Integer count;
+
+    private BigDecimal wholesalePrice;
+
+    private String specifications;
 
     private String notes;
 
-    private EquipmentDTO equipment;
 
-    private GanttActivityDTO ganttActivity;
+    private Contract contract;
+
 
     public Long getId() {
         return id;
@@ -39,36 +50,76 @@ public class EquipmentUsageDTO implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getStartDate() {
-        return startDate;
+    public String getGroup() {
+        return group;
     }
 
-    public void setStartDate(ZonedDateTime startDate) {
-        this.startDate = startDate;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
-    public ZonedDateTime getEndDate() {
-        return endDate;
+    public String getClassField() {
+        return classField;
     }
 
-    public void setEndDate(ZonedDateTime endDate) {
-        this.endDate = endDate;
+    public void setClassField(String classField) {
+        this.classField = classField;
     }
 
-    public Integer getHoursUsed() {
-        return hoursUsed;
+    public String getFunction() {
+        return function;
     }
 
-    public void setHoursUsed(Integer hoursUsed) {
-        this.hoursUsed = hoursUsed;
+    public void setFunction(String function) {
+        this.function = function;
     }
 
-    public BigDecimal getCost() {
-        return cost;
+    public String getCountry() {
+        return country;
     }
 
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public BigDecimal getWholesalePrice() {
+        return wholesalePrice;
+    }
+
+    public void setWholesalePrice(BigDecimal wholesalePrice) {
+        this.wholesalePrice = wholesalePrice;
+    }
+
+    public String getSpecifications() {
+        return specifications;
+    }
+
+    public void setSpecifications(String specifications) {
+        this.specifications = specifications;
     }
 
     public String getNotes() {
@@ -79,20 +130,12 @@ public class EquipmentUsageDTO implements Serializable {
         this.notes = notes;
     }
 
-    public EquipmentDTO getEquipment() {
-        return equipment;
+    public Contract getContract() {
+        return contract;
     }
 
-    public void setEquipment(EquipmentDTO equipment) {
-        this.equipment = equipment;
-    }
-
-    public GanttActivityDTO getGanttActivity() {
-        return ganttActivity;
-    }
-
-    public void setGanttActivity(GanttActivityDTO ganttActivity) {
-        this.ganttActivity = ganttActivity;
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 
     @Override
@@ -121,13 +164,8 @@ public class EquipmentUsageDTO implements Serializable {
     public String toString() {
         return "EquipmentUsageDTO{" +
             "id=" + getId() +
-            ", startDate='" + getStartDate() + "'" +
-            ", endDate='" + getEndDate() + "'" +
-            ", hoursUsed=" + getHoursUsed() +
-            ", cost=" + getCost() +
             ", notes='" + getNotes() + "'" +
-            ", equipment=" + getEquipment() +
-            ", ganttActivity=" + getGanttActivity() +
+            ", contract=" + getContract() +
             "}";
     }
 }
