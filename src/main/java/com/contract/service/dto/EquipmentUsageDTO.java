@@ -39,7 +39,7 @@ public class EquipmentUsageDTO implements Serializable {
     private String notes;
 
 
-    private Contract contract;
+    private ContractDTO contract;
 
 
     public Long getId() {
@@ -130,11 +130,11 @@ public class EquipmentUsageDTO implements Serializable {
         this.notes = notes;
     }
 
-    public Contract getContract() {
+    public ContractDTO getContract() {
         return contract;
     }
 
-    public void setContract(Contract contract) {
+    public void setContract(ContractDTO contract) {
         this.contract = contract;
     }
 

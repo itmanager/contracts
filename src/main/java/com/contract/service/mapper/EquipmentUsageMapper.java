@@ -17,9 +17,9 @@ public interface EquipmentUsageMapper extends EntityMapper<EquipmentUsageDTO, Eq
     @Mapping(target = "contract", source = "contract", qualifiedByName = "contractId")
     EquipmentUsageDTO toDto(EquipmentUsage s);
 
+
     @Named("contractId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    ContractDTO toDtoContractId(Contract contract);
-
+    ContractDTO toDtoContractPhaseId(Contract contract);
 }

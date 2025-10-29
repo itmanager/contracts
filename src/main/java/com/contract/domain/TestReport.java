@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 /**
@@ -33,7 +34,7 @@ public class TestReport implements Serializable {
 
     @NotNull
     @Column(name = "test_date", nullable = false)
-    private ZonedDateTime testDate;
+    private BigDecimal testDate;
 
     @Column(name = "test_type")
     private String testType;
@@ -70,8 +71,27 @@ public class TestReport implements Serializable {
     @Column(name = "quality_score")
     private Double qualityScore;
 
+    @Column(name = "description")
+    private String description;
+    @Column(name = "testSteps")
+    private String testSteps;
+    @Column(name = "expectedResult")
+    private String expectedResult;
+    @Column(name = "testData")
+    private String testData;
+    @Column(name = "preConditions")
+    private String preConditions;
+    @Column(name = "postConditions")
+    private String postConditions;
+    @Column(name = "relatedModule")
+    private String relatedModule;
+    @Column(name = "buildVersion")
+    private String buildVersion;
+    @Column(name = "notes")
+    private String notes;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "supervisor" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"supervisor"}, allowSetters = true)
     private Contract contract;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -106,16 +126,11 @@ public class TestReport implements Serializable {
         this.title = title;
     }
 
-    public ZonedDateTime getTestDate() {
-        return this.testDate;
+    public BigDecimal getTestDate() {
+        return testDate;
     }
 
-    public TestReport testDate(ZonedDateTime testDate) {
-        this.setTestDate(testDate);
-        return this;
-    }
-
-    public void setTestDate(ZonedDateTime testDate) {
+    public void setTestDate(BigDecimal testDate) {
         this.testDate = testDate;
     }
 
@@ -249,6 +264,79 @@ public class TestReport implements Serializable {
         this.qualityScore = qualityScore;
     }
 
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTestSteps() {
+        return testSteps;
+    }
+
+    public void setTestSteps(String testSteps) {
+        this.testSteps = testSteps;
+    }
+
+    public String getExpectedResult() {
+        return expectedResult;
+    }
+
+    public void setExpectedResult(String expectedResult) {
+        this.expectedResult = expectedResult;
+    }
+
+    public String getTestData() {
+        return testData;
+    }
+
+    public void setTestData(String testData) {
+        this.testData = testData;
+    }
+
+    public String getPreConditions() {
+        return preConditions;
+    }
+
+    public void setPreConditions(String preConditions) {
+        this.preConditions = preConditions;
+    }
+
+    public String getPostConditions() {
+        return postConditions;
+    }
+
+    public void setPostConditions(String postConditions) {
+        this.postConditions = postConditions;
+    }
+
+    public String getRelatedModule() {
+        return relatedModule;
+    }
+
+    public void setRelatedModule(String relatedModule) {
+        this.relatedModule = relatedModule;
+    }
+
+    public String getBuildVersion() {
+        return buildVersion;
+    }
+
+    public void setBuildVersion(String buildVersion) {
+        this.buildVersion = buildVersion;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     public Contract getContract() {
         return this.contract;
     }
@@ -298,19 +386,19 @@ public class TestReport implements Serializable {
     @Override
     public String toString() {
         return "TestReport{" +
-            "id=" + getId() +
-            ", title='" + getTitle() + "'" +
-            ", testDate='" + getTestDate() + "'" +
-            ", testType='" + getTestType() + "'" +
-            ", environment='" + getEnvironment() + "'" +
-            ", participants='" + getParticipants() + "'" +
-            ", objectives='" + getObjectives() + "'" +
-            ", results='" + getResults() + "'" +
-            ", conclusions='" + getConclusions() + "'" +
-            ", recommendations='" + getRecommendations() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", filePath='" + getFilePath() + "'" +
-            ", qualityScore=" + getQualityScore() +
-            "}";
+                "id=" + getId() +
+                ", title='" + getTitle() + "'" +
+                ", testDate='" + getTestDate() + "'" +
+                ", testType='" + getTestType() + "'" +
+                ", environment='" + getEnvironment() + "'" +
+                ", participants='" + getParticipants() + "'" +
+                ", objectives='" + getObjectives() + "'" +
+                ", results='" + getResults() + "'" +
+                ", conclusions='" + getConclusions() + "'" +
+                ", recommendations='" + getRecommendations() + "'" +
+                ", status='" + getStatus() + "'" +
+                ", filePath='" + getFilePath() + "'" +
+                ", qualityScore=" + getQualityScore() +
+                "}";
     }
 }

@@ -26,7 +26,7 @@ public class EquipmentUsage implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "group")
+    @Column(name = "group_name")
     private String group;
 
     @Column(name = "class_field")
@@ -59,7 +59,7 @@ public class EquipmentUsage implements Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "contractPhase" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "contract" }, allowSetters = true)
     private Contract contract;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

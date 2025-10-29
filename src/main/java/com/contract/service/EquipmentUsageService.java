@@ -110,4 +110,10 @@ public class EquipmentUsageService {
         LOG.debug("Request to delete EquipmentUsage : {}", id);
         equipmentUsageRepository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    public Page<EquipmentUsageDTO> findByContractId(Long contractId, Pageable pageable) {
+        LOG.debug("Request to get EquipmentUsages by contract id : {}", contractId);
+        return equipmentUsageRepository.findByContractId(contractId, pageable).map(equipmentUsageMapper::toDto);
+    }
 }

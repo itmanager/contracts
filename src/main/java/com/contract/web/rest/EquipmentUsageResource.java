@@ -181,4 +181,20 @@ public class EquipmentUsageResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    /**
+     * {@code GET  /equipment-usages/contract/:contractId} : get equipmentUsages by contract.
+     *
+     * @param contractId the contract id.
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of equipmentUsages in body.
+     */
+    @GetMapping("/contract/{contractId}")
+    public ResponseEntity<List<EquipmentUsageDTO>> getEquipmentUsagesByContract(@PathVariable Long contractId, Pageable pageable) {
+        LOG.debug("REST request to get EquipmentUsages by contract id : {}", contractId);
+        Page<EquipmentUsageDTO> page = equipmentUsageService.findByContractId(contractId, pageable);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Total-Count", String.valueOf(page.getTotalElements()));
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
 }
