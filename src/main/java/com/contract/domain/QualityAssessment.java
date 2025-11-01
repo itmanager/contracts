@@ -25,136 +25,254 @@ public class QualityAssessment implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @Column(name = "assessment_date", nullable = false)
-    private ZonedDateTime assessmentDate;
+    @Column(name = "assessmentDate")
+    private Long assessmentDate;
+    @Column(name = "assetType")
 
-    @NotNull
-    @Column(name = "assessed_by", nullable = false)
-    private String assessedBy;
+    private  String assetType;
+    @Column(name = "version")private  String version;
+    @Column(name = "characteristic")private  String characteristic;
+    @Column(name = "subCharacteristic")private  String subCharacteristic;
+    @Column(name = "priority")private  String priority;
+    @Column(name = "standardsCompliance")private  String standardsCompliance;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "dimension", nullable = false)
-    private QualityDimension dimension;
 
-    @NotNull
-    @DecimalMin(value = "0")
-    @DecimalMax(value = "100")
-    @Column(name = "score", nullable = false)
-    private Double score;
+    // list of execute way
+    @Column(name = "assessedBy")    private  String  assessedBy;
+    @Column(name = "toolsUsed")private  String toolsUsed;
+    @Column(name = "strengths")private  String strengths;
+    @Column(name = "weaknesses")private  String weaknesses;
+    @Column(name = "risks")private  String  risks;
+    @Column(name = "testMethods")    private  String  testMethods;
+    @Column(name = "certifications")    private  String certifications;
 
-    @Min(value = 1)
-    @Max(value = 100)
-    @Column(name = "weight")
-    private Integer weight;
 
-    @Lob
-    @Column(name = "comments")
-    private String comments;
+    /* list of metrics*/
+    @Column(name = "metric_name")    private  String  metric_name;
+    @Column(name = "metric_unit")    private  String  metric_unit;
+    @Column(name = "metric_minAcceptable")   private  String metric_minAcceptable;
+    @Column(name = "metric_maxAcceptable") private  String metric_maxAcceptable;
+    @Column(name = "metric_score") private  String  metric_score;
+    @Column(name = "metric_weight") private  String  metric_weight;
+    @Column(name = "metric_result")  private  String metric_result;
 
-    @Lob
-    @Column(name = "recommendations")
-    private String recommendations;
+    /*end result of quality*/
+    @Column(name = "minAcceptable")  private  Integer minAcceptable;
+    @Column(name = "maxAcceptable") private  Integer maxAcceptable;
+    @Column(name = "score") private  Integer score;
+    @Column(name = "comments") private  String comments;
+    @Column(name = "recommendations") private  String recommendations;
+    @Column(name = "status") private  String status;
+    @Column(name = "trend") private  String  trend;
 
-    @Column(name = "next_assessment_date")
-    private ZonedDateTime nextAssessmentDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "supervisor" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "contract" }, allowSetters = true)
     private Contract contract;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"contract"}, allowSetters = true)
-    private ContractPhase contractPhase;
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
-        return this.id;
-    }
-
-    public QualityAssessment id(Long id) {
-        this.setId(id);
-        return this;
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public ZonedDateTime getAssessmentDate() {
-        return this.assessmentDate;
+    public Long getAssessmentDate() {
+        return assessmentDate;
     }
 
-    public QualityAssessment assessmentDate(ZonedDateTime assessmentDate) {
-        this.setAssessmentDate(assessmentDate);
-        return this;
-    }
-
-    public void setAssessmentDate(ZonedDateTime assessmentDate) {
+    public void setAssessmentDate(Long assessmentDate) {
         this.assessmentDate = assessmentDate;
     }
 
-    public String getAssessedBy() {
-        return this.assessedBy;
+    public String getAssetType() {
+        return assetType;
     }
 
-    public QualityAssessment assessedBy(String assessedBy) {
-        this.setAssessedBy(assessedBy);
-        return this;
+    public void setAssetType(String assetType) {
+        this.assetType = assetType;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getCharacteristic() {
+        return characteristic;
+    }
+
+    public void setCharacteristic(String characteristic) {
+        this.characteristic = characteristic;
+    }
+
+    public String getSubCharacteristic() {
+        return subCharacteristic;
+    }
+
+    public void setSubCharacteristic(String subCharacteristic) {
+        this.subCharacteristic = subCharacteristic;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public String getStandardsCompliance() {
+        return standardsCompliance;
+    }
+
+    public void setStandardsCompliance(String standardsCompliance) {
+        this.standardsCompliance = standardsCompliance;
+    }
+
+    public String getAssessedBy() {
+        return assessedBy;
     }
 
     public void setAssessedBy(String assessedBy) {
         this.assessedBy = assessedBy;
     }
 
-    public QualityDimension getDimension() {
-        return this.dimension;
+    public String getToolsUsed() {
+        return toolsUsed;
     }
 
-    public QualityAssessment dimension(QualityDimension dimension) {
-        this.setDimension(dimension);
-        return this;
+    public void setToolsUsed(String toolsUsed) {
+        this.toolsUsed = toolsUsed;
     }
 
-    public void setDimension(QualityDimension dimension) {
-        this.dimension = dimension;
+    public String getStrengths() {
+        return strengths;
     }
 
-    public Double getScore() {
-        return this.score;
+    public void setStrengths(String strengths) {
+        this.strengths = strengths;
     }
 
-    public QualityAssessment score(Double score) {
-        this.setScore(score);
-        return this;
+    public String getWeaknesses() {
+        return weaknesses;
     }
 
-    public void setScore(Double score) {
+    public void setWeaknesses(String weaknesses) {
+        this.weaknesses = weaknesses;
+    }
+
+    public String getRisks() {
+        return risks;
+    }
+
+    public void setRisks(String risks) {
+        this.risks = risks;
+    }
+
+    public String getTestMethods() {
+        return testMethods;
+    }
+
+    public void setTestMethods(String testMethods) {
+        this.testMethods = testMethods;
+    }
+
+    public String getCertifications() {
+        return certifications;
+    }
+
+    public void setCertifications(String certifications) {
+        this.certifications = certifications;
+    }
+
+    public String getMetric_name() {
+        return metric_name;
+    }
+
+    public void setMetric_name(String metric_name) {
+        this.metric_name = metric_name;
+    }
+
+    public String getMetric_unit() {
+        return metric_unit;
+    }
+
+    public void setMetric_unit(String metric_unit) {
+        this.metric_unit = metric_unit;
+    }
+
+    public String getMetric_minAcceptable() {
+        return metric_minAcceptable;
+    }
+
+    public void setMetric_minAcceptable(String metric_minAcceptable) {
+        this.metric_minAcceptable = metric_minAcceptable;
+    }
+
+    public String getMetric_maxAcceptable() {
+        return metric_maxAcceptable;
+    }
+
+    public void setMetric_maxAcceptable(String metric_maxAcceptable) {
+        this.metric_maxAcceptable = metric_maxAcceptable;
+    }
+
+    public String getMetric_score() {
+        return metric_score;
+    }
+
+    public void setMetric_score(String metric_score) {
+        this.metric_score = metric_score;
+    }
+
+    public String getMetric_weight() {
+        return metric_weight;
+    }
+
+    public void setMetric_weight(String metric_weight) {
+        this.metric_weight = metric_weight;
+    }
+
+    public String getMetric_result() {
+        return metric_result;
+    }
+
+    public void setMetric_result(String metric_result) {
+        this.metric_result = metric_result;
+    }
+
+    public Integer getMinAcceptable() {
+        return minAcceptable;
+    }
+
+    public void setMinAcceptable(Integer minAcceptable) {
+        this.minAcceptable = minAcceptable;
+    }
+
+    public Integer getMaxAcceptable() {
+        return maxAcceptable;
+    }
+
+    public void setMaxAcceptable(Integer maxAcceptable) {
+        this.maxAcceptable = maxAcceptable;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
         this.score = score;
     }
 
-    public Integer getWeight() {
-        return this.weight;
-    }
-
-    public QualityAssessment weight(Integer weight) {
-        this.setWeight(weight);
-        return this;
-    }
-
-    public void setWeight(Integer weight) {
-        this.weight = weight;
-    }
-
     public String getComments() {
-        return this.comments;
-    }
-
-    public QualityAssessment comments(String comments) {
-        this.setComments(comments);
-        return this;
+        return comments;
     }
 
     public void setComments(String comments) {
@@ -162,89 +280,34 @@ public class QualityAssessment implements Serializable {
     }
 
     public String getRecommendations() {
-        return this.recommendations;
-    }
-
-    public QualityAssessment recommendations(String recommendations) {
-        this.setRecommendations(recommendations);
-        return this;
+        return recommendations;
     }
 
     public void setRecommendations(String recommendations) {
         this.recommendations = recommendations;
     }
 
-    public ZonedDateTime getNextAssessmentDate() {
-        return this.nextAssessmentDate;
+    public String getStatus() {
+        return status;
     }
 
-    public QualityAssessment nextAssessmentDate(ZonedDateTime nextAssessmentDate) {
-        this.setNextAssessmentDate(nextAssessmentDate);
-        return this;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public void setNextAssessmentDate(ZonedDateTime nextAssessmentDate) {
-        this.nextAssessmentDate = nextAssessmentDate;
+    public String getTrend() {
+        return trend;
+    }
+
+    public void setTrend(String trend) {
+        this.trend = trend;
     }
 
     public Contract getContract() {
-        return this.contract;
+        return contract;
     }
 
     public void setContract(Contract contract) {
         this.contract = contract;
-    }
-
-    public QualityAssessment contract(Contract contract) {
-        this.setContract(contract);
-        return this;
-    }
-
-    public ContractPhase getContractPhase() {
-        return this.contractPhase;
-    }
-
-    public void setContractPhase(ContractPhase contractPhase) {
-        this.contractPhase = contractPhase;
-    }
-
-    public QualityAssessment contractPhase(ContractPhase contractPhase) {
-        this.setContractPhase(contractPhase);
-        return this;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof QualityAssessment)) {
-            return false;
-        }
-        return getId() != null && getId().equals(((QualityAssessment) o).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "QualityAssessment{" +
-            "id=" + getId() +
-            ", assessmentDate='" + getAssessmentDate() + "'" +
-            ", assessedBy='" + getAssessedBy() + "'" +
-            ", dimension='" + getDimension() + "'" +
-            ", score=" + getScore() +
-            ", weight=" + getWeight() +
-            ", comments='" + getComments() + "'" +
-            ", recommendations='" + getRecommendations() + "'" +
-            ", nextAssessmentDate='" + getNextAssessmentDate() + "'" +
-            "}";
     }
 }

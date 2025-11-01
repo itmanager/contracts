@@ -14,7 +14,6 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface QualityAssessmentMapper extends EntityMapper<QualityAssessmentDTO, QualityAssessment> {
     @Mapping(target = "contract", source = "contract", qualifiedByName = "contractId")
-    @Mapping(target = "contractPhase", source = "contractPhase", qualifiedByName = "contractPhaseId")
     QualityAssessmentDTO toDto(QualityAssessment s);
 
     @Named("contractId")
@@ -22,8 +21,4 @@ public interface QualityAssessmentMapper extends EntityMapper<QualityAssessmentD
     @Mapping(target = "id", source = "id")
     ContractDTO toDtoContractId(Contract contract);
 
-    @Named("contractPhaseId")
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    ContractPhaseDTO toDtoContractPhaseId(ContractPhase contractPhase);
 }
