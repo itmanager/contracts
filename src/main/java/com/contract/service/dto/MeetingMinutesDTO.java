@@ -4,6 +4,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -20,8 +21,10 @@ public class MeetingMinutesDTO implements Serializable {
     private String title;
 
     @NotNull
-    private ZonedDateTime meetingDate;
-
+    private BigDecimal meetingDate;
+    private String time;
+    private String manager;
+    private String importantNote;
     private String location;
 
     private String attendees;
@@ -29,8 +32,6 @@ public class MeetingMinutesDTO implements Serializable {
     private String agenda;
 
     private String decisions;
-
-    private ZonedDateTime nextMeetingDate;
 
     private String filePath;
 
@@ -60,11 +61,11 @@ public class MeetingMinutesDTO implements Serializable {
         this.title = title;
     }
 
-    public ZonedDateTime getMeetingDate() {
+    public BigDecimal getMeetingDate() {
         return meetingDate;
     }
 
-    public void setMeetingDate(ZonedDateTime meetingDate) {
+    public void setMeetingDate(BigDecimal meetingDate) {
         this.meetingDate = meetingDate;
     }
 
@@ -98,14 +99,6 @@ public class MeetingMinutesDTO implements Serializable {
 
     public void setDecisions(String decisions) {
         this.decisions = decisions;
-    }
-
-    public ZonedDateTime getNextMeetingDate() {
-        return nextMeetingDate;
-    }
-
-    public void setNextMeetingDate(ZonedDateTime nextMeetingDate) {
-        this.nextMeetingDate = nextMeetingDate;
     }
 
     public String getFilePath() {
@@ -148,6 +141,30 @@ public class MeetingMinutesDTO implements Serializable {
         this.contractPhase = contractPhase;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getImportantNote() {
+        return importantNote;
+    }
+
+    public void setImportantNote(String importantNote) {
+        this.importantNote = importantNote;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -173,19 +190,18 @@ public class MeetingMinutesDTO implements Serializable {
     @Override
     public String toString() {
         return "MeetingMinutesDTO{" +
-            "id=" + getId() +
-            ", title='" + getTitle() + "'" +
-            ", meetingDate='" + getMeetingDate() + "'" +
-            ", location='" + getLocation() + "'" +
-            ", attendees='" + getAttendees() + "'" +
-            ", agenda='" + getAgenda() + "'" +
-            ", decisions='" + getDecisions() + "'" +
-            ", nextMeetingDate='" + getNextMeetingDate() + "'" +
-            ", filePath='" + getFilePath() + "'" +
-            ", approved='" + getApproved() + "'" +
-            ", qualityScore=" + getQualityScore() +
-            ", contract=" + getContract() +
-            ", contractPhase=" + getContractPhase() +
-            "}";
+                "id=" + getId() +
+                ", title='" + getTitle() + "'" +
+                ", meetingDate='" + getMeetingDate() + "'" +
+                ", location='" + getLocation() + "'" +
+                ", attendees='" + getAttendees() + "'" +
+                ", agenda='" + getAgenda() + "'" +
+                ", decisions='" + getDecisions() + "'" +
+                ", filePath='" + getFilePath() + "'" +
+                ", approved='" + getApproved() + "'" +
+                ", qualityScore=" + getQualityScore() +
+                ", contract=" + getContract() +
+                ", contractPhase=" + getContractPhase() +
+                "}";
     }
 }
