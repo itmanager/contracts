@@ -6,8 +6,8 @@ package com.contract.domain.enumeration;
  */
 public enum DocumentStatus {
     DRAFT,
-    UNDER_REVIEW,
+    PENDING,
     APPROVED,
     REJECTED,
-    ARCHIVED,
+    ARCHIVED
 }

@@ -3,149 +3,88 @@ package com.contract.service.dto;
 import com.contract.domain.enumeration.AttachmentType;
 import com.contract.domain.enumeration.DocumentStatus;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.Objects;
+import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 
-/**
- * A DTO for the {@link com.contract.domain.DocumentAttachment} entity.
- */
-@SuppressWarnings("common-java:DuplicatedBlocks")
-public class DocumentAttachmentDTO implements Serializable {
+public class DocumentAttachmentDTO {
 
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "Name is required")
+    @Size(max = 255, message = "Name cannot exceed 255 characters")
     private String name;
 
+    @Size(max = 1000, message = "Description cannot exceed 1000 characters")
     private String description;
 
-    @NotNull
     private String filePath;
-
     private Long fileSize;
-
-    @NotNull
-    private ZonedDateTime uploadDate;
-
+    private String originalFileName;
+    private String fileContentType;
+    private LocalDateTime uploadDate;
     private String uploader;
 
-    @NotNull
     private AttachmentType attachmentType;
-
-    @NotNull
     private DocumentStatus status;
 
+    @Size(max = 50, message = "Version cannot exceed 50 characters")
     private String version;
 
+    @Size(max = 500, message = "Keywords cannot exceed 500 characters")
     private String keywords;
 
-    @DecimalMin(value = "0")
-    @DecimalMax(value = "100")
-    private Double qualityScore;
+    @Min(value = 0, message = "Quality score must be at least 0")
+    @Max(value = 100, message = "Quality score cannot exceed 100")
+    private Integer qualityScore;
 
     private ContractDTO contract;
-
     private ContractPhaseDTO contractPhase;
 
-    public Long getId() {
-        return id;
-    }
+    // Constructors
+    public DocumentAttachmentDTO() {}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getFilePath() { return filePath; }
+    public void setFilePath(String filePath) { this.filePath = filePath; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public Long getFileSize() { return fileSize; }
+    public void setFileSize(Long fileSize) { this.fileSize = fileSize; }
 
-    public String getFilePath() {
-        return filePath;
-    }
+    public String getOriginalFileName() { return originalFileName; }
+    public void setOriginalFileName(String originalFileName) { this.originalFileName = originalFileName; }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
+    public String getFileContentType() { return fileContentType; }
+    public void setFileContentType(String fileContentType) { this.fileContentType = fileContentType; }
 
-    public Long getFileSize() {
-        return fileSize;
-    }
+    public LocalDateTime getUploadDate() { return uploadDate; }
+    public void setUploadDate(LocalDateTime uploadDate) { this.uploadDate = uploadDate; }
 
-    public void setFileSize(Long fileSize) {
-        this.fileSize = fileSize;
-    }
+    public String getUploader() { return uploader; }
+    public void setUploader(String uploader) { this.uploader = uploader; }
 
-    public ZonedDateTime getUploadDate() {
-        return uploadDate;
-    }
+    public AttachmentType getAttachmentType() { return attachmentType; }
+    public void setAttachmentType(AttachmentType attachmentType) { this.attachmentType = attachmentType; }
 
-    public void setUploadDate(ZonedDateTime uploadDate) {
-        this.uploadDate = uploadDate;
-    }
+    public DocumentStatus getStatus() { return status; }
+    public void setStatus(DocumentStatus status) { this.status = status; }
 
-    public String getUploader() {
-        return uploader;
-    }
+    public String getVersion() { return version; }
+    public void setVersion(String version) { this.version = version; }
 
-    public void setUploader(String uploader) {
-        this.uploader = uploader;
-    }
+    public String getKeywords() { return keywords; }
+    public void setKeywords(String keywords) { this.keywords = keywords; }
 
-    public AttachmentType getAttachmentType() {
-        return attachmentType;
-    }
-
-    public void setAttachmentType(AttachmentType attachmentType) {
-        this.attachmentType = attachmentType;
-    }
-
-    public DocumentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DocumentStatus status) {
-        this.status = status;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
-
-    public Double getQualityScore() {
-        return qualityScore;
-    }
-
-    public void setQualityScore(Double qualityScore) {
-        this.qualityScore = qualityScore;
-    }
+    public Integer getQualityScore() { return qualityScore; }
+    public void setQualityScore(Integer qualityScore) { this.qualityScore = qualityScore; }
 
     public ContractDTO getContract() {
         return contract;
@@ -161,47 +100,5 @@ public class DocumentAttachmentDTO implements Serializable {
 
     public void setContractPhase(ContractPhaseDTO contractPhase) {
         this.contractPhase = contractPhase;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof DocumentAttachmentDTO)) {
-            return false;
-        }
-
-        DocumentAttachmentDTO documentAttachmentDTO = (DocumentAttachmentDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, documentAttachmentDTO.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "DocumentAttachmentDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", filePath='" + getFilePath() + "'" +
-            ", fileSize=" + getFileSize() +
-            ", uploadDate='" + getUploadDate() + "'" +
-            ", uploader='" + getUploader() + "'" +
-            ", attachmentType='" + getAttachmentType() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", version='" + getVersion() + "'" +
-            ", keywords='" + getKeywords() + "'" +
-            ", qualityScore=" + getQualityScore() +
-            ", contract=" + getContract() +
-            ", contractPhase=" + getContractPhase() +
-            "}";
     }
 }
