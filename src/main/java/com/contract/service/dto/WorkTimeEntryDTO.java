@@ -1,5 +1,13 @@
 package com.contract.service.dto;
 
+import com.contract.domain.Contract;
+import com.contract.domain.ContractPhase;
+import com.contract.domain.GanttActivity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -26,9 +34,15 @@ public class WorkTimeEntryDTO implements Serializable {
 
     private Boolean approved;
 
-    private ZonedDateTime approvalDate;
+    private BigDecimal approvalDate;
 
-    private EmployeeDTO employee;
+    private Long employeeId;
+    private String employeeName;
+
+    private ContractDTO contract;
+
+
+    private ContractPhaseDTO contractPhase;
 
     private GanttActivityDTO ganttActivity;
 
@@ -74,20 +88,44 @@ public class WorkTimeEntryDTO implements Serializable {
         this.approved = approved;
     }
 
-    public ZonedDateTime getApprovalDate() {
+    public BigDecimal getApprovalDate() {
         return approvalDate;
     }
 
-    public void setApprovalDate(ZonedDateTime approvalDate) {
+    public void setApprovalDate(BigDecimal approvalDate) {
         this.approvalDate = approvalDate;
     }
 
-    public EmployeeDTO getEmployee() {
-        return employee;
+    public Long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployee(EmployeeDTO employee) {
-        this.employee = employee;
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public ContractDTO getContract() {
+        return contract;
+    }
+
+    public void setContract(ContractDTO contract) {
+        this.contract = contract;
+    }
+
+    public ContractPhaseDTO getContractPhase() {
+        return contractPhase;
+    }
+
+    public void setContractPhase(ContractPhaseDTO contractPhase) {
+        this.contractPhase = contractPhase;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
     public GanttActivityDTO getGanttActivity() {
@@ -137,7 +175,7 @@ public class WorkTimeEntryDTO implements Serializable {
             ", description='" + getDescription() + "'" +
             ", approved='" + getApproved() + "'" +
             ", approvalDate='" + getApprovalDate() + "'" +
-            ", employee=" + getEmployee() +
+            ", employee=" + getEmployeeId() +
             ", ganttActivity=" + getGanttActivity() +
             ", approvedBy=" + getApprovedBy() +
             "}";

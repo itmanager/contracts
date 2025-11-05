@@ -1,13 +1,7 @@
 package com.contract.service.mapper;
 
-import com.contract.domain.Employee;
-import com.contract.domain.GanttActivity;
-import com.contract.domain.Supervisor;
-import com.contract.domain.WorkTimeEntry;
-import com.contract.service.dto.EmployeeDTO;
-import com.contract.service.dto.GanttActivityDTO;
-import com.contract.service.dto.SupervisorDTO;
-import com.contract.service.dto.WorkTimeEntryDTO;
+import com.contract.domain.*;
+import com.contract.service.dto.*;
 import org.mapstruct.*;
 
 /**
@@ -15,15 +9,21 @@ import org.mapstruct.*;
  */
 @Mapper(componentModel = "spring")
 public interface WorkTimeEntryMapper extends EntityMapper<WorkTimeEntryDTO, WorkTimeEntry> {
-    @Mapping(target = "employee", source = "employee", qualifiedByName = "employeeId")
+    @Mapping(target = "contract", source = "contract", qualifiedByName = "contractId")
+    @Mapping(target = "contractPhase", source = "contractPhase", qualifiedByName = "contractPhaseId")
     @Mapping(target = "ganttActivity", source = "ganttActivity", qualifiedByName = "ganttActivityId")
     @Mapping(target = "approvedBy", source = "approvedBy", qualifiedByName = "supervisorId")
     WorkTimeEntryDTO toDto(WorkTimeEntry s);
 
-    @Named("employeeId")
+    @Named("contractId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    EmployeeDTO toDtoEmployeeId(Employee employee);
+    ContractDTO toDtoContractId(Contract contract);
+
+    @Named("contractPhaseId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    ContractPhaseDTO toDtoContractPhaseId(ContractPhase contractPhase);
 
     @Named("ganttActivityId")
     @BeanMapping(ignoreByDefault = true)

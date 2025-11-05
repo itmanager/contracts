@@ -42,14 +42,27 @@ public class WorkTimeEntry implements Serializable {
     private Boolean approved;
 
     @Column(name = "approval_date")
-    private ZonedDateTime approvalDate;
+    private BigDecimal approvalDate;
+
+    @Column(name = "employeeId")
+    private Long employeeId;
+
+    @Column(name = "employeeName")
+    private String employeeName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Employee employee;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "contractPhase" }, allowSetters = true)
+    @JsonIgnoreProperties(value = {"ganttActivity"}, allowSetters = true)
     private GanttActivity ganttActivity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"contract"}, allowSetters = true)
+    private Contract contract;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"contractPhase"}, allowSetters = true)
+    private ContractPhase contractPhase;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Supervisor approvedBy;
@@ -112,39 +125,48 @@ public class WorkTimeEntry implements Serializable {
         return this.approved;
     }
 
-    public WorkTimeEntry approved(Boolean approved) {
-        this.setApproved(approved);
-        return this;
-    }
-
     public void setApproved(Boolean approved) {
         this.approved = approved;
     }
 
-    public ZonedDateTime getApprovalDate() {
-        return this.approvalDate;
+    public BigDecimal getApprovalDate() {
+        return approvalDate;
     }
 
-    public WorkTimeEntry approvalDate(ZonedDateTime approvalDate) {
-        this.setApprovalDate(approvalDate);
-        return this;
-    }
-
-    public void setApprovalDate(ZonedDateTime approvalDate) {
+    public void setApprovalDate(BigDecimal approvalDate) {
         this.approvalDate = approvalDate;
     }
 
-    public Employee getEmployee() {
-        return this.employee;
+    public Long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public WorkTimeEntry employee(Employee employee) {
-        this.setEmployee(employee);
-        return this;
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
+
+    public ContractPhase getContractPhase() {
+        return contractPhase;
+    }
+
+    public void setContractPhase(ContractPhase contractPhase) {
+        this.contractPhase = contractPhase;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
     public GanttActivity getGanttActivity() {
@@ -196,12 +218,12 @@ public class WorkTimeEntry implements Serializable {
     @Override
     public String toString() {
         return "WorkTimeEntry{" +
-            "id=" + getId() +
-            ", entryDate='" + getEntryDate() + "'" +
-            ", hoursWorked=" + getHoursWorked() +
-            ", description='" + getDescription() + "'" +
-            ", approved='" + getApproved() + "'" +
-            ", approvalDate='" + getApprovalDate() + "'" +
-            "}";
+                "id=" + getId() +
+                ", entryDate='" + getEntryDate() + "'" +
+                ", hoursWorked=" + getHoursWorked() +
+                ", description='" + getDescription() + "'" +
+                ", approved='" + getApproved() + "'" +
+                ", approvalDate='" + getApprovalDate() + "'" +
+                "}";
     }
 }
