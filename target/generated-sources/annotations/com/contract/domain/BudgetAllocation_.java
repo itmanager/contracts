@@ -15,8 +15,10 @@ public abstract class BudgetAllocation_ {
 	public static volatile SingularAttribute<BudgetAllocation, BigDecimal> remainingBudget;
 	public static volatile SingularAttribute<BudgetAllocation, Integer> revisionNumber;
 	public static volatile SingularAttribute<BudgetAllocation, ContractPhase> contractPhase;
+	public static volatile SingularAttribute<BudgetAllocation, String> contractPhaseName;
 	public static volatile SingularAttribute<BudgetAllocation, Contract> contract;
 	public static volatile SingularAttribute<BudgetAllocation, Double> qualityScore;
+	public static volatile SingularAttribute<BudgetAllocation, String> contractName;
 	public static volatile SingularAttribute<BudgetAllocation, Long> id;
 
 	public static final String LAST_UPDATED = "lastUpdated";
@@ -25,8 +27,10 @@ public abstract class BudgetAllocation_ {
 	public static final String REMAINING_BUDGET = "remainingBudget";
 	public static final String REVISION_NUMBER = "revisionNumber";
 	public static final String CONTRACT_PHASE = "contractPhase";
+	public static final String CONTRACT_PHASE_NAME = "contractPhaseName";
 	public static final String CONTRACT = "contract";
 	public static final String QUALITY_SCORE = "qualityScore";
+	public static final String CONTRACT_NAME = "contractName";
 	public static final String ID = "id";
 
 }

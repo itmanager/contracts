@@ -35,7 +35,8 @@ public class BudgetAllocationDTO implements Serializable {
     private ContractDTO contract;
 
     private ContractPhaseDTO contractPhase;
-
+    private String  contractName;
+    private String  contractPhaseName;
     public Long getId() {
         return id;
     }
@@ -106,6 +107,22 @@ public class BudgetAllocationDTO implements Serializable {
 
     public void setContractPhase(ContractPhaseDTO contractPhase) {
         this.contractPhase = contractPhase;
+    }
+
+    public String getContractName() {
+        return contractName;
+    }
+
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
+    }
+
+    public String getContractPhaseName() {
+        return contractPhaseName;
+    }
+
+    public void setContractPhaseName(String contractPhaseName) {
+        this.contractPhaseName = contractPhaseName;
     }
 
     @Override

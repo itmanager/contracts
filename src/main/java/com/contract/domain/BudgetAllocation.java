@@ -42,6 +42,12 @@ public class BudgetAllocation implements Serializable {
     @Column(name = "revision_number")
     private Integer revisionNumber;
 
+
+    @Column(name = "contractName")
+    private String  contractName;
+    @Column(name = "contractPhaseName")
+    private String  contractPhaseName;
+
     @DecimalMin(value = "0")
     @DecimalMax(value = "100")
     @Column(name = "quality_score")
@@ -146,6 +152,22 @@ public class BudgetAllocation implements Serializable {
 
     public void setQualityScore(Double qualityScore) {
         this.qualityScore = qualityScore;
+    }
+
+    public String getContractName() {
+        return contractName;
+    }
+
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
+    }
+
+    public String getContractPhaseName() {
+        return contractPhaseName;
+    }
+
+    public void setContractPhaseName(String contractPhaseName) {
+        this.contractPhaseName = contractPhaseName;
     }
 
     public Contract getContract() {
