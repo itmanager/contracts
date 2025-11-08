@@ -178,4 +178,31 @@ public class CostItemResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+
+    /**
+     * {@code GET  /cost-items} : get all the costItems.
+     *
+     * @param contractId the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of costItems in body.
+     */
+    @GetMapping("/contract/{contractId}")
+    public ResponseEntity<List<CostItemDTO>> getAllCostItemsByContractId(@PathVariable("contractId") Long contractId) {
+        LOG.debug("REST request to get a page of CostItems");
+        List<CostItemDTO> page = costItemService.findAllByContractId(contractId);
+        return ResponseEntity.ok().body(page);
+    }
+
+    /**
+     * {@code GET  /cost-items} : get all the costItems.
+     *
+     * @param contractPhaseId the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of costItems in body.
+     */
+    @GetMapping("/contractPhase/{contractPhaseId}")
+    public ResponseEntity<List<CostItemDTO>> getAllCostItemsByContracPhasetId(@PathVariable("contractPhaseId") Long contractPhaseId) {
+        LOG.debug("REST request to get a page of CostItems");
+        List<CostItemDTO> page = costItemService.findByContractPhaseId(contractPhaseId);
+        return ResponseEntity.ok().body(page);
+    }
 }

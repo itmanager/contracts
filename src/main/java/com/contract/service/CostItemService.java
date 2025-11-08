@@ -2,6 +2,7 @@ package com.contract.service;
 
 import com.contract.domain.CostItem;
 import com.contract.repository.CostItemRepository;
+import com.contract.service.dto.BudgetAllocationDTO;
 import com.contract.service.dto.CostItemDTO;
 import com.contract.service.mapper.CostItemMapper;
 import org.slf4j.Logger;
@@ -11,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link CostItem}.
@@ -109,5 +112,16 @@ public class CostItemService {
     public void delete(Long id) {
         LOG.debug("Request to delete CostItem : {}", id);
         costItemRepository.deleteById(id);
+    }
+
+
+    public List<CostItemDTO> findByContractPhaseId(Long contractPhaseId) {
+        return costItemRepository.findAllByContractPhaseId(contractPhaseId).
+                stream().map(costItemMapper::toDto).collect(Collectors.toList());
+    }
+
+    public List<CostItemDTO> findAllByContractId(Long contractId) {
+        return costItemRepository.findAllByContractId(contractId).
+                stream().map(costItemMapper::toDto).collect(Collectors.toList());
     }
 }

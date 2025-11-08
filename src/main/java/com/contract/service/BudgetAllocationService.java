@@ -117,4 +117,9 @@ public class BudgetAllocationService {
         return budgetAllocationRepository.findAllByContractPhaseId(contractPhaseId).
                 stream().map(budgetAllocationMapper::toDto).collect(Collectors.toList());
     }
+
+    public List<BudgetAllocationDTO> findAllByContractId(Long contractId) {
+        return budgetAllocationRepository.findAllByContractId(contractId).
+                stream().map(budgetAllocationMapper::toDto).collect(Collectors.toList());
+    }
 }

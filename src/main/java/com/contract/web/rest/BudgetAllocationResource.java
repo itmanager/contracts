@@ -3,6 +3,7 @@ package com.contract.web.rest;
 import com.contract.repository.BudgetAllocationRepository;
 import com.contract.service.BudgetAllocationService;
 import com.contract.service.dto.BudgetAllocationDTO;
+import com.contract.service.dto.CostItemDTO;
 import com.contract.web.rest.errors.BadRequestAlertException;
 import com.contract.web.utils.HeaderUtil;
 import com.contract.web.utils.PaginationUtil;
@@ -186,7 +187,7 @@ public class BudgetAllocationResource {
     /**
      * {@code GET  /budget-allocations} : get all the budgetAllocations.
      *
-     * @param pageable the pagination information.
+     * @param contractPhaseId the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of budgetAllocations in body.
      */
     @GetMapping("/contractPhase/{contractPhaseId}")
@@ -195,4 +196,18 @@ public class BudgetAllocationResource {
         List<BudgetAllocationDTO> page = budgetAllocationService.findByContractPhaseId(contractPhaseId);
         return ResponseEntity.ok().body(page);
     }
+
+    /**
+     * {@code GET  /cost-items} : get all the costItems.
+     *
+     * @param contractId the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of costItems in body.
+     */
+    @GetMapping("/contract/{contractId}")
+    public ResponseEntity<List<BudgetAllocationDTO>>  getAllBudgetAllocationsByContractId(@PathVariable("contractId") Long contractId) {
+        LOG.debug("REST request to get a page of CostItems");
+        List<BudgetAllocationDTO> page = budgetAllocationService.findAllByContractId(contractId);
+        return ResponseEntity.ok().body(page);
+    }
+
 }
