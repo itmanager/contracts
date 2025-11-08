@@ -65,6 +65,14 @@ public class CostItem implements Serializable {
     @Column(name = "cost_type", nullable = false)
     private CostType costType;
 
+    @NotNull
+    @Column(name = "contract_name", nullable = false)
+    private String contractName;
+
+    @NotNull
+    @Column(name = "cost_category_name", nullable = false)
+    private String costCategoryName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private CostCategory costCategory;
 
@@ -219,6 +227,22 @@ public class CostItem implements Serializable {
     public CostItem costCategory(CostCategory costCategory) {
         this.setCostCategory(costCategory);
         return this;
+    }
+
+    public String getContractName() {
+        return contractName;
+    }
+
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
+    }
+
+    public String getCostCategoryName() {
+        return costCategoryName;
+    }
+
+    public void setCostCategoryName(String costCategoryName) {
+        this.costCategoryName = costCategoryName;
     }
 
     public ContractPhase getContractPhase() {
