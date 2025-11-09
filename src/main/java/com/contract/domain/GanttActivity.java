@@ -47,8 +47,14 @@ public class GanttActivity implements Serializable {
 
     @DecimalMin(value = "0")
     @DecimalMax(value = "100")
-    @Column(name = "progress")
-    private Double progress;
+    @Column(name = "reportedProgress")
+
+    private Double reportedProgress;
+
+    @DecimalMin(value = "0")
+    @DecimalMax(value = "100")
+    @Column(name = "verifiedProgress")
+    private Double verifiedProgress;
 
     @Min(value = 1)
     @Max(value = 100)
@@ -160,17 +166,20 @@ public class GanttActivity implements Serializable {
         this.endDate = endDate;
     }
 
-    public Double getProgress() {
-        return this.progress;
+    public Double getReportedProgress() {
+        return reportedProgress;
     }
 
-    public GanttActivity progress(Double progress) {
-        this.setProgress(progress);
-        return this;
+    public void setReportedProgress(Double reportedProgress) {
+        this.reportedProgress = reportedProgress;
     }
 
-    public void setProgress(Double progress) {
-        this.progress = progress;
+    public Double getVerifiedProgress() {
+        return verifiedProgress;
+    }
+
+    public void setVerifiedProgress(Double verifiedProgress) {
+        this.verifiedProgress = verifiedProgress;
     }
 
     public Integer getWeight() {
@@ -331,7 +340,7 @@ public class GanttActivity implements Serializable {
             ", description='" + getDescription() + "'" +
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +
-            ", progress=" + getProgress() +
+            ", progress=" + getReportedProgress() +
             ", weight=" + getWeight() +
             ", dependencies='" + getDependencies() + "'" +
             ", isMilestone='" + getIsMilestone() + "'" +
