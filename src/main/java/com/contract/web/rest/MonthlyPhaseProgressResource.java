@@ -203,13 +203,12 @@ public class MonthlyPhaseProgressResource {
     }
 
     @PostMapping("/array")
-    public ResponseEntity.BodyBuilder createArrayMonthlyPhaseProgress(
-            @Valid @RequestBody MonthlyPhaseProgressDTO[] monthlyPhaseProgressDTOs
+    public void createArrayMonthlyPhaseProgress(
+            @RequestBody MonthlyPhaseProgressDTO[] monthlyPhaseProgressDTOs
     ) {
         LOG.debug("REST request to save MonthlyPhaseProgress : {}", monthlyPhaseProgressDTOs);
         for (int i = 0; i < monthlyPhaseProgressDTOs.length; i++) {
             monthlyPhaseProgressService.save(monthlyPhaseProgressDTOs[i]);
         }
-        return ResponseEntity.ok();
     }
 }
