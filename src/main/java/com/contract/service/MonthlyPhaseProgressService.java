@@ -113,4 +113,9 @@ public class MonthlyPhaseProgressService {
         LOG.debug("Request to delete MonthlyPhaseProgress : {}", id);
         monthlyPhaseProgressRepository.deleteById(id);
     }
+
+    public void deleteByContractId(Long contractId) {
+        LOG.debug("Request to delete MonthlyPhaseProgress : {}", contractId);
+        monthlyPhaseProgressRepository.deleteByContractId(contractId);
+    }
 }

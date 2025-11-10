@@ -185,4 +185,31 @@ public class MonthlyPhaseProgressResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+
+    /**
+     * {@code DELETE  /monthly-phase-progresses/:id} : delete the "id" monthlyPhaseProgress.
+     *
+     * @param contractId the id of the monthlyPhaseProgressDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/delete-contract/{contractId}")
+    public ResponseEntity<Void> deleteMonthlyPhaseProgressByContractId(@PathVariable("contractId") Long contractId) {
+        LOG.debug("REST request to delete MonthlyPhaseProgress : {}", contractId);
+        monthlyPhaseProgressService.deleteByContractId(contractId);
+        return ResponseEntity.noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, contractId.toString()))
+                .build();
+    }
+
+    @PostMapping("/array")
+    public ResponseEntity.BodyBuilder createArrayMonthlyPhaseProgress(
+            @Valid @RequestBody MonthlyPhaseProgressDTO[] monthlyPhaseProgressDTOs
+    ) {
+        LOG.debug("REST request to save MonthlyPhaseProgress : {}", monthlyPhaseProgressDTOs);
+        for (int i = 0; i < monthlyPhaseProgressDTOs.length; i++) {
+            monthlyPhaseProgressService.save(monthlyPhaseProgressDTOs[i]);
+        }
+        return ResponseEntity.ok();
+    }
 }

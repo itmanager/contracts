@@ -206,4 +206,17 @@ public class GanttActivityResource {
          List<GanttActivityDTO> page = ganttActivityService.findByContractId(contractId);
         return ResponseEntity.ok().body(page);
     }
+
+    /**
+     * {@code GET  /contract-phases/:id} : get the "id" contractPhase.
+     *
+     * @param contractPhaseId the id of the contractPhaseDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contractPhaseDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/contract-phase/{contractPhaseId}")
+    public ResponseEntity<List<GanttActivityDTO>> getByContractPhaseId(@PathVariable("contractPhaseId") Long contractPhaseId ) {
+        LOG.debug("REST request to get ContractPhase : {}", contractPhaseId);
+        List<GanttActivityDTO> page = ganttActivityService.findByContractPhaseId(contractPhaseId);
+        return ResponseEntity.ok().body(page);
+    }
 }

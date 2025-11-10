@@ -18,4 +18,5 @@ public interface GanttActivityRepository extends JpaRepository<GanttActivity, Lo
     List<GanttActivity> findByContractPhaseIn(Long[] aLong);
 
     List<GanttActivity> findByContractId(Long contractId);
+    List<GanttActivity> findByContractPhaseId(Long contractId);
 }

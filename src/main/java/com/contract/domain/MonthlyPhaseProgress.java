@@ -18,77 +18,66 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "monthly_phase_progress")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class MonthlyPhaseProgress implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class MonthlyPhaseProgress {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "year", nullable = false)
+    @Column(name = "year")
     private Integer year;
 
-    @NotNull
-    @Column(name = "month", nullable = false)
+    @Column(name = "month")
     private Integer month;
 
-    @DecimalMin(value = "0")
-    @DecimalMax(value = "100")
+    @Column(name = "program_progress")
+    private Double programProgress;
+
     @Column(name = "reported_progress")
     private Double reportedProgress;
 
-    @DecimalMin(value = "0")
-    @DecimalMax(value = "100")
     @Column(name = "verified_progress")
     private Double verifiedProgress;
 
-    @Lob
-    @Column(name = "notes")
+    @Column(name = "actual_hours")
+    private Double actualHours;
+
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
 
     @Column(name = "submission_date")
-    private BigDecimal submissionDate;
+    private Long submissionDate;
 
     @Column(name = "approval_date")
-    private BigDecimal approvalDate;
+    private Long approvalDate;
 
-    @DecimalMin(value = "0")
-    @DecimalMax(value = "100")
-    @Column(name = "quality_score")
-    private Double qualityScore;
+    @Column(name = "contract_name")
+    private String contractName;
 
-    @Column(name = "labor_hours")
-    private Integer laborHours;
+    @Column(name = "contract_phase_name")
+    private String contractPhaseName;
 
-    @Column(name = "labor_cost", precision = 21, scale = 2)
-    private BigDecimal laborCost;
-
-    @Column(name = "equipment_cost", precision = 21, scale = 2)
-    private BigDecimal equipmentCost;
-
-    @Column(name = "outsourcing_cost", precision = 21, scale = 2)
-    private BigDecimal outsourcingCost;
-
-    @Column(name = "overhead_cost", precision = 21, scale = 2)
-    private BigDecimal overheadCost;
+    @Column(name = "gantt_name")
+    private String ganttName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"contract"}, allowSetters = true)
+    @JoinColumn(name = "milestone_id")
+    private GanttActivity milestone;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_id")
+    private Contract contract;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_phase_id")
     private ContractPhase contractPhase;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    // Constructors
+    public MonthlyPhaseProgress() {}
 
+    // Getters and Setters
     public Long getId() {
-        return this.id;
-    }
-
-    public MonthlyPhaseProgress id(Long id) {
-        this.setId(id);
-        return this;
+        return id;
     }
 
     public void setId(Long id) {
@@ -96,12 +85,7 @@ public class MonthlyPhaseProgress implements Serializable {
     }
 
     public Integer getYear() {
-        return this.year;
-    }
-
-    public MonthlyPhaseProgress year(Integer year) {
-        this.setYear(year);
-        return this;
+        return year;
     }
 
     public void setYear(Integer year) {
@@ -109,25 +93,23 @@ public class MonthlyPhaseProgress implements Serializable {
     }
 
     public Integer getMonth() {
-        return this.month;
-    }
-
-    public MonthlyPhaseProgress month(Integer month) {
-        this.setMonth(month);
-        return this;
+        return month;
     }
 
     public void setMonth(Integer month) {
         this.month = month;
     }
 
-    public Double getReportedProgress() {
-        return this.reportedProgress;
+    public Double getProgramProgress() {
+        return programProgress;
     }
 
-    public MonthlyPhaseProgress reportedProgress(Double reportedProgress) {
-        this.setReportedProgress(reportedProgress);
-        return this;
+    public void setProgramProgress(Double programProgress) {
+        this.programProgress = programProgress;
+    }
+
+    public Double getReportedProgress() {
+        return reportedProgress;
     }
 
     public void setReportedProgress(Double reportedProgress) {
@@ -135,185 +117,91 @@ public class MonthlyPhaseProgress implements Serializable {
     }
 
     public Double getVerifiedProgress() {
-        return this.verifiedProgress;
-    }
-
-    public MonthlyPhaseProgress verifiedProgress(Double verifiedProgress) {
-        this.setVerifiedProgress(verifiedProgress);
-        return this;
+        return verifiedProgress;
     }
 
     public void setVerifiedProgress(Double verifiedProgress) {
         this.verifiedProgress = verifiedProgress;
     }
 
-    public String getNotes() {
-        return this.notes;
+    public Double getActualHours() {
+        return actualHours;
     }
 
-    public MonthlyPhaseProgress notes(String notes) {
-        this.setNotes(notes);
-        return this;
+    public void setActualHours(Double actualHours) {
+        this.actualHours = actualHours;
+    }
+
+    public String getNotes() {
+        return notes;
     }
 
     public void setNotes(String notes) {
         this.notes = notes;
     }
 
-    public BigDecimal getSubmissionDate() {
-        return this.submissionDate;
+    public Long getSubmissionDate() {
+        return submissionDate;
     }
 
-    public MonthlyPhaseProgress submissionDate(BigDecimal submissionDate) {
-        this.setSubmissionDate(submissionDate);
-        return this;
-    }
-
-    public void setSubmissionDate(BigDecimal submissionDate) {
+    public void setSubmissionDate(Long submissionDate) {
         this.submissionDate = submissionDate;
     }
 
-    public BigDecimal getApprovalDate() {
-        return this.approvalDate;
+    public Long getApprovalDate() {
+        return approvalDate;
     }
 
-    public MonthlyPhaseProgress approvalDate(BigDecimal approvalDate) {
-        this.setApprovalDate(approvalDate);
-        return this;
-    }
-
-    public void setApprovalDate(BigDecimal approvalDate) {
+    public void setApprovalDate(Long approvalDate) {
         this.approvalDate = approvalDate;
     }
 
-    public Double getQualityScore() {
-        return this.qualityScore;
+    public String getContractName() {
+        return contractName;
     }
 
-    public MonthlyPhaseProgress qualityScore(Double qualityScore) {
-        this.setQualityScore(qualityScore);
-        return this;
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
     }
 
-    public void setQualityScore(Double qualityScore) {
-        this.qualityScore = qualityScore;
+    public String getContractPhaseName() {
+        return contractPhaseName;
     }
 
-    public Integer getLaborHours() {
-        return this.laborHours;
+    public void setContractPhaseName(String contractPhaseName) {
+        this.contractPhaseName = contractPhaseName;
     }
 
-    public MonthlyPhaseProgress laborHours(Integer laborHours) {
-        this.setLaborHours(laborHours);
-        return this;
+    public String getGanttName() {
+        return ganttName;
     }
 
-    public void setLaborHours(Integer laborHours) {
-        this.laborHours = laborHours;
+    public void setGanttName(String ganttName) {
+        this.ganttName = ganttName;
     }
 
-    public BigDecimal getLaborCost() {
-        return this.laborCost;
+    public GanttActivity getMilestone() {
+        return milestone;
     }
 
-    public MonthlyPhaseProgress laborCost(BigDecimal laborCost) {
-        this.setLaborCost(laborCost);
-        return this;
+    public void setMilestone(GanttActivity milestone) {
+        this.milestone = milestone;
     }
 
-    public void setLaborCost(BigDecimal laborCost) {
-        this.laborCost = laborCost;
+    public Contract getContract() {
+        return contract;
     }
 
-    public BigDecimal getEquipmentCost() {
-        return this.equipmentCost;
-    }
-
-    public MonthlyPhaseProgress equipmentCost(BigDecimal equipmentCost) {
-        this.setEquipmentCost(equipmentCost);
-        return this;
-    }
-
-    public void setEquipmentCost(BigDecimal equipmentCost) {
-        this.equipmentCost = equipmentCost;
-    }
-
-    public BigDecimal getOutsourcingCost() {
-        return this.outsourcingCost;
-    }
-
-    public MonthlyPhaseProgress outsourcingCost(BigDecimal outsourcingCost) {
-        this.setOutsourcingCost(outsourcingCost);
-        return this;
-    }
-
-    public void setOutsourcingCost(BigDecimal outsourcingCost) {
-        this.outsourcingCost = outsourcingCost;
-    }
-
-    public BigDecimal getOverheadCost() {
-        return this.overheadCost;
-    }
-
-    public MonthlyPhaseProgress overheadCost(BigDecimal overheadCost) {
-        this.setOverheadCost(overheadCost);
-        return this;
-    }
-
-    public void setOverheadCost(BigDecimal overheadCost) {
-        this.overheadCost = overheadCost;
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 
     public ContractPhase getContractPhase() {
-        return this.contractPhase;
+        return contractPhase;
     }
 
     public void setContractPhase(ContractPhase contractPhase) {
         this.contractPhase = contractPhase;
     }
 
-    public MonthlyPhaseProgress contractPhase(ContractPhase contractPhase) {
-        this.setContractPhase(contractPhase);
-        return this;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof MonthlyPhaseProgress)) {
-            return false;
-        }
-        return getId() != null && getId().equals(((MonthlyPhaseProgress) o).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "MonthlyPhaseProgress{" +
-            "id=" + getId() +
-            ", year=" + getYear() +
-            ", month=" + getMonth() +
-            ", reportedProgress=" + getReportedProgress() +
-            ", verifiedProgress=" + getVerifiedProgress() +
-            ", notes='" + getNotes() + "'" +
-            ", submissionDate='" + getSubmissionDate() + "'" +
-            ", approvalDate='" + getApprovalDate() + "'" +
-            ", qualityScore=" + getQualityScore() +
-            ", laborHours=" + getLaborHours() +
-            ", laborCost=" + getLaborCost() +
-            ", equipmentCost=" + getEquipmentCost() +
-            ", outsourcingCost=" + getOutsourcingCost() +
-            ", overheadCost=" + getOverheadCost() +
-            "}";
-    }
 }

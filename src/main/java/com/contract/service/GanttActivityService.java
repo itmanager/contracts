@@ -122,4 +122,9 @@ public class GanttActivityService {
         return ganttActivityRepository.findByContractId(contractId).stream().map(ganttActivityMapper::toDto).collect(Collectors.toList());
 
     }
+
+    public List<GanttActivityDTO> findByContractPhaseId(Long contractPhaseId) {
+        return ganttActivityRepository.findByContractPhaseId(contractPhaseId).stream().map(ganttActivityMapper::toDto).collect(Collectors.toList());
+
+    }
 }

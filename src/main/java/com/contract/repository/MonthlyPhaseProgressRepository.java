@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface MonthlyPhaseProgressRepository extends JpaRepository<MonthlyPhaseProgress, Long> {}
+public interface MonthlyPhaseProgressRepository extends JpaRepository<MonthlyPhaseProgress, Long> {
+
+    void deleteByContractId(Long contractId);
+}
