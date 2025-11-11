@@ -34,6 +34,10 @@ public class GanttActivity implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull
+    @Column(name = "code", nullable = false)
+    private String code;
+
     @Column(name = "description")
     private String description;
 
@@ -125,6 +129,14 @@ public class GanttActivity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getDescription() {

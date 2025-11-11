@@ -9,6 +9,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(GanttActivity.class)
 public abstract class GanttActivity_ {
 
+	public static volatile SingularAttribute<GanttActivity, String> code;
 	public static volatile SingularAttribute<GanttActivity, BigDecimal> endDate;
 	public static volatile SingularAttribute<GanttActivity, Boolean> isMilestone;
 	public static volatile SingularAttribute<GanttActivity, Contract> contract;
@@ -29,6 +30,7 @@ public abstract class GanttActivity_ {
 	public static volatile SingularAttribute<GanttActivity, BigDecimal> startDate;
 	public static volatile SingularAttribute<GanttActivity, Double> reportedProgress;
 
+	public static final String CODE = "code";
 	public static final String END_DATE = "endDate";
 	public static final String IS_MILESTONE = "isMilestone";
 	public static final String CONTRACT = "contract";
