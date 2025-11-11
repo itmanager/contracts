@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link MonthlyPhaseProgress}.
@@ -117,5 +119,9 @@ public class MonthlyPhaseProgressService {
     public void deleteByContractId(Long contractId) {
         LOG.debug("Request to delete MonthlyPhaseProgress : {}", contractId);
         monthlyPhaseProgressRepository.deleteByContractId(contractId);
+    }
+
+    public List<MonthlyPhaseProgressDTO> findAllByContractId(Long contractId) {
+        return monthlyPhaseProgressRepository.findAllByContractId(contractId).stream().map(monthlyPhaseProgressMapper::toDto).collect(Collectors.toList());
     }
 }

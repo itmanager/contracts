@@ -2,6 +2,7 @@ package com.contract.service;
 
 import com.contract.domain.WorkTimeEntry;
 import com.contract.repository.WorkTimeEntryRepository;
+import com.contract.service.dto.MonthlyPhaseProgressDTO;
 import com.contract.service.dto.WorkTimeEntryDTO;
 import com.contract.service.mapper.WorkTimeEntryMapper;
 import org.slf4j.Logger;
@@ -11,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link WorkTimeEntry}.
@@ -109,5 +112,10 @@ public class WorkTimeEntryService {
     public void delete(Long id) {
         LOG.debug("Request to delete WorkTimeEntry : {}", id);
         workTimeEntryRepository.deleteById(id);
+    }
+
+    public List<WorkTimeEntryDTO> findAllByContractId(Long contractId) {
+        return workTimeEntryRepository.findAllByContractId(contractId).stream().map(workTimeEntryMapper::toDto).collect(Collectors.toList());
+
     }
 }

@@ -1,6 +1,11 @@
 package com.contract.service.dto;
 
+import com.contract.domain.Contract;
+import com.contract.domain.ContractPhase;
+
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -9,12 +14,9 @@ import java.math.BigDecimal;
 
 import java.util.Objects;
 
-/**
- * A DTO for the {@link com.contract.domain.MonthlyPhaseProgress} entity.
- */
-//@Schema(description = "پیشرفت ماهانه فاز\nگزارش پیشرفت ماهانه هر فاز از پروژه")
-// DTO
-public class MonthlyPhaseProgressDTO {
+
+
+public class MonthlyPhaseProgressDTO implements Serializable {
 
     private Long id;
     private Integer year;
@@ -23,19 +25,28 @@ public class MonthlyPhaseProgressDTO {
     private Double reportedProgress;
     private Double verifiedProgress;
     private Double actualHours;
+    private Double estimatedHours;
+    private Double cost;
+    private Double budget;
+    private Double budgetAllocated;
     private String notes;
-    private Long submissionDate;
-    private Long approvalDate;
+    private BigDecimal submissionDate;
+    private BigDecimal approvalDate;
     private String contractName;
     private String contractPhaseName;
     private String ganttName;
-    private GanttActivityIdDTO milestone;
-    private ContractIdDTO contract;
-    private ContractPhaseIdDTO contractPhase;
+
+    // References by ID only
+    private ContractPhaseDTO contractPhase;
+
+    private ContractDTO contract;
 
     // Constructors
     public MonthlyPhaseProgressDTO() {}
 
+    public MonthlyPhaseProgressDTO(Long id) {
+        this.id = id;
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -94,6 +105,38 @@ public class MonthlyPhaseProgressDTO {
         this.actualHours = actualHours;
     }
 
+    public Double getEstimatedHours() {
+        return estimatedHours;
+    }
+
+    public void setEstimatedHours(Double estimatedHours) {
+        this.estimatedHours = estimatedHours;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
+
+    public Double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Double budget) {
+        this.budget = budget;
+    }
+
+    public Double getBudgetAllocated() {
+        return budgetAllocated;
+    }
+
+    public void setBudgetAllocated(Double budgetAllocated) {
+        this.budgetAllocated = budgetAllocated;
+    }
+
     public String getNotes() {
         return notes;
     }
@@ -102,19 +145,19 @@ public class MonthlyPhaseProgressDTO {
         this.notes = notes;
     }
 
-    public Long getSubmissionDate() {
+    public BigDecimal getSubmissionDate() {
         return submissionDate;
     }
 
-    public void setSubmissionDate(Long submissionDate) {
+    public void setSubmissionDate(BigDecimal submissionDate) {
         this.submissionDate = submissionDate;
     }
 
-    public Long getApprovalDate() {
+    public BigDecimal getApprovalDate() {
         return approvalDate;
     }
 
-    public void setApprovalDate(Long approvalDate) {
+    public void setApprovalDate(BigDecimal approvalDate) {
         this.approvalDate = approvalDate;
     }
 
@@ -142,64 +185,51 @@ public class MonthlyPhaseProgressDTO {
         this.ganttName = ganttName;
     }
 
-    public GanttActivityIdDTO getMilestone() {
-        return milestone;
-    }
-
-    public void setMilestone(GanttActivityIdDTO milestone) {
-        this.milestone = milestone;
-    }
-
-    public ContractIdDTO getContract() {
-        return contract;
-    }
-
-    public void setContract(ContractIdDTO contract) {
-        this.contract = contract;
-    }
-
-    public ContractPhaseIdDTO getContractPhase() {
+    public ContractPhaseDTO getContractPhase() {
         return contractPhase;
     }
 
-    public void setContractPhase(ContractPhaseIdDTO contractPhase) {
+    public void setContractPhase(ContractPhaseDTO contractPhase) {
         this.contractPhase = contractPhase;
     }
 
-    // Inner DTO classes for Pick types
-    public static class GanttActivityIdDTO {
-        private Long id;
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
+    public ContractDTO getContract() {
+        return contract;
     }
 
-    public static class ContractIdDTO {
-        private Long id;
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
+    public void setContract(ContractDTO contract) {
+        this.contract = contract;
     }
 
-    public static class ContractPhaseIdDTO {
-        private Long id;
+    // equals and hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MonthlyPhaseProgressDTO that = (MonthlyPhaseProgressDTO) o;
+        return Objects.equals(id, that.id);
+    }
 
-        public Long getId() {
-            return id;
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
-        public void setId(Long id) {
-            this.id = id;
-        }
+    // toString
+    @Override
+    public String toString() {
+        return "MonthlyPhaseProgressDTO{" +
+                "id=" + id +
+                ", year=" + year +
+                ", month=" + month +
+                ", programProgress=" + programProgress +
+                ", reportedProgress=" + reportedProgress +
+                ", verifiedProgress=" + verifiedProgress +
+                ", actualHours=" + actualHours +
+                ", estimatedHours=" + estimatedHours +
+                ", cost=" + cost +
+                ", budget=" + budget +
+                ", budgetAllocated=" + budgetAllocated +
+                '}';
     }
 }

@@ -11,14 +11,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 
-/**
- * پیشرفت ماهانه فاز
- * گزارش پیشرفت ماهانه هر فاز از پروژه
- */
 @Entity
 @Table(name = "monthly_phase_progress")
-@SuppressWarnings("common-java:DuplicatedBlocks")
-public class MonthlyPhaseProgress {
+public class MonthlyPhaseProgress implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,14 +39,26 @@ public class MonthlyPhaseProgress {
     @Column(name = "actual_hours")
     private Double actualHours;
 
-    @Column(name = "notes", columnDefinition = "TEXT")
+    @Column(name = "estimated_hours")
+    private Double estimatedHours;
+
+    @Column(name = "cost")
+    private Double cost;
+
+    @Column(name = "budget")
+    private Double budget;
+
+    @Column(name = "budget_allocated")
+    private Double budgetAllocated;
+
+    @Column(name = "notes", length = 1000)
     private String notes;
 
     @Column(name = "submission_date")
-    private Long submissionDate;
+    private BigDecimal submissionDate;
 
     @Column(name = "approval_date")
-    private Long approvalDate;
+    private BigDecimal approvalDate;
 
     @Column(name = "contract_name")
     private String contractName;
@@ -60,20 +69,21 @@ public class MonthlyPhaseProgress {
     @Column(name = "gantt_name")
     private String ganttName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "milestone_id")
-    private GanttActivity milestone;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_id")
-    private Contract contract;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contract_phase_id")
+    @JsonIgnoreProperties(value = {"contract-phase"}, allowSetters = true)
     private ContractPhase contractPhase;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"contracts"}, allowSetters = true)
+    private Contract contract;
 
     // Constructors
     public MonthlyPhaseProgress() {}
+
+    public MonthlyPhaseProgress(Long id) {
+        this.id = id;
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -132,6 +142,38 @@ public class MonthlyPhaseProgress {
         this.actualHours = actualHours;
     }
 
+    public Double getEstimatedHours() {
+        return estimatedHours;
+    }
+
+    public void setEstimatedHours(Double estimatedHours) {
+        this.estimatedHours = estimatedHours;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
+
+    public Double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Double budget) {
+        this.budget = budget;
+    }
+
+    public Double getBudgetAllocated() {
+        return budgetAllocated;
+    }
+
+    public void setBudgetAllocated(Double budgetAllocated) {
+        this.budgetAllocated = budgetAllocated;
+    }
+
     public String getNotes() {
         return notes;
     }
@@ -140,19 +182,19 @@ public class MonthlyPhaseProgress {
         this.notes = notes;
     }
 
-    public Long getSubmissionDate() {
+    public BigDecimal getSubmissionDate() {
         return submissionDate;
     }
 
-    public void setSubmissionDate(Long submissionDate) {
+    public void setSubmissionDate(BigDecimal submissionDate) {
         this.submissionDate = submissionDate;
     }
 
-    public Long getApprovalDate() {
+    public BigDecimal getApprovalDate() {
         return approvalDate;
     }
 
-    public void setApprovalDate(Long approvalDate) {
+    public void setApprovalDate(BigDecimal approvalDate) {
         this.approvalDate = approvalDate;
     }
 
@@ -180,14 +222,6 @@ public class MonthlyPhaseProgress {
         this.ganttName = ganttName;
     }
 
-    public GanttActivity getMilestone() {
-        return milestone;
-    }
-
-    public void setMilestone(GanttActivity milestone) {
-        this.milestone = milestone;
-    }
-
     public Contract getContract() {
         return contract;
     }
@@ -204,4 +238,34 @@ public class MonthlyPhaseProgress {
         this.contractPhase = contractPhase;
     }
 
+    // equals and hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MonthlyPhaseProgress)) return false;
+        return id != null && id.equals(((MonthlyPhaseProgress) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    // toString
+    @Override
+    public String toString() {
+        return "MonthlyPhaseProgress{" +
+                "id=" + id +
+                ", year=" + year +
+                ", month=" + month +
+                ", programProgress=" + programProgress +
+                ", reportedProgress=" + reportedProgress +
+                ", verifiedProgress=" + verifiedProgress +
+                ", actualHours=" + actualHours +
+                ", estimatedHours=" + estimatedHours +
+                ", cost=" + cost +
+                ", budget=" + budget +
+                ", budgetAllocated=" + budgetAllocated +
+                '}';
+    }
 }

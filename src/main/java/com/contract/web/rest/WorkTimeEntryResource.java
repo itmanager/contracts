@@ -2,6 +2,7 @@ package com.contract.web.rest;
 
 import com.contract.repository.WorkTimeEntryRepository;
 import com.contract.service.WorkTimeEntryService;
+import com.contract.service.dto.MonthlyPhaseProgressDTO;
 import com.contract.service.dto.WorkTimeEntryDTO;
 import com.contract.web.rest.errors.BadRequestAlertException;
 import com.contract.web.utils.HeaderUtil;
@@ -178,5 +179,18 @@ public class WorkTimeEntryResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code GET  /work-time-entries} : get all the work-time-entries.
+     *
+     * @param contractId the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of work-time-entries in body.
+     */
+    @GetMapping("/contract/{contractId}")
+    public ResponseEntity<List<WorkTimeEntryDTO>> getAllByContractId(@PathVariable("contractId") Long contractId) {
+        LOG.debug("REST request to get a page of work-time-entries");
+        List<WorkTimeEntryDTO> page = workTimeEntryService.findAllByContractId(contractId);
+        return ResponseEntity.ok().body(page);
     }
 }

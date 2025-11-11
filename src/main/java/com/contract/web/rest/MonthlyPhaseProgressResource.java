@@ -211,4 +211,17 @@ public class MonthlyPhaseProgressResource {
             monthlyPhaseProgressService.save(monthlyPhaseProgressDTOs[i]);
         }
     }
+
+    /**
+     * {@code GET  /monthly-phase-progresses} : get all the monthlyPhaseProgresses.
+     *
+     * @param contractId the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of monthlyPhaseProgresses in body.
+     */
+    @GetMapping("/contract/{contractId}")
+    public ResponseEntity<List<MonthlyPhaseProgressDTO>> getAllMonthlyPhaseProgresses(@PathVariable("contractId") Long contractId) {
+        LOG.debug("REST request to get a page of MonthlyPhaseProgresses");
+        List<MonthlyPhaseProgressDTO> page = monthlyPhaseProgressService.findAllByContractId(contractId);
+        return ResponseEntity.ok().body(page);
+    }
 }
