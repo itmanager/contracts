@@ -70,7 +70,7 @@ public class ContractDTO implements Serializable {
     private SupervisorDTO supervisor;
     private ThirdPartyDTO employer;
     private ThirdPartyDTO contractor;
-
+    private ThirdPartyDTO user;
     public Long getId() {
         return id;
     }
@@ -269,6 +269,15 @@ public class ContractDTO implements Serializable {
     public void setContractor(ThirdPartyDTO contractor) {
         this.contractor = contractor;
     }
+
+    public ThirdPartyDTO getUser() {
+        return user;
+    }
+
+    public void setUser(ThirdPartyDTO user) {
+        this.user = user;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.id);

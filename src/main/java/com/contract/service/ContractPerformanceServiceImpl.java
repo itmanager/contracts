@@ -26,6 +26,7 @@ public class ContractPerformanceServiceImpl  {
                     emptyToNull(queryModel.getPContractIds()),
                     emptyToNull(queryModel.getPEmployerIds()),
                     emptyToNull(queryModel.getPContractorIds()),
+                    emptyToNull(queryModel.getPUserIds()),
                     emptyToNull(queryModel.getPSupervisorIds()),
                     queryModel.getPFromDate(),
                     queryModel.getPToDate(),

@@ -29,6 +29,7 @@ public abstract class Contract_ {
 	public static volatile SingularAttribute<Contract, Long> id;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalEquipmentCost;
 	public static volatile SingularAttribute<Contract, BigDecimal> lastQualityAssessment;
+	public static volatile SingularAttribute<Contract, ThirdPartyEntity> user;
 	public static volatile SingularAttribute<Contract, BigDecimal> startDate;
 	public static volatile SingularAttribute<Contract, BigDecimal> totalLaborCost;
 	public static volatile SingularAttribute<Contract, Supervisor> supervisor;
@@ -53,6 +54,7 @@ public abstract class Contract_ {
 	public static final String ID = "id";
 	public static final String TOTAL_EQUIPMENT_COST = "totalEquipmentCost";
 	public static final String LAST_QUALITY_ASSESSMENT = "lastQualityAssessment";
+	public static final String USER = "user";
 	public static final String START_DATE = "startDate";
 	public static final String TOTAL_LABOR_COST = "totalLaborCost";
 	public static final String SUPERVISOR = "supervisor";

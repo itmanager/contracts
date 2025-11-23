@@ -15,6 +15,7 @@ public class QueryContractModel {
     private List<Long> pContractIds;
     private List<Long> pEmployerIds;
     private List<Long> pContractorIds;
+    private List<Long> pUserIds;
     private List<Long> pSupervisorIds;
     private Long pFromDate;
     private Long pToDate;

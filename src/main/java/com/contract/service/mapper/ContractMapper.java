@@ -16,6 +16,7 @@ public interface ContractMapper extends EntityMapper<ContractDTO, Contract> {
     @Mapping(target = "supervisor", source = "supervisor", qualifiedByName = "supervisorId")
     @Mapping(target = "employer", source = "employer", qualifiedByName = "employerId")
     @Mapping(target = "contractor", source = "contractor", qualifiedByName = "contractorId")
+    @Mapping(target = "user", source = "user", qualifiedByName = "userId")
     ContractDTO toDto(Contract s);
 
     @Named("supervisorId")
@@ -32,4 +33,9 @@ public interface ContractMapper extends EntityMapper<ContractDTO, Contract> {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     ThirdPartyDTO toDtoThirdParty2Id(ThirdPartyEntity contractor);
+
+    @Named("userId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    ThirdPartyDTO toDtoThirdParty3Id(ThirdPartyEntity user);
 }

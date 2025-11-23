@@ -7,13 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface ContractPerformanceRepository extends JpaRepository<ContractPerformanceModel, Long> {
 
     @Query(value = "SELECT * FROM get_contract_performance_report_combined(" +
-            ":p_contract_ids, :p_employer_ids, :p_contractor_ids, :p_supervisor_ids, " +
+            ":p_contract_ids, :p_employer_ids, :p_contractor_ids,:p_user_ids, :p_supervisor_ids, " +
             ":p_from_date, :p_to_date, :p_five_year_plan_ids, :p_annual_plan_ids, " +
             ":p_contract_type_ids, :p_out_source_types, " +
             ":p_date_from, :p_date_to, :p_date_now, " +
@@ -30,6 +31,7 @@ public interface ContractPerformanceRepository extends JpaRepository<ContractPer
             @Param("p_contract_ids") List<Long> pContractIds,
             @Param("p_employer_ids") List<Long> pEmployerIds,
             @Param("p_contractor_ids") List<Long> pContractorIds,
+            @Param("p_user_ids") List<Long> pUserIds,
             @Param("p_supervisor_ids") List<Long> pSupervisorIds,
             @Param("p_from_date") Long pFromDate,
             @Param("p_to_date") Long pToDate,
@@ -66,4 +68,5 @@ public interface ContractPerformanceRepository extends JpaRepository<ContractPer
             @Param("p_min_estimated_hours") BigDecimal pMinEstimatedHours,
             @Param("p_max_estimated_hours") BigDecimal pMaxEstimatedHours
     );
+
 }

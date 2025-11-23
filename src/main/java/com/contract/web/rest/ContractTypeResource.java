@@ -179,4 +179,16 @@ public class ContractTypeResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    /**
+     * {@code GET  /contracts} : get all the contracts.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contracts in body.
+     */
+    @GetMapping("/findAll")
+    public ResponseEntity<List<ContractTypeDTO>> findAllContracts() {
+        LOG.debug("REST request to get a page of Contracts");
+        List<ContractTypeDTO> page = contractTypeService.findAll();
+        return ResponseEntity.ok().body(page);
+    }
 }
