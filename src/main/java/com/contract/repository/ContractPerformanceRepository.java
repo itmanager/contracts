@@ -1,72 +1,125 @@
 package com.contract.repository;
 
-import com.contract.domain.ContractPerformanceModel;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.contract.service.dto.ContractPerformanceModelDTO;
+import com.contract.service.dto.QueryContractModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.util.Collection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public interface ContractPerformanceRepository extends JpaRepository<ContractPerformanceModel, Long> {
+public class ContractPerformanceRepository {
 
-    @Query(value = "SELECT * FROM get_contract_performance_report_combined(" +
-            ":p_contract_ids, :p_employer_ids, :p_contractor_ids,:p_user_ids, :p_supervisor_ids, " +
-            ":p_from_date, :p_to_date, :p_five_year_plan_ids, :p_annual_plan_ids, " +
-            ":p_contract_type_ids, :p_out_source_types, " +
-            ":p_date_from, :p_date_to, :p_date_now, " +
-            ":j_year_from, :j_month_from, :j_year_to, :j_month_to, " +
-            ":j_year_now, :j_month_now, " +
-            ":p_contract_statuses, :p_min_contract_price, :p_max_contract_price, " +
-            ":p_min_allocated_budget, :p_max_allocated_budget, " +
-            ":p_min_cost, :p_max_cost, :p_min_cpi, :p_max_cpi, " +
-            ":p_min_spi, :p_max_spi, :p_min_cv, :p_max_cv, " +
-            ":p_min_sv, :p_max_sv, :p_min_actual_hours, :p_max_actual_hours, " +
-            ":p_min_estimated_hours, :p_max_estimated_hours)",
-            nativeQuery = true)
-    List<ContractPerformanceModel> getContractPerformanceReport(
-            @Param("p_contract_ids") List<Long> pContractIds,
-            @Param("p_employer_ids") List<Long> pEmployerIds,
-            @Param("p_contractor_ids") List<Long> pContractorIds,
-            @Param("p_user_ids") List<Long> pUserIds,
-            @Param("p_supervisor_ids") List<Long> pSupervisorIds,
-            @Param("p_from_date") Long pFromDate,
-            @Param("p_to_date") Long pToDate,
-            @Param("p_five_year_plan_ids") List<Long> pFiveYearPlanIds,
-            @Param("p_annual_plan_ids") List<Long> pAnnualPlanIds,
-            @Param("p_contract_type_ids") List<Long> pContractTypeIds,
-            @Param("p_out_source_types") List<String> pOutSourceTypes,
-            @Param("p_date_from") Long pDateFrom,
-            @Param("p_date_to") Long pDateTo,
-            @Param("p_date_now") Long pDateNow,
-            @Param("j_year_from") Long jYearFrom,
-            @Param("j_month_from") Long jMonthFrom,
-            @Param("j_year_to") Long jYearTo,
-            @Param("j_month_to") Long jMonthTo,
-            @Param("j_year_now") Long jYearNow,
-            @Param("j_month_now") Long jMonthNow,
-            @Param("p_contract_statuses") List<String> pContractStatuses,
-            @Param("p_min_contract_price") BigDecimal pMinContractPrice,
-            @Param("p_max_contract_price") BigDecimal pMaxContractPrice,
-            @Param("p_min_allocated_budget") BigDecimal pMinAllocatedBudget,
-            @Param("p_max_allocated_budget") BigDecimal pMaxAllocatedBudget,
-            @Param("p_min_cost") BigDecimal pMinCost,
-            @Param("p_max_cost") BigDecimal pMaxCost,
-            @Param("p_min_cpi") BigDecimal pMinCpi,
-            @Param("p_max_cpi") BigDecimal pMaxCpi,
-            @Param("p_min_spi") BigDecimal pMinSpi,
-            @Param("p_max_spi") BigDecimal pMaxSpi,
-            @Param("p_min_cv") BigDecimal pMinCv,
-            @Param("p_max_cv") BigDecimal pMaxCv,
-            @Param("p_min_sv") BigDecimal pMinSv,
-            @Param("p_max_sv") BigDecimal pMaxSv,
-            @Param("p_min_actual_hours") BigDecimal pMinActualHours,
-            @Param("p_max_actual_hours") BigDecimal pMaxActualHours,
-            @Param("p_min_estimated_hours") BigDecimal pMinEstimatedHours,
-            @Param("p_max_estimated_hours") BigDecimal pMaxEstimatedHours
-    );
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
+    public List<ContractPerformanceModelDTO> getContractPerformanceReportCombined(
+            QueryContractModel criteria) {
+
+        String sql = "SELECT * FROM get_contract_performance_report_combined(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        return jdbcTemplate.query(sql, new Object[]{
+                criteria.getPContractIds(),
+                criteria.getPEmployerIds(),
+                criteria.getPContractorIds(),
+                criteria.getPUserIds(),
+                criteria.getPSupervisorIds(),
+                criteria.getPFromDate(),
+                criteria.getPToDate(),
+                criteria.getPFiveYearPlanIds(),
+                criteria.getPAnnualPlanIds(),
+                criteria.getPContractTypeIds(),
+                criteria.getPOutSourceTypes(),
+                criteria.getPDateFrom(),
+                criteria.getPDateTo(),
+                criteria.getPDateNow(),
+                criteria.getJYearFrom(),
+                criteria.getJMonthFrom(),
+                criteria.getJYearTo(),
+                criteria.getJMonthTo(),
+                criteria.getJYearNow(),
+                criteria.getJMonthNow(),
+                criteria.getPContractStatuses(),
+                criteria.getPMinContractPrice(),
+                criteria.getPMaxContractPrice(),
+                criteria.getPMinAllocatedBudget(),
+                criteria.getPMaxAllocatedBudget(),
+                criteria.getPMinCost(),
+                criteria.getPMaxCost(),
+                criteria.getPMinCpi(),
+                criteria.getPMaxCpi(),
+                criteria.getPMinSpi(),
+                criteria.getPMaxSpi(),
+                criteria.getPMinCv(),
+                criteria.getPMaxCv(),
+                criteria.getPMinSv(),
+                criteria.getPMaxSv(),
+                criteria.getPMinActualHours(),
+                criteria.getPMaxActualHours(),
+                criteria.getPMinEstimatedHours(),
+                criteria.getPMaxEstimatedHours()
+        }, new ContractPerformanceRowMapper());
+    }
+
+    private static class ContractPerformanceRowMapper implements RowMapper<ContractPerformanceModelDTO> {
+        @Override
+        public ContractPerformanceModelDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ContractPerformanceModelDTO dto = new ContractPerformanceModelDTO();
+            // Basic contract information
+            dto.setContractId(rs.getBigDecimal("contract_id"));
+            dto.setContractTitle(rs.getString("contract_title"));
+            dto.setTotalBudget(rs.getLong("total_budget"));
+            dto.setStartDate(rs.getBigDecimal("start_date"));
+            dto.setEndDate(rs.getBigDecimal("end_date"));
+
+            // Budget and cost information
+            dto.setSumAllocatedBudget(rs.getBigDecimal("sum_allocated_budget"));
+            dto.setSumActualCost(rs.getBigDecimal("sum_actual_cost"));
+            dto.setTotalHoursWorked(rs.getBigDecimal("total_hours_worked"));
+
+            // Progress information
+            dto.setSumProgramProgress(rs.getBigDecimal("sum_program_progress"));
+            dto.setSumReportedProgress(rs.getBigDecimal("sum_reported_progress"));
+            dto.setSumVerifiedProgress(rs.getBigDecimal("sum_verified_progress"));
+
+            // Earned value management
+            dto.setSumEarnedValue(rs.getBigDecimal("sum_earned_value"));
+            dto.setSumPresentValue(rs.getBigDecimal("sum_present_value"));
+
+            // Performance indices
+            dto.setCpi(rs.getBigDecimal("cpi"));
+            dto.setSpi(rs.getBigDecimal("spi"));
+            dto.setCv(rs.getBigDecimal("cv"));
+            dto.setSv(rs.getBigDecimal("sv"));
+
+            // Detailed cost breakdown
+            dto.setLaborCost(rs.getBigDecimal("labor_cost"));
+            dto.setEquipmentCost(rs.getBigDecimal("equipment_cost"));
+            dto.setOutsourcingCost(rs.getBigDecimal("outsourcing_cost"));
+            dto.setOverheadCost(rs.getBigDecimal("overhead_cost"));
+
+            // Detailed budget breakdown
+            dto.setLaborBudget(rs.getBigDecimal("labor_budget"));
+            dto.setEquipmentBudget(rs.getBigDecimal("equipment_budget"));
+            dto.setOutsourcingBudget(rs.getBigDecimal("outsourcing_budget"));
+            dto.setOverheadBudget(rs.getBigDecimal("overhead_budget"));
+
+            // Time calculations
+            dto.setProjectMonthCount(rs.getBigDecimal("project_month_count"));
+            dto.setElapsedMonthCount(rs.getBigDecimal("elapsed_month_count"));
+
+            // Advanced project management calculations
+            dto.setBac(rs.getBigDecimal("bac"));
+            dto.setEac(rs.getBigDecimal("eac"));
+            dto.setEtc(rs.getBigDecimal("etc"));
+            dto.setVac(rs.getBigDecimal("vac"));
+            dto.setTcpi(rs.getBigDecimal("tcpi"));
+
+            return dto;
+        }
+    }
 }
