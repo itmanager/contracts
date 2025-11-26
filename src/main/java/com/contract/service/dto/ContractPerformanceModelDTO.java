@@ -43,13 +43,24 @@ public class ContractPerformanceModelDTO {
     private BigDecimal etc;
     private BigDecimal vac;
     private BigDecimal tcpi;
-    
+
+    private String annualPlanName;
+    private String fiveYearPlanName;
+    private String outSource;
+    private String contractTypeTitle;
+    private BigDecimal estimatedLaborHours;
+    private String contractorName;
+    private String employerName;
+    private String supervisorName;
+    private String userName;
+
+
     // متدهای کمکی برای تحلیل
     public String getPerformanceStatus() {
         if (cpi == null || spi == null) {
             return "نامشخص";
         }
-        
+
         if (cpi.compareTo(BigDecimal.ONE) >= 0 && spi.compareTo(BigDecimal.ONE) >= 0) {
             return "مطلوب";
         } else if (cpi.compareTo(new BigDecimal("0.9")) >= 0 && spi.compareTo(new BigDecimal("0.9")) >= 0) {
@@ -67,9 +78,9 @@ public class ContractPerformanceModelDTO {
     }
 
     public BigDecimal getProgressEfficiency() {
-        if (sumProgramProgress != null && 
-            sumProgramProgress.compareTo(BigDecimal.ZERO) > 0 &&
-            sumVerifiedProgress != null) {
+        if (sumProgramProgress != null &&
+                sumProgramProgress.compareTo(BigDecimal.ZERO) > 0 &&
+                sumVerifiedProgress != null) {
             return sumVerifiedProgress.divide(sumProgramProgress, 4, BigDecimal.ROUND_HALF_UP);
         }
         return BigDecimal.ZERO;

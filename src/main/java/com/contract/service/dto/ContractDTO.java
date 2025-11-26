@@ -1,9 +1,13 @@
 package com.contract.service.dto;
 
+import com.contract.domain.ThirdPartyEntity;
 import com.contract.domain.enumeration.ContractStatus;
 import com.contract.domain.enumeration.QualityStatus;
 
+import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -71,6 +75,17 @@ public class ContractDTO implements Serializable {
     private ThirdPartyDTO employer;
     private ThirdPartyDTO contractor;
     private ThirdPartyDTO user;
+
+    private String supervisorName;
+
+    private String employerName;
+
+    private String contractorName;
+
+    private String userName;
+
+
+
     public Long getId() {
         return id;
     }
@@ -237,6 +252,38 @@ public class ContractDTO implements Serializable {
 
     public void setSupervisor(SupervisorDTO supervisor) {
         this.supervisor = supervisor;
+    }
+
+    public String getSupervisorName() {
+        return supervisorName;
+    }
+
+    public void setSupervisorName(String supervisorName) {
+        this.supervisorName = supervisorName;
+    }
+
+    public String getEmployerName() {
+        return employerName;
+    }
+
+    public void setEmployerName(String employerName) {
+        this.employerName = employerName;
+    }
+
+    public String getContractorName() {
+        return contractorName;
+    }
+
+    public void setContractorName(String contractorName) {
+        this.contractorName = contractorName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     @Override

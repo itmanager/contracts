@@ -99,15 +99,23 @@ public class Contract implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Supervisor supervisor;
+    @Column(name = "supervisor_name")
+    private String supervisorName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ThirdPartyEntity employer;
+    @Column(name = "employer_name")
+    private String employerName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ThirdPartyEntity contractor;
+    @Column(name = "contractor_name")
+    private String contractorName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ThirdPartyEntity user;
+    @Column(name = "user_name")
+    private String userName;
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -452,5 +460,37 @@ public class Contract implements Serializable {
 
     public void setUser(ThirdPartyEntity user) {
         this.user = user;
+    }
+
+    public String getSupervisorName() {
+        return supervisorName;
+    }
+
+    public void setSupervisorName(String supervisorName) {
+        this.supervisorName = supervisorName;
+    }
+
+    public String getEmployerName() {
+        return employerName;
+    }
+
+    public void setEmployerName(String employerName) {
+        this.employerName = employerName;
+    }
+
+    public String getContractorName() {
+        return contractorName;
+    }
+
+    public void setContractorName(String contractorName) {
+        this.contractorName = contractorName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

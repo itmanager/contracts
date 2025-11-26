@@ -69,6 +69,7 @@ public class ContractPerformanceRepository {
         @Override
         public ContractPerformanceModelDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
             ContractPerformanceModelDTO dto = new ContractPerformanceModelDTO();
+
             // Basic contract information
             dto.setContractId(rs.getBigDecimal("contract_id"));
             dto.setContractTitle(rs.getString("contract_title"));
@@ -89,6 +90,17 @@ public class ContractPerformanceRepository {
             // Earned value management
             dto.setSumEarnedValue(rs.getBigDecimal("sum_earned_value"));
             dto.setSumPresentValue(rs.getBigDecimal("sum_present_value"));
+
+            // New fields
+            dto.setAnnualPlanName(rs.getString("annual_plan_name"));
+            dto.setFiveYearPlanName(rs.getString("five_year_plan_name"));
+            dto.setOutSource(rs.getString("out_source"));
+            dto.setContractTypeTitle(rs.getString("contract_type_title"));
+            dto.setEstimatedLaborHours(rs.getBigDecimal("estimated_labor_hours"));
+            dto.setContractorName(rs.getString("contractor_name"));
+            dto.setEmployerName(rs.getString("employer_name"));
+            dto.setSupervisorName(rs.getString("supervisor_name"));
+            dto.setUserName(rs.getString("user_name"));
 
             // Performance indices
             dto.setCpi(rs.getBigDecimal("cpi"));
