@@ -13,7 +13,7 @@ public class ContractPermissionDTO implements Serializable {
     private Long id;
     private ContractDTO contract;
     private String contractName;
-    
+    private String pagePath;
     // اطلاعات هدف (یکی از این چهار باید پر شود)
     private Long userId;
     private String userName;
@@ -133,5 +133,13 @@ public class ContractPermissionDTO implements Serializable {
 
     public void setCanEdit(boolean canEdit) {
         this.canEdit = canEdit;
+    }
+
+    public String getPagePath() {
+        return pagePath;
+    }
+
+    public void setPagePath(String pagePath) {
+        this.pagePath = pagePath;
     }
 }
