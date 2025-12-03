@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link Contract}.
@@ -109,5 +111,9 @@ public class ContractService {
     public void delete(Long id) {
         LOG.debug("Request to delete Contract : {}", id);
         contractRepository.deleteById(id);
+    }
+
+    public List<ContractDTO> findAllContractByName(String name) {
+        return contractRepository.findAllByTitleContains(name).stream().map(contractMapper::toDto).collect(Collectors.toList());
     }
 }

@@ -64,14 +64,14 @@ public class ContractResource {
         }
         contractDTO = contractService.save(contractDTO);
         return ResponseEntity.created(new URI("/api/contracts/" + contractDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, contractDTO.getId().toString()))
-            .body(contractDTO);
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, contractDTO.getId().toString()))
+                .body(contractDTO);
     }
 
     /**
      * {@code PUT  /contracts/:id} : Updates an existing contract.
      *
-     * @param id the id of the contractDTO to save.
+     * @param id          the id of the contractDTO to save.
      * @param contractDTO the contractDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated contractDTO,
      * or with status {@code 400 (Bad Request)} if the contractDTO is not valid,
@@ -80,8 +80,8 @@ public class ContractResource {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ContractDTO> updateContract(
-        @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody ContractDTO contractDTO
+            @PathVariable(value = "id", required = false) final Long id,
+            @Valid @RequestBody ContractDTO contractDTO
     ) throws URISyntaxException {
         LOG.debug("REST request to update Contract : {}, {}", id, contractDTO);
         if (contractDTO.getId() == null) {
@@ -97,14 +97,14 @@ public class ContractResource {
 
         contractDTO = contractService.update(contractDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, contractDTO.getId().toString()))
-            .body(contractDTO);
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, contractDTO.getId().toString()))
+                .body(contractDTO);
     }
 
     /**
      * {@code PATCH  /contracts/:id} : Partial updates given fields of an existing contract, field will ignore if it is null
      *
-     * @param id the id of the contractDTO to save.
+     * @param id          the id of the contractDTO to save.
      * @param contractDTO the contractDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated contractDTO,
      * or with status {@code 400 (Bad Request)} if the contractDTO is not valid,
@@ -113,10 +113,10 @@ public class ContractResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
 
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = {"application/json", "application/merge-patch+json"})
     public ResponseEntity<ContractDTO> partialUpdateContract(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody ContractDTO contractDTO
+            @PathVariable(value = "id", required = false) final Long id,
+            @NotNull @RequestBody ContractDTO contractDTO
     ) throws URISyntaxException {
         LOG.debug("REST request to partial update Contract partially : {}, {}", id, contractDTO);
         if (contractDTO.getId() == null) {
@@ -133,8 +133,8 @@ public class ContractResource {
         Optional<ContractDTO> result = contractService.partialUpdate(contractDTO);
 
         return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, contractDTO.getId().toString())
+                result,
+                HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, contractDTO.getId().toString())
         );
     }
 
@@ -176,7 +176,23 @@ public class ContractResource {
         LOG.debug("REST request to delete Contract : {}", id);
         contractService.delete(id);
         return ResponseEntity.noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
-            .build();
+                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+                .build();
     }
+
+
+    /**
+     * {@code DELETE  /contracts/:id} : delete the "id" contract.
+     *
+     * @param name the id of the contractDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @GetMapping("/findByName/{name}")
+    public ResponseEntity<List<ContractDTO>> findByName(@PathVariable("name") String name) {
+        LOG.debug("REST request to get a page of Contracts");
+        List<ContractDTO> page = contractService.findAllContractByName(name);
+        return ResponseEntity.ok().body(page);
+    }
+
+
 }
