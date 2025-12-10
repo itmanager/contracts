@@ -31,6 +31,14 @@ public class WorkTimeEntry implements Serializable {
     @Column(name = "entry_date", nullable = false)
     private BigDecimal entryDate;
 
+
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
+
+    @Column(name = "month", nullable = false)
+    private Integer month;
+
     @NotNull
     @Column(name = "hours_worked", nullable = false)
     private Integer hoursWorked;
@@ -106,6 +114,22 @@ public class WorkTimeEntry implements Serializable {
 
     public void setHoursWorked(Integer hoursWorked) {
         this.hoursWorked = hoursWorked;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public String getDescription() {

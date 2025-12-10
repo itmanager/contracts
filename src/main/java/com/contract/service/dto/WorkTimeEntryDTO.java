@@ -30,6 +30,10 @@ public class WorkTimeEntryDTO implements Serializable {
     @NotNull
     private Integer hoursWorked;
 
+    private Integer year;
+
+    private Integer month;
+
     private String description;
 
     private Boolean approved;
@@ -70,6 +74,22 @@ public class WorkTimeEntryDTO implements Serializable {
 
     public void setHoursWorked(Integer hoursWorked) {
         this.hoursWorked = hoursWorked;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public String getDescription() {
