@@ -20,6 +20,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_name, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as total_daily_hours " +
                     "    FROM work_time_entry w " +
                     "    GROUP BY w.employee_id, w.employee_name, w.year, w.month, " +
@@ -30,6 +31,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "    employee_name as employeeName, " +
                     "    year as year, " +
                     "    month as month, " +
+                    "    day as day, " +
                     "    total_daily_hours as totalDailyHours, " +
                     "    CASE " +
                     "        WHEN total_daily_hours > 8 THEN total_daily_hours - 8 " +
@@ -37,7 +39,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "    END as overtimeHours " +
                     "FROM daily_work " +
                     "WHERE total_daily_hours > 8 " +
-                    "ORDER BY year, month, employee_id",
+                    "ORDER BY year, month, day, employee_id",
             nativeQuery = true)
     List<EmployeeOvertimeDailyDTO> findDailyOvertime();
 
@@ -49,6 +51,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_name, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as total_daily_hours " +
                     "    FROM work_time_entry w " +
                     "    GROUP BY w.employee_id, w.employee_name, w.year, w.month, " +
@@ -76,18 +79,21 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.contract_id, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as project_daily_hours " +
                     "    FROM work_time_entry w " +
-                    "    GROUP BY w.employee_id, w.employee_name, w.contract_id, w.year, w.month " +
+                    "    GROUP BY w.employee_id, w.employee_name, w.contract_id, w.year, w.month, " +
+                    "             CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) " +
                     "), " +
                     "employee_daily_total AS ( " +
                     "    SELECT " +
                     "        employee_id, " +
                     "        year, " +
                     "        month, " +
+                    "        day, " +
                     "        SUM(project_daily_hours) as total_daily_hours " +
                     "    FROM daily_work " +
-                    "    GROUP BY employee_id, year, month " +
+                    "    GROUP BY employee_id, year, month, day " +
                     "), " +
                     "overtime_calc AS ( " +
                     "    SELECT " +
@@ -96,6 +102,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        dw.contract_id, " +
                     "        dw.year, " +
                     "        dw.month, " +
+                    "        dw.day, " +
                     "        dw.project_daily_hours, " +
                     "        edt.total_daily_hours, " +
                     "        CASE " +
@@ -108,6 +115,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        ON dw.employee_id = edt.employee_id " +
                     "        AND dw.year = edt.year " +
                     "        AND dw.month = edt.month " +
+                    "        AND dw.day = edt.day " +
                     "    WHERE edt.total_daily_hours > 8 " +
                     ") " +
                     "SELECT " +
@@ -116,7 +124,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "    contract_id as contractId, " +
                     "    year as year, " +
                     "    month as month, " +
-                    "    CONCAT(year, '-', LPAD(month::text, 2, '0')) as yearMonth, " +
+                    "    CONCAT(year, '-', LPAD(CAST(month AS VARCHAR), 2, '0')) as yearMonth, " +
                     "    SUM(project_overtime) as projectOvertime, " +
                     "    SUM(project_daily_hours) as projectTotalHours, " +
                     "    CASE " +
@@ -137,14 +145,17 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_id, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as total_daily_hours " +
                     "    FROM work_time_entry w " +
+                    "    WHERE w.month = 1 " + // فروردین
                     "    GROUP BY w.employee_id, w.year, w.month, " +
                     "             CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) " +
                     ") " +
                     "SELECT " +
                     "    year as year, " +
                     "    month as month, " +
+                    "    'فروردین' as monthName, " +
                     "    SUM(CASE WHEN total_daily_hours > 8 THEN total_daily_hours - 8 ELSE 0 END) as totalOvertime, " +
                     "    COUNT(DISTINCT employee_id) as employeeCount, " +
                     "    COUNT(*) as overtimeDaysCount " +
@@ -161,14 +172,17 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_id, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as total_daily_hours " +
                     "    FROM work_time_entry w " +
+                    "    WHERE w.month = 2 " + // اردیبهشت
                     "    GROUP BY w.employee_id, w.year, w.month, " +
                     "             CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) " +
                     ") " +
                     "SELECT " +
                     "    year as year, " +
                     "    month as month, " +
+                    "    'اردیبهشت' as monthName, " +
                     "    SUM(CASE WHEN total_daily_hours > 8 THEN total_daily_hours - 8 ELSE 0 END) as totalOvertime, " +
                     "    COUNT(DISTINCT employee_id) as employeeCount, " +
                     "    COUNT(*) as overtimeDaysCount " +
@@ -185,6 +199,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_id, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as total_daily_hours " +
                     "    FROM work_time_entry w " +
                     "    GROUP BY w.employee_id, w.year, w.month, " +
@@ -224,6 +239,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_id, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as project_daily_hours " +
                     "    FROM work_time_entry w " +
                     "    GROUP BY w.contract_id, w.employee_id, w.year, w.month, " +
@@ -234,9 +250,10 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        employee_id, " +
                     "        year, " +
                     "        month, " +
+                    "        day, " +
                     "        SUM(project_daily_hours) as total_daily_hours " +
                     "    FROM daily_work " +
-                    "    GROUP BY employee_id, year, month " +
+                    "    GROUP BY employee_id, year, month, day " +
                     "), " +
                     "overtime_calc AS ( " +
                     "    SELECT " +
@@ -244,6 +261,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        dw.employee_id, " +
                     "        dw.year, " +
                     "        dw.month, " +
+                    "        dw.day, " +
                     "        dw.project_daily_hours, " +
                     "        edt.total_daily_hours, " +
                     "        CASE " +
@@ -256,13 +274,14 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        ON dw.employee_id = edt.employee_id " +
                     "        AND dw.year = edt.year " +
                     "        AND dw.month = edt.month " +
+                    "        AND dw.day = edt.day " +
                     "    WHERE edt.total_daily_hours > 8 " +
                     ") " +
                     "SELECT " +
                     "    contract_id as contractId, " +
                     "    year as year, " +
                     "    month as month, " +
-                    "    CONCAT(year, '-', LPAD(month::text, 2, '0')) as yearMonth, " +
+                    "    CONCAT(year, '-', LPAD(CAST(month AS VARCHAR), 2, '0')) as yearMonth, " +
                     "    SUM(project_overtime) as totalOvertime, " +
                     "    COUNT(DISTINCT employee_id) as employeeCount " +
                     "FROM overtime_calc " +
@@ -271,16 +290,17 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
             nativeQuery = true)
     List<ProjectOvertimeMonthlyDTO> findMonthlyOvertimePerProject();
 
-    // ۸. اضافه کار ماهانه برای یک فرد خاص - اصلاح شده
+    // ۸. اضافه کار ماهانه برای یک فرد خاص
     @Query(value =
             "WITH daily_work AS ( " +
                     "    SELECT " +
                     "        w.employee_id, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as total_daily_hours " +
                     "    FROM work_time_entry w " +
-                    "    WHERE w.employee_id = ?1 " +
+                    "    WHERE w.employee_id = CAST(?1 AS BIGINT) " +
                     "    GROUP BY w.employee_id, w.year, w.month, " +
                     "             CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) " +
                     ") " +
@@ -295,7 +315,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
             nativeQuery = true)
     List<EmployeeOvertimeMonthlyDTO> findMonthlyOvertimeByEmployeeId(Long employeeId);
 
-    // ۹. اضافه کار ماهانه برای یک پروژه خاص - اصلاح شده
+    // ۹. اضافه کار ماهانه برای یک پروژه خاص
     @Query(value =
             "WITH daily_work AS ( " +
                     "    SELECT " +
@@ -303,9 +323,10 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_id, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as project_daily_hours " +
                     "    FROM work_time_entry w " +
-                    "    WHERE w.contract_id = ?1 " +
+                    "    WHERE w.contract_id = CAST(?1 AS BIGINT) " +
                     "    GROUP BY w.contract_id, w.employee_id, w.year, w.month, " +
                     "             CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) " +
                     "), " +
@@ -314,9 +335,10 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        employee_id, " +
                     "        year, " +
                     "        month, " +
+                    "        day, " +
                     "        SUM(project_daily_hours) as total_daily_hours " +
                     "    FROM daily_work " +
-                    "    GROUP BY employee_id, year, month " +
+                    "    GROUP BY employee_id, year, month, day " +
                     "), " +
                     "overtime_calc AS ( " +
                     "    SELECT " +
@@ -324,6 +346,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        dw.employee_id, " +
                     "        dw.year, " +
                     "        dw.month, " +
+                    "        dw.day, " +
                     "        dw.project_daily_hours, " +
                     "        edt.total_daily_hours, " +
                     "        CASE " +
@@ -336,13 +359,14 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        ON dw.employee_id = edt.employee_id " +
                     "        AND dw.year = edt.year " +
                     "        AND dw.month = edt.month " +
+                    "        AND dw.day = edt.day " +
                     "    WHERE edt.total_daily_hours > 8 " +
                     ") " +
                     "SELECT " +
                     "    contract_id as contractId, " +
                     "    year as year, " +
                     "    month as month, " +
-                    "    CONCAT(year, '-', LPAD(month::text, 2, '0')) as yearMonth, " +
+                    "    CONCAT(year, '-', LPAD(CAST(month AS VARCHAR), 2, '0')) as yearMonth, " +
                     "    SUM(project_overtime) as totalOvertime, " +
                     "    COUNT(DISTINCT employee_id) as employeeCount " +
                     "FROM overtime_calc " +
@@ -351,7 +375,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
             nativeQuery = true)
     List<ProjectOvertimeMonthlyDTO> findMonthlyOvertimeByContractId(Long contractId);
 
-    // ۱۰. ۱۰ فرد با بیشترین اضافه کار در یک ماه خاص - اصلاح شده
+    // ۱۰. ۱۰ فرد با بیشترین اضافه کار در یک ماه خاص
     @Query(value =
             "WITH daily_work AS ( " +
                     "    SELECT " +
@@ -359,9 +383,10 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
                     "        w.employee_name, " +
                     "        w.year, " +
                     "        w.month, " +
+                    "        CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) as day, " +
                     "        SUM(w.hours_worked) as total_daily_hours " +
                     "    FROM work_time_entry w " +
-                    "    WHERE w.year = ?1 AND w.month = ?2 " +
+                    "    WHERE w.year = CAST(?1 AS INTEGER) AND w.month = CAST(?2 AS INTEGER) " +
                     "    GROUP BY w.employee_id, w.employee_name, w.year, w.month, " +
                     "             CAST(SUBSTRING(CAST(w.entry_date AS VARCHAR), 7, 2) AS INTEGER) " +
                     ") " +
@@ -378,7 +403,7 @@ public interface WorkOverTimeReppository extends JpaRepository<WorkTimeEntry, Lo
             nativeQuery = true)
     List<EmployeeOvertimeMonthlyDTO> findTop10OvertimeEmployeesByMonth(Integer year, Integer month);
 
-    // کوئری‌های کمکی - اینها JPQL هستند و مشکلی ندارند
+    // کوئری‌های کمکی
     @Query("SELECT w FROM WorkTimeEntry w WHERE w.employeeId = :employeeId")
     List<WorkTimeEntry> findByEmployeeId(@Param("employeeId") Long employeeId);
 
