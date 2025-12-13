@@ -6,292 +6,953 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Long> {
 
-    // 1. ساعت حضور کارمند خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeMonthlyPresenceDTO(" +
-            "w.employeeId, w.employeeName, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(w.hoursWorked) AS double), " +
-            "COUNT(DISTINCT w.contract.id), COUNT(w)) " +
-            "FROM WorkTimeEntry w " +
-            "WHERE w.employeeId = :employeeId " +
-            "GROUP BY w.employeeId, w.employeeName, w.year, w.month " +
-            "ORDER BY w.year DESC, w.month DESC" , nativeQuery = true)
-    List<EmployeeMonthlyPresenceDTO> findMonthlyPresenceByEmployee(@Param("employeeId") Long employeeId);
-
-    // 2. ساعت اضافه کار یک کارمند خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeMonthlyOvertimeDTO(" +
-            "w.employeeId, w.employeeName, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +
-            "FROM WorkTimeEntry w " +
-            "WHERE w.employeeId = :employeeId " +
-            "GROUP BY w.employeeId, w.employeeName, w.year, w.month " +
-            "ORDER BY w.year DESC, w.month DESC", nativeQuery = true)
-    List<EmployeeMonthlyOvertimeDTO> findMonthlyOvertimeByEmployee(@Param("employeeId") Long employeeId);
-
-    // 3. مقایسه ساعت حضور یک کارمند خاص با میانگین حضورش در ماه
+    // 1. ساعت حضور کارمند خاص به تفکیک ماه - Native Query با Object[]
     @Query(value =
-            "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeComparisonDTO(" +
-                    "emp.employeeId, emp.employeeName, emp.year, emp.month, emp.yearMonth, " +
-                    "emp.totalHours, emp.avgHours, (emp.totalHours - emp.avgHours)) " +
-                    "FROM (" +
-                    "   SELECT w.employee_id as employeeId, w.employee_name as employeeName, " +
-                    "          w.year as year, w.month as month, " +
-                    "          CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')) as yearMonth, " +
-                    "          CAST(SUM(w.hours_worked) AS double) as totalHours, " +
-                    "          CAST(AVG(SUM(w.hours_worked)) OVER (PARTITION BY w.employee_id) AS double) as avgHours " +
-                    "   FROM work_time_entry w " +
-                    "   WHERE w.employee_id = :employeeId " +
-                    "   GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
-                    ") emp " +
-                    "ORDER BY emp.year DESC, emp.month DESC", nativeQuery = true)
-    List<EmployeeComparisonDTO> compareEmployeeWithOwnAverage(@Param("employeeId") Long employeeId);
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "    COUNT(DISTINCT w.contract_id) as contractCount, " +
+                    "    COUNT(*) as entryCount " +
+                    "FROM work_time_entry w " +
+                    "WHERE w.employee_id = ?1 " +
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findMonthlyPresenceByEmployeeNative(Long employeeId);
 
-    // 4. لیست اختلاف ساعت حضور با میانگین (برای همه کارمندان)
+    default List<EmployeeMonthlyPresenceDTO> findMonthlyPresenceByEmployee(Long employeeId) {
+        List<Object[]> results = findMonthlyPresenceByEmployeeNative(employeeId);
+        return results.stream().map(row -> new EmployeeMonthlyPresenceDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0,
+                (int) ((Number) row[6]).longValue(),
+                (int) ((Number) row[7]).longValue()
+        )).collect(Collectors.toList());
+    }
+
+    // 2. ساعت اضافه کار یک کارمند خاص به تفکیک ماه - Native Query
     @Query(value =
-            "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeComparisonDTO(" +
-                    "emp.employeeId, emp.employeeName, emp.year, emp.month, emp.yearMonth, " +
-                    "emp.totalHours, emp.avgHours, (emp.totalHours - emp.avgHours)) " +
-                    "FROM(" +
-                    " SELECT w.employee_id as employeeId, w.employee_name as employeeName, " +
-                    "          w.year as year, w.month as month, " +
-                    "          CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')) as yearMonth, " +
-                    "          CAST(SUM(w.hours_worked) AS double) as totalHours, " +
-                    "          CAST(AVG(SUM(w.hours_worked)) OVER (PARTITION BY w.employee_id) AS double) as avgHours " +
-                    "   FROM work_time_entry w " +
-                    "   WHERE w.employee_id = :employeeId " +
-                    "   GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
-                    ") emp " +
-                    "ORDER BY emp.employeeId, emp.year DESC, emp.month DESC", nativeQuery = true)
-    List<EmployeeComparisonDTO> findAllEmployeesDifferenceFromAverage(@Param("employeeId") Long employeeId);
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "FROM work_time_entry w " +
+                    "WHERE w.employee_id = ?1 " +
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findMonthlyOvertimeByEmployeeNative(Long employeeId);
 
-    // 5. لیست اختلاف حضور یک فرد با 160 ساعت در ماه
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeDifferenceDTO(" +
-            "w.employeeId, w.employeeName, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(w.hoursWorked) AS double), " +
-            "CAST(:targetHours AS double), " +
-            "CAST(SUM(w.hoursWorked) - :targetHours AS double)) " +
-            "FROM WorkTimeEntry w " +
-            "WHERE w.employeeId = :employeeId " +
-            "GROUP BY w.employeeId, w.employeeName, w.year, w.month " +
-            "ORDER BY w.year DESC, w.month DESC",nativeQuery = true)
-    List<EmployeeDifferenceDTO> findDifferenceFromTargetHours(@Param("employeeId") Long employeeId,
-                                                              @Param("targetHours") Integer targetHours);
+    default List<EmployeeMonthlyOvertimeDTO> findMonthlyOvertimeByEmployee(Long employeeId) {
+        List<Object[]> results = findMonthlyOvertimeByEmployeeNative(employeeId);
+        return results.stream().map(row -> new EmployeeMonthlyOvertimeDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
 
-    // 6. لیست ساعت قراردادهایی که یک فرد در آنها کار کرده است برای هر فرد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeContractHoursDTO(" +
-            "w.employeeId, w.employeeName, c.id, c.contractNumber, c.title, " +
-            "w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(w.hoursWorked) AS double)) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE w.employeeId = :employeeId " +
-            "GROUP BY w.employeeId, w.employeeName, c.id, c.contractNumber, c.title, w.year, w.month " +
-            "ORDER BY c.contractNumber, w.year DESC, w.month DESC", nativeQuery = true)
-    List<EmployeeContractHoursDTO> findEmployeeContractsMonthly(@Param("employeeId") Long employeeId);
-
-    // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.FilteredPresenceDTO(" +
-            "w.employeeId, w.employeeName, c.id, c.contractNumber, " +
-            "w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(w.hoursWorked) AS double), " +
-            "c.employerName, c.contractorName, c.userName) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE (:employerId IS NULL OR c.employer.id = :employerId) " +
-            "AND (:contractorId IS NULL OR c.contractor.id = :contractorId) " +
-            "AND (:userId IS NULL OR c.user.id = :userId) " +
-            "AND (:contractId IS NULL OR c.id = :contractId) " +
-            "GROUP BY w.employeeId, w.employeeName, c.id, c.contractNumber, w.year, w.month, " +
-            "c.employerName, c.contractorName, c.userName " +
-            "ORDER BY w.year DESC, w.month DESC, w.employeeName", nativeQuery = true)
-    List<FilteredPresenceDTO> findAllEmployeesPresenceFiltered(
-            @Param("employerId") Long employerId,
-            @Param("contractorId") Long contractorId,
-            @Param("userId") Long userId,
-            @Param("contractId") Long contractId);
-
-    // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeMonthlyOvertimeDTO(" +
-            "w.employeeId, w.employeeName, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE (:employerId IS NULL OR c.employer.id = :employerId) " +
-            "AND (:contractorId IS NULL OR c.contractor.id = :contractorId) " +
-            "AND (:userId IS NULL OR c.user.id = :userId) " +
-            "AND (:contractId IS NULL OR c.id = :contractId) " +
-            "GROUP BY w.employeeId, w.employeeName, w.year, w.month " +
-            "ORDER BY w.year DESC, w.month DESC, w.employeeName", nativeQuery = true)
-    List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFiltered(
-            @Param("employerId") Long employerId,
-            @Param("contractorId") Long contractorId,
-            @Param("userId") Long userId,
-            @Param("contractId") Long contractId);
-
-    // 9. ساعت تاخیر برای هر کارمند به تفکیک ماه
+    // 3. مقایسه ساعت حضور یک کارمند خاص با میانگین حضورش در ماه - Native Query
     @Query(value =
-            "SELECT new com.contract.service.dto.analysisWorkDtos.MonthlyDelayDTO(" +
-                    "w.employeeId, w.employeeName, w.year, w.month, " +
-                    "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-                    "CAST(SUM(CASE " +
-                    "   WHEN w.timeStart > 800 THEN " +
-                    "       ((w.timeStart / 100 - 8) + (w.timeStart % 100) / 60.0) " +
-                    "   ELSE 0 " +
-                    "END) AS double)) " +
-                    "FROM WorkTimeEntry w " +
-                    "WHERE w.employeeId = :employeeId " +
-                    "GROUP BY w.employeeId, w.employeeName, w.year, w.month " +
-                    "ORDER BY w.year DESC, w.month DESC", nativeQuery = true)
-    List<MonthlyDelayDTO> findMonthlyDelayByEmployee(@Param("employeeId") Long employeeId);
+            "WITH emp_summary AS ( " +
+                    "    SELECT " +
+                    "        w.employee_id as employeeId, " +
+                    "        w.employee_name as employeeName, " +
+                    "        w.year as year, " +
+                    "        w.month as month, " +
+                    "        CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "        CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "        AVG(CAST(SUM(w.hours_worked) AS float)) OVER (PARTITION BY w.employee_id) as avgHours " +
+                    "    FROM work_time_entry w " +
+                    "    WHERE w.employee_id = ?1 " +
+                    "    GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    ") " +
+                    "SELECT " +
+                    "    employeeId, employeeName, year, month, yearMonth, totalHours, avgHours, " +
+                    "    (totalHours - avgHours) as difference " +
+                    "FROM emp_summary " +
+                    "ORDER BY year DESC, month DESC",
+            nativeQuery = true)
+    List<Object[]> compareEmployeeWithOwnAverageNative(Long employeeId);
 
-    // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    default List<EmployeeComparisonDTO> compareEmployeeWithOwnAverage(Long employeeId) {
+        List<Object[]> results = compareEmployeeWithOwnAverageNative(employeeId);
+        return results.stream().map(row -> new EmployeeComparisonDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0,
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 4. لیست اختلاف ساعت حضور با میانگین (برای همه کارمندان) - Native Query
     @Query(value =
-            "SELECT new com.contract.service.dto.analysisWorkDtos.MonthlyDelayDTO(" +
-                    "w.employeeId, w.employeeName, w.year, w.month, " +
-                    "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-                    "CAST(SUM(CASE " +
-                    "   WHEN w.timeStart > 800 THEN " +
-                    "       ((w.timeStart / 100 - 8) + (w.timeStart % 100) / 60.0) " +
-                    "   ELSE 0 " +
-                    "END) AS double)) " +
-                    "FROM WorkTimeEntry w " +
-                    "JOIN w.contract c " +
-                    "WHERE (:employerId IS NULL OR c.employer.id = :employerId) " +
-                    "AND (:contractorId IS NULL OR c.contractor.id = :contractorId) " +
-                    "AND (:userId IS NULL OR c.user.id = :userId) " +
-                    "AND (:contractId IS NULL OR c.id = :contractId) " +
-                    "GROUP BY w.employeeId, w.employeeName, w.year, w.month " +
-                    "ORDER BY w.year DESC, w.month DESC, w.employeeName", nativeQuery = true)
-    List<MonthlyDelayDTO> findAllEmployeesDelayFiltered(
-            @Param("employerId") Long employerId,
-            @Param("contractorId") Long contractorId,
-            @Param("userId") Long userId,
-            @Param("contractId") Long contractId);
+            "WITH emp_summary AS ( " +
+                    "    SELECT " +
+                    "        w.employee_id as employeeId, " +
+                    "        w.employee_name as employeeName, " +
+                    "        w.year as year, " +
+                    "        w.month as month, " +
+                    "        CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "        CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "        AVG(CAST(SUM(w.hours_worked) AS float)) OVER (PARTITION BY w.employee_id) as avgHours " +
+                    "    FROM work_time_entry w " +
+                    "    WHERE (?1 IS NULL OR w.employee_id = ?1) " +
+                    "    GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    ") " +
+                    "SELECT " +
+                    "    employeeId, employeeName, year, month, yearMonth, totalHours, avgHours, " +
+                    "    (totalHours - avgHours) as difference " +
+                    "FROM emp_summary " +
+                    "ORDER BY employeeId, year DESC, month DESC",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesDifferenceFromAverageNative(Long employeeId);
 
-    // 11. ساعت حضور قرارداد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyPresenceDTO(" +
-            "c.id, c.contractNumber, c.title, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(w.hoursWorked) AS double), " +
-            "COUNT(DISTINCT w.employeeId), COUNT(w)) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE c.id = :contractId " +
-            "GROUP BY c.id, c.contractNumber, c.title, w.year, w.month " +
-            "ORDER BY w.year DESC, w.month DESC", nativeQuery = true)
-    List<ContractMonthlyPresenceDTO> findMonthlyPresenceByContract(@Param("contractId") Long contractId);
+    default List<EmployeeComparisonDTO> findAllEmployeesDifferenceFromAverage(Long employeeId) {
+        List<Object[]> results = findAllEmployeesDifferenceFromAverageNative(employeeId);
+        return results.stream().map(row -> new EmployeeComparisonDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0,
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
 
-    // 12. ساعت اضافه کار یک قرارداد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyOvertimeDTO(" +
-            "c.id, c.contractNumber, c.title, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE c.id = :contractId " +
-            "GROUP BY c.id, c.contractNumber, c.title, w.year, w.month " +
-            "ORDER BY w.year DESC, w.month DESC", nativeQuery = true)
-    List<ContractMonthlyOvertimeDTO> findMonthlyOvertimeByContract(@Param("contractId") Long contractId);
-
-    // 13. مقایسه ساعت حضور یک قرارداد خاص با میانگین حضورش در ماه
+    // 5. لیست اختلاف حضور یک فرد با 160 ساعت در ماه - Native Query
     @Query(value =
-            "SELECT new com.contract.service.dto.analysisWorkDtos.ContractComparisonDTO(" +
-                    "cont.contractId, cont.contractNumber, cont.contractTitle, cont.year, cont.month, " +
-                    "cont.yearMonth, cont.totalHours, cont.avgHours, (cont.totalHours - cont.avgHours)) " +
-                    "FROM (" +
-                    "   SELECT c.id as contractId, c.contract_number as contractNumber, c.title as contractTitle, " +
-                    "          w.year as year, w.month as month, " +
-                    "          CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')) as yearMonth, " +
-                    "          CAST(SUM(w.hours_worked) AS double) as totalHours, " +
-                    "          CAST(AVG(SUM(w.hours_worked)) OVER (PARTITION BY c.id) AS double) as avgHours " +
-                    "   FROM work_time_entry w " +
-                    "   JOIN contract c ON w.contract_id = c.id " +
-                    "   WHERE c.id = :contractId " +
-                    "   GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
-                    ") cont " +
-                    "ORDER BY cont.year DESC, cont.month DESC", nativeQuery = true)
-    List<ContractComparisonDTO> compareContractWithOwnAverage(@Param("contractId") Long contractId);
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "    ?2 as targetHours, " +
+                    "    (CAST(SUM(w.hours_worked) AS float) - ?2) as difference " +
+                    "FROM work_time_entry w " +
+                    "WHERE w.employee_id = ?1 " +
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findDifferenceFromTargetHoursNative(Long employeeId, Integer targetHours);
 
-    // 14. لیست اختلاف ساعت حضور قرارداد خاص با میانگین (برای همه قراردادها)
+    default List<EmployeeDifferenceDTO> findDifferenceFromTargetHours(Long employeeId, Integer targetHours) {
+        List<Object[]> results = findDifferenceFromTargetHoursNative(employeeId, targetHours);
+        return results.stream().map(row -> new EmployeeDifferenceDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0,
+                row[6] != null ? ((Number) row[6]).doubleValue() : 160.0,
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 6. لیست ساعت قراردادهایی که یک فرد در آنها کار کرده است - Native Query
     @Query(value =
-            "SELECT new com.contract.service.dto.analysisWorkDtos.ContractComparisonDTO(" +
-                    "cont.contractId, cont.contractNumber, cont.contractTitle, cont.year, cont.month, " +
-                    "cont.yearMonth, cont.totalHours, cont.avgHours, (cont.totalHours - cont.avgHours)) " +
-                    "FROM (" +
-                    "   SELECT c.id as contractId, c.contract_number as contractNumber, c.title as contractTitle, " +
-                    "          w.year as year, w.month as month, " +
-                    "          CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')) as yearMonth, " +
-                    "          CAST(SUM(w.hours_worked) AS double) as totalHours, " +
-                    "          CAST(AVG(SUM(w.hours_worked)) OVER (PARTITION BY c.id) AS double) as avgHours " +
-                    "   FROM work_time_entry w " +
-                    "   JOIN contract c ON w.contract_id = c.id " +
-                    "   WHERE c.id = :contractId " +
-                    "   GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
-                    ") cont " +
-                    "ORDER BY cont.contractId, cont.year DESC, cont.month DESC", nativeQuery = true)
-    List<ContractComparisonDTO> findAllContractsDifferenceFromAverage(@Param("contractId") Long contractId);
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    c.title as contractTitle, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE w.employee_id = ?1 " +
+                    "GROUP BY w.employee_id, w.employee_name, c.id, c.contract_number, c.title, w.year, w.month " +
+                    "ORDER BY c.contract_number, w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findEmployeeContractsMonthlyNative(Long employeeId);
 
-    // 15. لیست ساعت افرادی که در یک قرارداد خاص کار کرده‌اند برای هر قرارداد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractEmployeesDTO(" +
-            "c.id, c.contractNumber, c.title, w.employeeId, w.employeeName, " +
-            "w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(w.hoursWorked) AS double)) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE c.id = :contractId " +
-            "GROUP BY c.id, c.contractNumber, c.title, w.employeeId, w.employeeName, w.year, w.month " +
-            "ORDER BY w.employeeName, w.year DESC, w.month DESC", nativeQuery = true)
-    List<ContractEmployeesDTO> findContractEmployeesMonthly(@Param("contractId") Long contractId);
+    default List<EmployeeContractHoursDTO> findEmployeeContractsMonthly(Long employeeId) {
+        List<Object[]> results = findEmployeeContractsMonthlyNative(employeeId);
+        return results.stream().map(row -> new EmployeeContractHoursDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).longValue(),
+                (String) row[3],
+                (String) row[4],
+                ((Number) row[5]).intValue(),
+                ((Number) row[6]).intValue(),
+                (String) row[7],
+                row[8] != null ? ((Number) row[8]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
 
-    // 16. لیست حضور همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyPresenceDTO(" +
-            "c.id, c.contractNumber, c.title, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(w.hoursWorked) AS double), " +
-            "COUNT(DISTINCT w.employeeId), COUNT(w)) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE (:employerId IS NULL OR c.employer.id = :employerId) " +
-            "AND (:contractorId IS NULL OR c.contractor.id = :contractorId) " +
-            "AND (:userId IS NULL OR c.user.id = :userId) " +
-            "AND (:contractId IS NULL OR c.id = :contractId) " +
-            "GROUP BY c.id, c.contractNumber, c.title, w.year, w.month " +
-            "ORDER BY c.contractNumber, w.year DESC, w.month DESC", nativeQuery = true)
-    List<ContractMonthlyPresenceDTO> findAllContractsPresenceFiltered(
-            @Param("employerId") Long employerId,
-            @Param("contractorId") Long contractorId,
-            @Param("userId") Long userId,
-            @Param("contractId") Long contractId);
+    // 7. لیست حضور همه کارمندان بر اساس فیلترها - کارفرما
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "    c.employer_name as employerName, " +
+                    "    c.contractor_name as contractorName, " +
+                    "    c.user_name as userName " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
 
-    // 17. ساعت اضافه کار همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری
-    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyOvertimeDTO(" +
-            "c.id, c.contractNumber, c.title, w.year, w.month, " +
-            "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
-            "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +
-            "FROM WorkTimeEntry w " +
-            "JOIN w.contract c " +
-            "WHERE (:employerId IS NULL OR c.employer.id = :employerId) " +
-            "AND (:contractorId IS NULL OR c.contractor.id = :contractorId) " +
-            "AND (:userId IS NULL OR c.user.id = :userId) " +
-            "GROUP BY c.id, c.contractNumber, c.title, w.year, w.month " +
-            "ORDER BY c.contractNumber, w.year DESC, w.month DESC", nativeQuery = true)
-    List<ContractMonthlyOvertimeDTO> findAllContractsOvertimeFiltered(
-            @Param("employerId") Long employerId,
-            @Param("contractorId") Long contractorId,
-            @Param("userId") Long userId);
+                    "GROUP BY w.employee_id, w.employee_name, c.id, c.contract_number, w.year, w.month, " +
+                    "   c.employer_name, c.contractor_name, c.user_name " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesPresenceFilteredNativeByEmployer(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
 
-    // کوئری‌های کمکی
+    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByEmployer(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByEmployer(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new FilteredPresenceDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).longValue(),
+                (String) row[3],
+                ((Number) row[4]).intValue(),
+                ((Number) row[5]).intValue(),
+                (String) row[6],
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0,
+                (String) row[8],
+                (String) row[9],
+                (String) row[10]
+        )).collect(Collectors.toList());
+    }
+
+    // 7. لیست حضور همه کارمندان بر اساس فیلترها -مجری
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "    c.employer_name as employerName, " +
+                    "    c.contractor_name as contractorName, " +
+                    "    c.user_name as userName " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.contract_id = ?1 THEN 1 ELSE 0 END " +
+                    "   END)" +
+
+                    "GROUP BY w.employee_id, w.employee_name, c.id, c.contract_number, w.year, w.month, " +
+                    "   c.employer_name, c.contractor_name, c.user_name " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesPresenceFilteredNativeByContractor(
+            Long contractorId);
+
+    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByContractor(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByContractor(
+                contractorId);
+        return results.stream().map(row -> new FilteredPresenceDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).longValue(),
+                (String) row[3],
+                ((Number) row[4]).intValue(),
+                ((Number) row[5]).intValue(),
+                (String) row[6],
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0,
+                (String) row[8],
+                (String) row[9],
+                (String) row[10]
+        )).collect(Collectors.toList());
+    }
+
+
+    // 7. لیست حضور همه کارمندان بر اساس فیلترها بر اساس بهره بردار
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "    c.employer_name as employerName, " +
+                    "    c.contractor_name as contractorName, " +
+                    "    c.user_name as userName " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+
+                    "   (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+                    "GROUP BY w.employee_id, w.employee_name, c.id, c.contract_number, w.year, w.month, " +
+                    "   c.employer_name, c.contractor_name, c.user_name " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesPresenceFilteredNativeByUser(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
+
+    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByUser(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByUser(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new FilteredPresenceDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).longValue(),
+                (String) row[3],
+                ((Number) row[4]).intValue(),
+                ((Number) row[5]).intValue(),
+                (String) row[6],
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0,
+                (String) row[8],
+                (String) row[9],
+                (String) row[10]
+        )).collect(Collectors.toList());
+    }
+
+    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها -کارفرما
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesOvertimeFilteredNativeByEmployer(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
+
+    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByEmployer(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByEmployer(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new EmployeeMonthlyOvertimeDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها -مجری
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+
+                    "   (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.contractor_id = ?1 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesOvertimeFilteredNativeByContractor(Long contractorId);
+
+    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByContractor(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByContractor(contractId);
+        return results.stream().map(row -> new EmployeeMonthlyOvertimeDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+
+    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها -کاربر
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+
+                    "   (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesOvertimeFilteredNativeByUser(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
+
+    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByUser(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByUser(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new EmployeeMonthlyOvertimeDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 9. ساعت تاخیر برای هر کارمند به تفکیک ماه - Native Query
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE " +
+                    "        WHEN w.time_start > 800 THEN " +
+                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        ELSE 0 " +
+                    "    END) AS float) as delayHours " +
+                    "FROM work_time_entry w " +
+                    "WHERE w.employee_id = ?1 " +
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findMonthlyDelayByEmployeeNative(Long employeeId);
+
+    default List<MonthlyDelayDTO> findMonthlyDelayByEmployee(Long employeeId) {
+        List<Object[]> results = findMonthlyDelayByEmployeeNative(employeeId);
+        return results.stream().map(row -> new MonthlyDelayDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها- کارفرما
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE " +
+                    "        WHEN w.time_start > 800 THEN " +
+                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        ELSE 0 " +
+                    "    END) AS float) as delayHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesDelayFilteredNativeByEmployer(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
+
+    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByEmployer(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesDelayFilteredNativeByEmployer(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new MonthlyDelayDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+
+    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها -مجری
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE " +
+                    "        WHEN w.time_start > 800 THEN " +
+                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        ELSE 0 " +
+                    "    END) AS float) as delayHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+                    "(CASE WHEN ?2 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.contractor_id = ?2 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesDelayFilteredNativeByContractor(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
+
+    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByContractor(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesDelayFilteredNativeByContractor(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new MonthlyDelayDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+
+    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها کاربر
+    @Query(value =
+            "SELECT " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE " +
+                    "        WHEN w.time_start > 800 THEN " +
+                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        ELSE 0 " +
+                    "    END) AS float) as delayHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+
+                    "   (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+                    "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC, w.employee_name",
+            nativeQuery = true)
+    List<Object[]> findAllEmployeesDelayFilteredNativeByUser(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
+
+    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByUser(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllEmployeesDelayFilteredNativeByUser(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new MonthlyDelayDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                ((Number) row[2]).intValue(),
+                ((Number) row[3]).intValue(),
+                (String) row[4],
+                row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+
+    // 11. ساعت حضور قرارداد خاص به تفکیک ماه - Native Query
+    @Query(value =
+            "SELECT " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    c.title as title, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "    COUNT(DISTINCT w.employee_id) as employeeCount, " +
+                    "    COUNT(*) as entryCount " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE c.id = ?1 " +
+                    "GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findMonthlyPresenceByContractNative(Long contractId);
+
+    default List<ContractMonthlyPresenceDTO> findMonthlyPresenceByContract(Long contractId) {
+        List<Object[]> results = findMonthlyPresenceByContractNative(contractId);
+        return results.stream().map(row -> new ContractMonthlyPresenceDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                (String) row[2],
+                ((Number) row[3]).intValue(),
+                ((Number) row[4]).intValue(),
+                (String) row[5],
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
+                ((Number) row[7]).doubleValue(),
+                ((Number) row[8]).doubleValue()
+        )).collect(Collectors.toList());
+    }
+
+    // 12. ساعت اضافه کار یک قرارداد خاص به تفکیک ماه - Native Query
+    @Query(value =
+            "SELECT " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    c.title as title, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE c.id = ?1 " +
+                    "GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
+                    "ORDER BY w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findMonthlyOvertimeByContractNative(Long contractId);
+
+    default List<ContractMonthlyOvertimeDTO> findMonthlyOvertimeByContract(Long contractId) {
+        List<Object[]> results = findMonthlyOvertimeByContractNative(contractId);
+        return results.stream().map(row -> new ContractMonthlyOvertimeDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                (String) row[2],
+                ((Number) row[3]).intValue(),
+                ((Number) row[4]).intValue(),
+                (String) row[5],
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 13. مقایسه ساعت حضور یک قرارداد خاص با میانگین حضورش در ماه - Native Query
+    @Query(value =
+            "WITH contract_summary AS ( " +
+                    "    SELECT " +
+                    "        c.id as contractId, " +
+                    "        c.contract_number as contractNumber, " +
+                    "        c.title as contractTitle, " +
+                    "        w.year as year, " +
+                    "        w.month as month, " +
+                    "        CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "        CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "        AVG(CAST(SUM(w.hours_worked) AS float)) OVER (PARTITION BY c.id) as avgHours " +
+                    "    FROM work_time_entry w " +
+                    "    JOIN contract c ON w.contract_id = c.id " +
+                    "    WHERE c.id = ?1 " +
+                    "    GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
+                    ") " +
+                    "SELECT " +
+                    "    contractId, contractNumber, contractTitle, year, month, yearMonth, totalHours, avgHours, " +
+                    "    (totalHours - avgHours) as difference " +
+                    "FROM contract_summary " +
+                    "ORDER BY year DESC, month DESC",
+            nativeQuery = true)
+    List<Object[]> compareContractWithOwnAverageNative(Long contractId);
+
+    default List<ContractComparisonDTO> compareContractWithOwnAverage(Long contractId) {
+        List<Object[]> results = compareContractWithOwnAverageNative(contractId);
+        return results.stream().map(row -> new ContractComparisonDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                (String) row[2],
+                ((Number) row[3]).intValue(),
+                ((Number) row[4]).intValue(),
+                (String) row[5],
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0,
+                row[8] != null ? ((Number) row[8]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 14. لیست اختلاف ساعت حضور قرارداد خاص با میانگین (برای همه قراردادها) - Native Query
+    @Query(value =
+            "WITH contract_summary AS ( " +
+                    "    SELECT " +
+                    "        c.id as contractId, " +
+                    "        c.contract_number as contractNumber, " +
+                    "        c.title as contractTitle, " +
+                    "        w.year as year, " +
+                    "        w.month as month, " +
+                    "        CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "        CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "        AVG(CAST(SUM(w.hours_worked) AS float)) OVER (PARTITION BY c.id) as avgHours " +
+                    "    FROM work_time_entry w " +
+                    "    JOIN contract c ON w.contract_id = c.id " +
+                    "    WHERE (?1 IS NULL OR c.id = ?1) " +
+                    "    GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
+                    ") " +
+                    "SELECT " +
+                    "    contractId, contractNumber, contractTitle, year, month, yearMonth, totalHours, avgHours, " +
+                    "    (totalHours - avgHours) as difference " +
+                    "FROM contract_summary " +
+                    "ORDER BY contractId, year DESC, month DESC",
+            nativeQuery = true)
+    List<Object[]> findAllContractsDifferenceFromAverageNative(Long contractId);
+
+    default List<ContractComparisonDTO> findAllContractsDifferenceFromAverage(Long contractId) {
+        List<Object[]> results = findAllContractsDifferenceFromAverageNative(contractId);
+        return results.stream().map(row -> new ContractComparisonDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                (String) row[2],
+                ((Number) row[3]).intValue(),
+                ((Number) row[4]).intValue(),
+                (String) row[5],
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0.0,
+                row[8] != null ? ((Number) row[8]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // 15. لیست ساعت افرادی که در یک قرارداد خاص کار کرده‌اند - Native Query
+    @Query(value =
+            "SELECT " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    c.title as title, " +
+                    "    w.employee_id as employeeId, " +
+                    "    w.employee_name as employeeName, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE c.id = CAST(?1 as bigint) " +
+                    "GROUP BY c.id, c.contract_number, c.title, w.employee_id, w.employee_name, w.year, w.month " +
+                    "ORDER BY w.employee_name, w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findContractEmployeesMonthlyNative(Long contractId);
+
+    default List<ContractEmployeesDTO> findContractEmployeesMonthly(Long contractId) {
+        List<Object[]> results = findContractEmployeesMonthlyNative(contractId);
+        return results.stream().map(row -> new ContractEmployeesDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                (String) row[2],
+                ((Number) row[3]).longValue(),
+                (String) row[4],
+                ((Number) row[5]).intValue(),
+                ((Number) row[6]).intValue(),
+                (String) row[7],
+                row[8] != null ? ((Number) row[8]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+/*    // 16. لیست حضور همه قراردادها بر اساس فیلترها - Native Query
+    @Query(value =
+            "SELECT " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    c.title as title, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(w.hours_worked) AS float) as totalHours, " +
+                    "    COUNT(DISTINCT w.employee_id) as employeeCount, " +
+                    "    COUNT(*) as entryCount " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+                    "  AND (CASE WHEN ?2 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.contractor_id = ?2 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+                    "  AND (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+
+                    "GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
+                    "ORDER BY c.contract_number, w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findAllContractsPresenceFilteredNative(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId);
+
+    default List<ContractMonthlyPresenceDTO> findAllContractsPresenceFiltered(
+            Long employerId,
+            Long contractorId,
+            Long userId,
+            Long contractId) {
+        List<Object[]> results = findAllContractsPresenceFilteredNative(
+                employerId, contractorId, userId, contractId);
+        return results.stream().map(row -> new ContractMonthlyPresenceDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                (String) row[2],
+                ((Number) row[3]).intValue(),
+                ((Number) row[4]).intValue(),
+                (String) row[5],
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
+                ((Number) row[7]).doubleValue(),
+                ((Number) row[8]).doubleValue()
+        )).collect(Collectors.toList());
+    }*/
+
+    // 17. ساعت اضافه کار همه قراردادها بر اساس فیلترها - Native Query با CASE WHEN و پارامترهای positional
+    @Query(value =
+            "SELECT " +
+                    "    c.id as contractId, " +
+                    "    c.contract_number as contractNumber, " +
+                    "    c.title as title, " +
+                    "    w.year as year, " +
+                    "    w.month as month, " +
+                    "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
+                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "FROM work_time_entry w " +
+                    "JOIN contract c ON w.contract_id = c.id " +
+                    "WHERE " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+                    "  AND (CASE WHEN ?2 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.contractor_id = ?2 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+                    "  AND (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
+                    "GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
+                    "ORDER BY c.contract_number, w.year DESC, w.month DESC",
+            nativeQuery = true)
+    List<Object[]> findAllContractsOvertimeFilteredNative(
+            Long employerId,
+            Long contractorId,
+            Long userId);
+
+    default List<ContractMonthlyOvertimeDTO> findAllContractsOvertimeFiltered(
+            Long employerId,
+            Long contractorId,
+            Long userId) {
+        List<Object[]> results = findAllContractsOvertimeFilteredNative(
+                employerId, contractorId, userId);
+        return results.stream().map(row -> new ContractMonthlyOvertimeDTO(
+                ((Number) row[0]).longValue(),
+                (String) row[1],
+                (String) row[2],
+                ((Number) row[3]).intValue(),
+                ((Number) row[4]).intValue(),
+                (String) row[5],
+                row[6] != null ? ((Number) row[6]).doubleValue() : 0.0
+        )).collect(Collectors.toList());
+    }
+
+    // کوئری‌های کمکی (بدون تغییر)
     @Query("SELECT w FROM WorkTimeEntry w WHERE w.employeeId = :employeeId AND w.contract.id = :contractId")
     List<WorkTimeEntry> findByEmployeeIdAndContractId(@Param("employeeId") Long employeeId,
                                                       @Param("contractId") Long contractId);
