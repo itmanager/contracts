@@ -3,14 +3,14 @@ package com.contract.service.dto.analysisWorkDtos;
 import java.io.Serializable;
 
 public class EmployeeComparisonDTO implements Serializable {
-    private Long employeeId;
-    private String employeeName;
-    private Integer year;
-    private Integer month;
-    private String yearMonth;
-    private Double actualHours;
-    private Double averageHours;
-    private Double difference;
+    public Long employeeId;
+    public String employeeName;
+    public Integer year;
+    public Integer month;
+    public String yearMonth;
+    public Double actualHours;
+    public Double averageHours;
+    public Double difference;
 
     public EmployeeComparisonDTO(Long employeeId, String employeeName, Integer year, Integer month,
                                  String yearMonth, Double actualHours, Double averageHours, Double difference) {

@@ -3,17 +3,17 @@ package com.contract.service.dto.analysisWorkDtos;
 import java.io.Serializable;
 
 public class FilteredPresenceDTO implements Serializable {
-    private Long employeeId;
-    private String employeeName;
-    private Long contractId;
-    private String contractNumber;
-    private Integer year;
-    private Integer month;
-    private String yearMonth;
-    private Double totalHours;
-    private String employerName;
-    private String contractorName;
-    private String userName;
+    public Long employeeId;
+    public String employeeName;
+    public Long contractId;
+    public String contractNumber;
+    public Integer year;
+    public Integer month;
+    public String yearMonth;
+    public Double totalHours;
+    public String employerName;
+    public String contractorName;
+    public String userName;
 
     public FilteredPresenceDTO(Long employeeId, String employeeName, Long contractId, String contractNumber,
                                Integer year, Integer month, String yearMonth, Double totalHours,

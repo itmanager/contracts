@@ -3,19 +3,19 @@ package com.contract.service.dto.analysisWorkDtos;
 import java.io.Serializable;
 
 public class ContractMonthlyPresenceDTO implements Serializable {
-    private Long contractId;
-    private String contractNumber;
-    private String contractTitle;
-    private Integer year;
-    private Integer month;
-    private String yearMonth;
-    private Double totalHours;
-    private Integer employeeCount;
-    private Integer entryCount;
+    public Long contractId;
+    public String contractNumber;
+    public String contractTitle;
+    public Integer year;
+    public Integer month;
+    public String yearMonth;
+    public Double totalHours;
+    public Double employeeCount;
+    public Double entryCount;
 
     public ContractMonthlyPresenceDTO(Long contractId, String contractNumber, String contractTitle,
-                                      Integer year, Integer month, String yearMonth, Double totalHours,
-                                      Integer employeeCount, Integer entryCount) {
+                                     Integer year, Integer month, String yearMonth, Double totalHours,
+                                     Double employeeCount, Double entryCount) {
         this.contractId = contractId;
         this.contractNumber = contractNumber;
         this.contractTitle = contractTitle;
