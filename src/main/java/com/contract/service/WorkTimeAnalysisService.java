@@ -46,29 +46,71 @@ public class WorkTimeAnalysisService {
         return workTimeEntryRepository.findEmployeeContractsMonthly(employeeId);
     }
 
-    // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    public List<FilteredPresenceDTO> getAllEmployeesPresenceFiltered(
+    // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما –
+    public List<FilteredPresenceDTO> getAllEmployeesPresenceFilteredByEmployer(
             Long employerId, Long contractorId, Long userId, Long contractId) {
-        return workTimeEntryRepository.findAllEmployeesPresenceFiltered(
+        return workTimeEntryRepository.findAllEmployeesPresenceFilteredByEmployer(
+                employerId, contractorId, userId, contractId);
+    }
+    // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب  – مجری
+    public List<FilteredPresenceDTO> getAllEmployeesPresenceFilteredByContractor(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesPresenceFilteredByContractor(
                 employerId, contractorId, userId, contractId);
     }
 
-    // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    public List<EmployeeMonthlyOvertimeDTO> getAllEmployeesOvertimeFiltered(
+    // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب  بهره بردار
+    public List<FilteredPresenceDTO> getAllEmployeesPresenceFilteredByUser(
             Long employerId, Long contractorId, Long userId, Long contractId) {
-        return workTimeEntryRepository.findAllEmployeesOvertimeFiltered(
+        return workTimeEntryRepository.findAllEmployeesPresenceFilteredByUser(
                 employerId, contractorId, userId, contractId);
     }
+
+    // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما
+    public List<EmployeeMonthlyOvertimeDTO> getAllEmployeesOvertimeFilteredByEmployer(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesOvertimeFilteredByEmployer(
+                employerId, contractorId, userId, contractId);
+    }
+
+    // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب  – مجری
+    public List<EmployeeMonthlyOvertimeDTO> getAllEmployeesOvertimeFilteredByContractor(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesOvertimeFilteredByContractor(
+                employerId, contractorId, userId, contractId);
+    }
+
+    // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب   بهره بردار
+    public List<EmployeeMonthlyOvertimeDTO> getAllEmployeesOvertimeFilteredByUser(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesOvertimeFilteredByUser(
+                employerId, contractorId, userId, contractId);
+    }
+
 
     // 9. ساعت تاخیر برای هر کارمند به تفکیک ماه
     public List<MonthlyDelayDTO> getMonthlyDelayByEmployee(Long employeeId) {
         return workTimeEntryRepository.findMonthlyDelayByEmployee(employeeId);
     }
 
-    // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    public List<MonthlyDelayDTO> getAllEmployeesDelayFiltered(
+    // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما
+    public List<MonthlyDelayDTO> getAllEmployeesDelayFilteredByEmployer(
             Long employerId, Long contractorId, Long userId, Long contractId) {
-        return workTimeEntryRepository.findAllEmployeesDelayFiltered(
+        return workTimeEntryRepository.findAllEmployeesDelayFilteredByEmployer(
+                employerId, contractorId, userId, contractId);
+    }
+
+    // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب  مجری –
+    public List<MonthlyDelayDTO> getAllEmployeesDelayFilteredByContractor(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesDelayFilteredByContractor(
+                employerId, contractorId, userId, contractId);
+    }
+
+    // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب  بهره بردار قرارداد
+    public List<MonthlyDelayDTO> getAllEmployeesDelayFilteredByUser(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesDelayFilteredByUser(
                 employerId, contractorId, userId, contractId);
     }
 
@@ -97,12 +139,12 @@ public class WorkTimeAnalysisService {
         return workTimeEntryRepository.findContractEmployeesMonthly(contractId);
     }
 
-    // 16. لیست حضور همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+/*    // 16. لیست حضور همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
     public List<ContractMonthlyPresenceDTO> getAllContractsPresenceFiltered(
             Long employerId, Long contractorId, Long userId, Long contractId) {
         return workTimeEntryRepository.findAllContractsPresenceFiltered(
                 employerId, contractorId, userId, contractId);
-    }
+    }*/
 
     // 17. ساعت اضافه کار همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری
     public List<ContractMonthlyOvertimeDTO> getAllContractsOvertimeFiltered(

@@ -112,9 +112,21 @@ public class WorkTimeAnalysisResource {
             @RequestParam(required = false) Long contractId) {
         LOG.debug("REST request to get all employees presence filtered: employerId={}, contractorId={}, userId={}, contractId={}",
                 employerId, contractorId, userId, contractId);
-        List<FilteredPresenceDTO> result = workTimeAnalysisService.getAllEmployeesPresenceFiltered(
-                employerId, contractorId, userId, contractId);
-        return ResponseEntity.ok().body(result);
+
+        if (employerId != null) {
+            List<FilteredPresenceDTO> result = workTimeAnalysisService.getAllEmployeesPresenceFilteredByEmployer(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        } else if (contractorId != null) {
+            List<FilteredPresenceDTO> result = workTimeAnalysisService.getAllEmployeesPresenceFilteredByContractor(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        } else  if(userId != null){
+            List<FilteredPresenceDTO> result = workTimeAnalysisService.getAllEmployeesPresenceFilteredByUser(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        }
+        return null;
     }
 
     /**
@@ -128,9 +140,21 @@ public class WorkTimeAnalysisResource {
             @RequestParam(required = false) Long contractId) {
         LOG.debug("REST request to get all employees overtime filtered: employerId={}, contractorId={}, userId={}, contractId={}",
                 employerId, contractorId, userId, contractId);
-        List<EmployeeMonthlyOvertimeDTO> result = workTimeAnalysisService.getAllEmployeesOvertimeFiltered(
-                employerId, contractorId, userId, contractId);
-        return ResponseEntity.ok().body(result);
+
+        if (employerId != null) {
+            List<EmployeeMonthlyOvertimeDTO> result = workTimeAnalysisService.getAllEmployeesOvertimeFilteredByEmployer(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        } else if (contractorId != null) {
+            List<EmployeeMonthlyOvertimeDTO> result = workTimeAnalysisService.getAllEmployeesOvertimeFilteredByContractor(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        } else  if (userId != null){
+            List<EmployeeMonthlyOvertimeDTO> result = workTimeAnalysisService.getAllEmployeesOvertimeFilteredByUser(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        }
+        return null;
     }
 
     /**
@@ -155,9 +179,21 @@ public class WorkTimeAnalysisResource {
             @RequestParam(required = false) Long contractId) {
         LOG.debug("REST request to get all employees delay filtered: employerId={}, contractorId={}, userId={}, contractId={}",
                 employerId, contractorId, userId, contractId);
-        List<MonthlyDelayDTO> result = workTimeAnalysisService.getAllEmployeesDelayFiltered(
-                employerId, contractorId, userId, contractId);
-        return ResponseEntity.ok().body(result);
+
+        if (employerId != null) {
+            List<MonthlyDelayDTO> result = workTimeAnalysisService.getAllEmployeesDelayFilteredByEmployer(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        } else if (contractorId != null) {
+            List<MonthlyDelayDTO> result = workTimeAnalysisService.getAllEmployeesDelayFilteredByContractor(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        } else  if (userId != null){
+            List<MonthlyDelayDTO> result = workTimeAnalysisService.getAllEmployeesDelayFilteredByUser(
+                    employerId, contractorId, userId, contractId);
+            return ResponseEntity.ok().body(result);
+        }
+        return null;
     }
 
     /**
@@ -215,21 +251,6 @@ public class WorkTimeAnalysisResource {
         return ResponseEntity.ok().body(result);
     }
 
-    /**
-     * لیست حضور همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-     */
-    @GetMapping("/contract/presence-filtered")
-    public ResponseEntity<List<ContractMonthlyPresenceDTO>> getAllContractsPresenceFiltered(
-            @RequestParam(required = false) Long employerId,
-            @RequestParam(required = false) Long contractorId,
-            @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) Long contractId) {
-        LOG.debug("REST request to get all contracts presence filtered: employerId={}, contractorId={}, userId={}, contractId={}",
-                employerId, contractorId, userId, contractId);
-        List<ContractMonthlyPresenceDTO> result = workTimeAnalysisService.getAllContractsPresenceFiltered(
-                employerId, contractorId, userId, contractId);
-        return ResponseEntity.ok().body(result);
-    }
 
     /**
      * ساعت اضافه کار همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری
