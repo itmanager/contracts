@@ -1,7 +1,6 @@
 package com.contract.repository;
 
 import com.contract.domain.WorkTimeEntry;
-import com.contract.service.dto.*;
 import com.contract.service.dto.analysisWorkDtos.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +12,7 @@ import java.util.List;
 public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Long> {
 
     // 1. ساعت حضور کارمند خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.EmployeeMonthlyPresenceDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeMonthlyPresenceDTO(" +
             "w.employeeId, w.employeeName, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(w.hoursWorked) AS double), " +
@@ -25,7 +24,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
     List<EmployeeMonthlyPresenceDTO> findMonthlyPresenceByEmployee(@Param("employeeId") Long employeeId);
 
     // 2. ساعت اضافه کار یک کارمند خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.EmployeeMonthlyOvertimeDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeMonthlyOvertimeDTO(" +
             "w.employeeId, w.employeeName, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +
@@ -37,7 +36,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
 
     // 3. مقایسه ساعت حضور یک کارمند خاص با میانگین حضورش در ماه
     @Query(value =
-            "SELECT new com.contract.service.dto.EmployeeComparisonDTO(" +
+            "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeComparisonDTO(" +
                     "emp.employeeId, emp.employeeName, emp.year, emp.month, emp.yearMonth, " +
                     "emp.totalHours, emp.avgHours, (emp.totalHours - emp.avgHours)) " +
                     "FROM (" +
@@ -55,7 +54,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
 
     // 4. لیست اختلاف ساعت حضور با میانگین (برای همه کارمندان)
     @Query(value =
-            "SELECT new com.contract.service.dto.EmployeeComparisonDTO(" +
+            "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeComparisonDTO(" +
                     "emp.employeeId, emp.employeeName, emp.year, emp.month, emp.yearMonth, " +
                     "emp.totalHours, emp.avgHours, (emp.totalHours - emp.avgHours)) " +
                     "FROM(" +
@@ -72,7 +71,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
     List<EmployeeComparisonDTO> findAllEmployeesDifferenceFromAverage(@Param("employeeId") Long employeeId);
 
     // 5. لیست اختلاف حضور یک فرد با 160 ساعت در ماه
-    @Query(value = "SELECT new com.contract.service.dto.EmployeeDifferenceDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeDifferenceDTO(" +
             "w.employeeId, w.employeeName, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(w.hoursWorked) AS double), " +
@@ -86,7 +85,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                                                               @Param("targetHours") Integer targetHours);
 
     // 6. لیست ساعت قراردادهایی که یک فرد در آنها کار کرده است برای هر فرد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.EmployeeContractHoursDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeContractHoursDTO(" +
             "w.employeeId, w.employeeName, c.id, c.contractNumber, c.title, " +
             "w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
@@ -99,7 +98,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
     List<EmployeeContractHoursDTO> findEmployeeContractsMonthly(@Param("employeeId") Long employeeId);
 
     // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    @Query(value = "SELECT new com.contract.service.dto.FilteredPresenceDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.FilteredPresenceDTO(" +
             "w.employeeId, w.employeeName, c.id, c.contractNumber, " +
             "w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
@@ -121,7 +120,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
             @Param("contractId") Long contractId);
 
     // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    @Query(value = "SELECT new com.contract.service.dto.EmployeeMonthlyOvertimeDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.EmployeeMonthlyOvertimeDTO(" +
             "w.employeeId, w.employeeName, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +
@@ -141,7 +140,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
 
     // 9. ساعت تاخیر برای هر کارمند به تفکیک ماه
     @Query(value =
-            "SELECT new com.contract.service.dto.MonthlyDelayDTO(" +
+            "SELECT new com.contract.service.dto.analysisWorkDtos.MonthlyDelayDTO(" +
                     "w.employeeId, w.employeeName, w.year, w.month, " +
                     "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
                     "CAST(SUM(CASE " +
@@ -157,7 +156,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
 
     // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
     @Query(value =
-            "SELECT new com.contract.service.dto.MonthlyDelayDTO(" +
+            "SELECT new com.contract.service.dto.analysisWorkDtos.MonthlyDelayDTO(" +
                     "w.employeeId, w.employeeName, w.year, w.month, " +
                     "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
                     "CAST(SUM(CASE " +
@@ -180,7 +179,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
             @Param("contractId") Long contractId);
 
     // 11. ساعت حضور قرارداد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.ContractMonthlyPresenceDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyPresenceDTO(" +
             "c.id, c.contractNumber, c.title, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(w.hoursWorked) AS double), " +
@@ -193,7 +192,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
     List<ContractMonthlyPresenceDTO> findMonthlyPresenceByContract(@Param("contractId") Long contractId);
 
     // 12. ساعت اضافه کار یک قرارداد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.ContractMonthlyOvertimeDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyOvertimeDTO(" +
             "c.id, c.contractNumber, c.title, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +
@@ -206,7 +205,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
 
     // 13. مقایسه ساعت حضور یک قرارداد خاص با میانگین حضورش در ماه
     @Query(value =
-            "SELECT new com.contract.service.dto.ContractComparisonDTO(" +
+            "SELECT new com.contract.service.dto.analysisWorkDtos.ContractComparisonDTO(" +
                     "cont.contractId, cont.contractNumber, cont.contractTitle, cont.year, cont.month, " +
                     "cont.yearMonth, cont.totalHours, cont.avgHours, (cont.totalHours - cont.avgHours)) " +
                     "FROM (" +
@@ -225,7 +224,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
 
     // 14. لیست اختلاف ساعت حضور قرارداد خاص با میانگین (برای همه قراردادها)
     @Query(value =
-            "SELECT new com.contract.service.dto.ContractComparisonDTO(" +
+            "SELECT new com.contract.service.dto.analysisWorkDtos.ContractComparisonDTO(" +
                     "cont.contractId, cont.contractNumber, cont.contractTitle, cont.year, cont.month, " +
                     "cont.yearMonth, cont.totalHours, cont.avgHours, (cont.totalHours - cont.avgHours)) " +
                     "FROM (" +
@@ -243,7 +242,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
     List<ContractComparisonDTO> findAllContractsDifferenceFromAverage(@Param("contractId") Long contractId);
 
     // 15. لیست ساعت افرادی که در یک قرارداد خاص کار کرده‌اند برای هر قرارداد خاص به تفکیک ماه
-    @Query(value = "SELECT new com.contract.service.dto.ContractEmployeesDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractEmployeesDTO(" +
             "c.id, c.contractNumber, c.title, w.employeeId, w.employeeName, " +
             "w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
@@ -256,7 +255,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
     List<ContractEmployeesDTO> findContractEmployeesMonthly(@Param("contractId") Long contractId);
 
     // 16. لیست حضور همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
-    @Query(value = "SELECT new com.contract.service.dto.ContractMonthlyPresenceDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyPresenceDTO(" +
             "c.id, c.contractNumber, c.title, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(w.hoursWorked) AS double), " +
@@ -276,7 +275,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
             @Param("contractId") Long contractId);
 
     // 17. ساعت اضافه کار همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری
-    @Query(value = "SELECT new com.contract.service.dto.ContractMonthlyOvertimeDTO(" +
+    @Query(value = "SELECT new com.contract.service.dto.analysisWorkDtos.ContractMonthlyOvertimeDTO(" +
             "c.id, c.contractNumber, c.title, w.year, w.month, " +
             "CONCAT(CAST(w.year AS string), '-', LPAD(CAST(w.month AS string), 2, '0')), " +
             "CAST(SUM(CASE WHEN w.hoursWorked > 8 THEN w.hoursWorked - 8 ELSE 0 END) AS double)) " +

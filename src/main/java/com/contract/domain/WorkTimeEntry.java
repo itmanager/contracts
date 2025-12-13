@@ -32,7 +32,7 @@ public class WorkTimeEntry implements Serializable {
     private BigDecimal entryDate;
 
 
-    @Column(name = "time_start", nullable = false)
+    @Column(name = "time_start")
     private Integer timeStart;
 
     @Column(name = "year", nullable = false)
