@@ -30,6 +30,8 @@ public class WorkTimeEntryDTO implements Serializable {
     @NotNull
     private Integer hoursWorked;
 
+    private Integer timeStart;
+
     private Integer year;
 
     private Integer month;
@@ -98,6 +100,14 @@ public class WorkTimeEntryDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getTimeStart() {
+        return timeStart;
+    }
+
+    public void setTimeStart(Integer timeStart) {
+        this.timeStart = timeStart;
     }
 
     public Boolean getApproved() {

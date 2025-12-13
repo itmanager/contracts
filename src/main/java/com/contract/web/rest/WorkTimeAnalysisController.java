@@ -1,106 +1,200 @@
 package com.contract.web.rest;
 
-import com.contract.domain.enumeration.monthlyWorkPerformance.*;
 import com.contract.service.WorkTimeAnalysisService;
+import com.contract.service.dto.analysisWorkDtos.*;
+import com.contract.domain.WorkTimeEntry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/work-time-analysis")
-@RequiredArgsConstructor
 public class WorkTimeAnalysisController {
-    
-    private  final WorkTimeAnalysisService workTimeAnalysisService;
 
-    @GetMapping("/monthly/project")
-    public List<MonthlyProjectHoursDTO> getMonthlyHoursPerProject() {
-        return workTimeAnalysisService.getMonthlyHoursPerProject();
+    @Autowired
+    private final WorkTimeAnalysisService workTimeAnalysisService;
+
+    public WorkTimeAnalysisController(WorkTimeAnalysisService workTimeAnalysisService) {
+        this.workTimeAnalysisService = workTimeAnalysisService;
     }
-    
-    @GetMapping("/monthly/employee")
-    public List<MonthlyEmployeeHoursDTO> getMonthlyHoursPerEmployee() {
-        return workTimeAnalysisService.getMonthlyHoursPerEmployee();
+
+    // 1. ساعت حضور کارمند خاص به تفکیک ماه
+    @GetMapping("/employee/{employeeId}/monthly-presence")
+    public ResponseEntity<List<EmployeeMonthlyPresenceDTO>> getMonthlyPresenceByEmployee(
+            @PathVariable Long employeeId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getMonthlyPresenceByEmployee(employeeId));
     }
-    
-    @GetMapping("/monthly/employee-project")
-    public List<MonthlyEmployeeProjectHoursDTO> getMonthlyHoursPerEmployeePerProject() {
-        return workTimeAnalysisService.getMonthlyHoursPerEmployeePerProject();
+
+    // 2. ساعت اضافه کار یک کارمند خاص به تفکیک ماه
+    @GetMapping("/employee/{employeeId}/monthly-overtime")
+    public ResponseEntity<List<EmployeeMonthlyOvertimeDTO>> getMonthlyOvertimeByEmployee(
+            @PathVariable Long employeeId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getMonthlyOvertimeByEmployee(employeeId));
     }
-    
-    @GetMapping("/employee/{employeeId}/project/{contractId}/monthly")
-    public List<Map<String, Object>> getEmployeeProjectMonthlyHours(
+
+    // 3. مقایسه ساعت حضور یک کارمند خاص با میانگین حضورش در ماه
+    @GetMapping("/employee/{employeeId}/compare-with-average")
+    public ResponseEntity<List<EmployeeComparisonDTO>> compareEmployeeWithOwnAverage(
+            @PathVariable Long employeeId) {
+        return ResponseEntity.ok(workTimeAnalysisService.compareEmployeeWithOwnAverage(employeeId));
+    }
+
+    // 4. لیست اختلاف ساعت حضور با میانگین (برای همه کارمندان)
+    @GetMapping("/employee/all-difference-from-average")
+    public ResponseEntity<List<EmployeeComparisonDTO>> getAllEmployeesDifferenceFromAverage(
+            @RequestParam(required = false) Long employeeId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllEmployeesDifferenceFromAverage(employeeId));
+    }
+
+    // 5. لیست اختلاف حضور یک فرد با 160 ساعت در ماه
+    @GetMapping("/employee/{employeeId}/difference-from-target")
+    public ResponseEntity<List<EmployeeDifferenceDTO>> getDifferenceFromTargetHours(
             @PathVariable Long employeeId,
+            @RequestParam(defaultValue = "160") Integer targetHours) {
+        return ResponseEntity.ok(workTimeAnalysisService.getDifferenceFromTargetHours(employeeId, targetHours));
+    }
+
+    // 6. لیست ساعت قراردادهایی که یک فرد در آنها کار کرده است برای هر فرد خاص به تفکیک ماه
+    @GetMapping("/employee/{employeeId}/contracts-monthly")
+    public ResponseEntity<List<EmployeeContractHoursDTO>> getEmployeeContractsMonthly(
+            @PathVariable Long employeeId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getEmployeeContractsMonthly(employeeId));
+    }
+
+    // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    @GetMapping("/employee/presence-filtered")
+    public ResponseEntity<List<FilteredPresenceDTO>> getAllEmployeesPresenceFiltered(
+            @RequestParam(required = false) Long employerId,
+            @RequestParam(required = false) Long contractorId,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllEmployeesPresenceFiltered(
+                employerId, contractorId, userId, contractId));
+    }
+
+    // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    @GetMapping("/employee/overtime-filtered")
+    public ResponseEntity<List<EmployeeMonthlyOvertimeDTO>> getAllEmployeesOvertimeFiltered(
+            @RequestParam(required = false) Long employerId,
+            @RequestParam(required = false) Long contractorId,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllEmployeesOvertimeFiltered(
+                employerId, contractorId, userId, contractId));
+    }
+
+    // 9. ساعت تاخیر برای هر کارمند به تفکیک ماه
+    @GetMapping("/employee/{employeeId}/monthly-delay")
+    public ResponseEntity<List<MonthlyDelayDTO>> getMonthlyDelayByEmployee(
+            @PathVariable Long employeeId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getMonthlyDelayByEmployee(employeeId));
+    }
+
+    // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    @GetMapping("/employee/delay-filtered")
+    public ResponseEntity<List<MonthlyDelayDTO>> getAllEmployeesDelayFiltered(
+            @RequestParam(required = false) Long employerId,
+            @RequestParam(required = false) Long contractorId,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllEmployeesDelayFiltered(
+                employerId, contractorId, userId, contractId));
+    }
+
+    // 11. ساعت حضور قرارداد خاص به تفکیک ماه
+    @GetMapping("/contract/{contractId}/monthly-presence")
+    public ResponseEntity<List<ContractMonthlyPresenceDTO>> getMonthlyPresenceByContract(
             @PathVariable Long contractId) {
-        return workTimeAnalysisService.getMonthlyHoursForSpecificEmployeeAndProject(employeeId, contractId);
+        return ResponseEntity.ok(workTimeAnalysisService.getMonthlyPresenceByContract(contractId));
     }
-    
-    @GetMapping("/employee/{employeeId}/monthly")
-    public List<Map<String, Object>> getEmployeeMonthlyHours(@PathVariable Long employeeId) {
-        return workTimeAnalysisService.getMonthlyHoursForEmployeeAllProjects(employeeId);
+
+    // 12. ساعت اضافه کار یک قرارداد خاص به تفکیک ماه
+    @GetMapping("/contract/{contractId}/monthly-overtime")
+    public ResponseEntity<List<ContractMonthlyOvertimeDTO>> getMonthlyOvertimeByContract(
+            @PathVariable Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getMonthlyOvertimeByContract(contractId));
     }
-    
-    @GetMapping("/project/{contractId}/monthly/employees")
-    public List<Map<String, Object>> getProjectMonthlyHoursWithEmployees(@PathVariable Long contractId) {
-        return workTimeAnalysisService.getMonthlyHoursForProjectWithEmployees(contractId);
+
+    // 13. مقایسه ساعت حضور یک قرارداد خاص با میانگین حضورش در ماه
+    @GetMapping("/contract/{contractId}/compare-with-average")
+    public ResponseEntity<List<ContractComparisonDTO>> compareContractWithOwnAverage(
+            @PathVariable Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.compareContractWithOwnAverage(contractId));
     }
-    
-    @GetMapping("/monthly/all-employees")
-    public List<Map<String, Object>> getAllEmployeesMonthlyHours() {
-        return workTimeAnalysisService.getMonthlyHoursAllEmployees();
+
+    // 14. لیست اختلاف ساعت حضور قرارداد خاص با میانگین (برای همه قراردادها)
+    @GetMapping("/contract/all-difference-from-average")
+    public ResponseEntity<List<ContractComparisonDTO>> getAllContractsDifferenceFromAverage(
+            @RequestParam(required = false) Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllContractsDifferenceFromAverage(contractId));
     }
-    
-    @GetMapping("/monthly/all-projects")
-    public List<Map<String, Object>> getAllProjectsMonthlyHours() {
-        return workTimeAnalysisService.getMonthlyHoursAllProjects();
+
+    // 15. لیست ساعت افرادی که در یک قرارداد خاص کار کرده‌اند برای هر قرارداد خاص به تفکیک ماه
+    @GetMapping("/contract/{contractId}/employees-monthly")
+    public ResponseEntity<List<ContractEmployeesDTO>> getContractEmployeesMonthly(
+            @PathVariable Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getContractEmployeesMonthly(contractId));
     }
-    
-    @GetMapping("/monthly/average-all-employees")
-    public List<Map<String, Object>> getAverageMonthlyHoursAllEmployees() {
-        return workTimeAnalysisService.getAverageMonthlyHoursAllEmployees();
+
+    // 16. لیست حضور همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    @GetMapping("/contract/presence-filtered")
+    public ResponseEntity<List<ContractMonthlyPresenceDTO>> getAllContractsPresenceFiltered(
+            @RequestParam(required = false) Long employerId,
+            @RequestParam(required = false) Long contractorId,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllContractsPresenceFiltered(
+                employerId, contractorId, userId, contractId));
     }
-    
-    @GetMapping("/deviation/own-average")
-    public List<EmployeeDeviationDTO> getEmployeeDeviationFromOwnAverage() {
-        return workTimeAnalysisService.getEmployeeDeviationFromOwnAverage();
+
+    // 17. ساعت اضافه کار همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری
+    @GetMapping("/contract/overtime-filtered")
+    public ResponseEntity<List<ContractMonthlyOvertimeDTO>> getAllContractsOvertimeFiltered(
+            @RequestParam(required = false) Long employerId,
+            @RequestParam(required = false) Long contractorId,
+            @RequestParam(required = false) Long userId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllContractsOvertimeFiltered(
+                employerId, contractorId, userId));
     }
-    
-    @GetMapping("/deviation/from-160")
-    public List<Map<String, Object>> getEmployeeDeviationFrom160Hours() {
-        return workTimeAnalysisService.getEmployeeDeviationFrom160Hours();
+
+    // کوئری‌های کمکی
+    @GetMapping("/find-by-employee-and-contract")
+    public ResponseEntity<List<WorkTimeEntry>> getByEmployeeIdAndContractId(
+            @RequestParam Long employeeId,
+            @RequestParam Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getByEmployeeIdAndContractId(employeeId, contractId));
     }
-    
-    @GetMapping("/deviation/overall-average")
-    public List<Map<String, Object>> getEmployeeDeviationFromOverallAverage() {
-        return workTimeAnalysisService.getEmployeeDeviationFromOverallAverage();
+
+    @GetMapping("/find-by-employee/{employeeId}")
+    public ResponseEntity<List<WorkTimeEntry>> getByEmployeeId(@PathVariable Long employeeId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getByEmployeeId(employeeId));
     }
-    
-    @GetMapping("/categorize/employees")
-    public List<EmployeeCategoryDTO> categorizeEmployeesByWorkHours() {
-        return workTimeAnalysisService.categorizeEmployeesByWorkHours();
+
+    @GetMapping("/find-by-contract/{contractId}")
+    public ResponseEntity<List<WorkTimeEntry>> getByContractId(@PathVariable Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getByContractId(contractId));
     }
-    
-    @GetMapping("/months/farvardin-ordibehesht/projects")
-    public List<Map<String, Object>> getFarvardinOrdibeheshtHoursForProjects() {
-        return workTimeAnalysisService.getHoursForFarvardinOrdibeheshtAllProjects();
+
+    @GetMapping("/find-by-year-month")
+    public ResponseEntity<List<WorkTimeEntry>> getByYearAndMonth(
+            @RequestParam Integer year,
+            @RequestParam Integer month) {
+        return ResponseEntity.ok(workTimeAnalysisService.getByYearAndMonth(year, month));
     }
-    
-    @GetMapping("/months/farvardin-ordibehesht/employees")
-    public List<Map<String, Object>> getFarvardinOrdibeheshtHoursForEmployees() {
-        return workTimeAnalysisService.getHoursForFarvardinOrdibeheshtAllEmployees();
+
+    @GetMapping("/distinct-years")
+    public ResponseEntity<List<Integer>> getDistinctYears() {
+        return ResponseEntity.ok(workTimeAnalysisService.getDistinctYears());
     }
-    
-    @GetMapping("/monthly/comparison")
-    public List<MonthComparisonDTO> getMonthlyComparison() {
-        return workTimeAnalysisService.getMonthlyComparisonAllMonths();
+
+    @GetMapping("/distinct-months")
+    public ResponseEntity<List<Integer>> getDistinctMonths() {
+        return ResponseEntity.ok(workTimeAnalysisService.getDistinctMonths());
     }
-    
-    @GetMapping("/advanced-analysis")
-    public Map<String, Object> getAdvancedAnalysis(
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Integer month) {
-        return workTimeAnalysisService.getAdvancedAnalysis(year, month);
+
+    @GetMapping("/all-by-contract/{contractId}")
+    public ResponseEntity<List<WorkTimeEntry>> getAllByContractId(@PathVariable Long contractId) {
+        return ResponseEntity.ok(workTimeAnalysisService.getAllByContractId(contractId));
     }
 }

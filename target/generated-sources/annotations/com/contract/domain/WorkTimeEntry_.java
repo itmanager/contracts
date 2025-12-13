@@ -18,6 +18,7 @@ public abstract class WorkTimeEntry_ {
 	public static volatile SingularAttribute<WorkTimeEntry, String> description;
 	public static volatile SingularAttribute<WorkTimeEntry, Long> employeeId;
 	public static volatile SingularAttribute<WorkTimeEntry, Boolean> approved;
+	public static volatile SingularAttribute<WorkTimeEntry, Integer> timeStart;
 	public static volatile SingularAttribute<WorkTimeEntry, Integer> month;
 	public static volatile SingularAttribute<WorkTimeEntry, ContractPhase> contractPhase;
 	public static volatile SingularAttribute<WorkTimeEntry, GanttActivity> ganttActivity;
@@ -33,6 +34,7 @@ public abstract class WorkTimeEntry_ {
 	public static final String DESCRIPTION = "description";
 	public static final String EMPLOYEE_ID = "employeeId";
 	public static final String APPROVED = "approved";
+	public static final String TIME_START = "timeStart";
 	public static final String MONTH = "month";
 	public static final String CONTRACT_PHASE = "contractPhase";
 	public static final String GANTT_ACTIVITY = "ganttActivity";

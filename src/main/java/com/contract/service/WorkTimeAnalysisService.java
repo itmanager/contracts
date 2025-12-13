@@ -1,307 +1,142 @@
 package com.contract.service;
 
-import com.contract.domain.enumeration.monthlyWorkPerformance.*;
 import com.contract.repository.WorkTimeEntryRepository;
+import com.contract.service.dto.*;
+import com.contract.service.dto.analysisWorkDtos.*;
+import com.contract.domain.WorkTimeEntry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
-@Transactional
-@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class WorkTimeAnalysisService {
 
-    private final WorkTimeEntryRepository workTimeEntryRepository;
+    @Autowired
+    private WorkTimeEntryRepository workTimeEntryRepository;
 
-    // ۱. مجموع ساعات ماهانه برای هر پروژه
-    public List<MonthlyProjectHoursDTO> getMonthlyHoursPerProject() {
-        return workTimeEntryRepository.findMonthlyHoursPerProject();
+    // 1. ساعت حضور کارمند خاص به تفکیک ماه
+    public List<EmployeeMonthlyPresenceDTO> getMonthlyPresenceByEmployee(Long employeeId) {
+        return workTimeEntryRepository.findMonthlyPresenceByEmployee(employeeId);
     }
 
-    // ۲. مجموع ساعات ماهانه برای هر کارمند
-    public List<MonthlyEmployeeHoursDTO> getMonthlyHoursPerEmployee() {
-        return workTimeEntryRepository.findMonthlyHoursPerEmployee();
+    // 2. ساعت اضافه کار یک کارمند خاص به تفکیک ماه
+    public List<EmployeeMonthlyOvertimeDTO> getMonthlyOvertimeByEmployee(Long employeeId) {
+        return workTimeEntryRepository.findMonthlyOvertimeByEmployee(employeeId);
     }
 
-    // ۳. مجموع ساعات ماهانه برای هر کارمند در هر پروژه
-    public List<MonthlyEmployeeProjectHoursDTO> getMonthlyHoursPerEmployeePerProject() {
-        return workTimeEntryRepository.findMonthlyHoursPerEmployeePerProject();
+    // 3. مقایسه ساعت حضور یک کارمند خاص با میانگین حضورش در ماه
+    public List<EmployeeComparisonDTO> compareEmployeeWithOwnAverage(Long employeeId) {
+        return workTimeEntryRepository.compareEmployeeWithOwnAverage(employeeId);
     }
 
-    // ۴. ساعات کار ماهانه یک کارمند خاص در یک پروژه خاص
-    public List<Map<String, Object>> getMonthlyHoursForSpecificEmployeeAndProject(Long employeeId, Long contractId) {
-        List<Object[]> results = workTimeEntryRepository.findMonthlyHoursForSpecificEmployeeAndProject(employeeId, contractId);
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("year", objectsResult[0]);
-            map.put("month", objectsResult[1]);
-            map.put("yearMonth", objectsResult[2]);
-            map.put("totalHours", objectsResult[3]);
-            map.put("avgMonthlyHours", objectsResult[4]);
-            map.put("entryCount", objectsResult[5]);
-            mapList.add(map);
-        }
-        return mapList;
+    // 4. لیست اختلاف ساعت حضور با میانگین (برای همه کارمندان)
+    public List<EmployeeComparisonDTO> getAllEmployeesDifferenceFromAverage(Long employeeId) {
+        return workTimeEntryRepository.findAllEmployeesDifferenceFromAverage(employeeId);
     }
 
-    // ۵. ساعات کار ماهانه یک کارمند در تمام پروژه‌ها
-    public List<Map<String, Object>> getMonthlyHoursForEmployeeAllProjects(Long employeeId) {
-        List<Object[]> results = workTimeEntryRepository.findMonthlyHoursForEmployeeAllProjects(employeeId);
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("year", objectsResult[0]);
-            map.put("month", objectsResult[1]);
-            map.put("totalHours", objectsResult[2]);
-            map.put("projectCount", objectsResult[3]);
-            map.put("entryCount", objectsResult[4]);
-            mapList.add(map);
-        }
-        return mapList;
+    // 5. لیست اختلاف حضور یک فرد با 160 ساعت در ماه
+    public List<EmployeeDifferenceDTO> getDifferenceFromTargetHours(Long employeeId, Integer targetHours) {
+        return workTimeEntryRepository.findDifferenceFromTargetHours(employeeId, targetHours);
     }
 
-    // ۶. ساعات کار ماهانه یک پروژه با جزئیات کارمندان
-    public List<Map<String, Object>> getMonthlyHoursForProjectWithEmployees(Long contractId) {
-        List<Object[]> results = workTimeEntryRepository.findMonthlyHoursForProjectWithEmployees(contractId);
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("employeeId", objectsResult[0]);
-            map.put("employeeName", objectsResult[1]);
-            map.put("year", objectsResult[2]);
-            map.put("month", objectsResult[3]);
-            map.put("yearMonth", objectsResult[4]);
-            map.put("totalHours", objectsResult[5]);
-            map.put("entryCount", objectsResult[6]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 6. لیست ساعت قراردادهایی که یک فرد در آنها کار کرده است برای هر فرد خاص به تفکیک ماه
+    public List<EmployeeContractHoursDTO> getEmployeeContractsMonthly(Long employeeId) {
+        return workTimeEntryRepository.findEmployeeContractsMonthly(employeeId);
     }
 
-    // ۷. ساعت کار ماهانه همه افراد
-    public List<Map<String, Object>> getMonthlyHoursAllEmployees() {
-        List<Object[]> results = workTimeEntryRepository.findMonthlyHoursAllEmployees();
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("year", objectsResult[0]);
-            map.put("month", objectsResult[1]);
-            map.put("yearMonth", objectsResult[2]);
-            map.put("employeeCount", objectsResult[3]);
-            map.put("totalHours", objectsResult[4]);
-            map.put("avgHoursPerEmployee", objectsResult[5]);
-            map.put("totalEntries", objectsResult[6]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 7. لیست حضور همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    public List<FilteredPresenceDTO> getAllEmployeesPresenceFiltered(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesPresenceFiltered(
+                employerId, contractorId, userId, contractId);
     }
 
-    // ۸. ساعت کار ماهانه همه پروژه‌ها
-    public List<Map<String, Object>> getMonthlyHoursAllProjects() {
-        List<Object[]> results = workTimeEntryRepository.findMonthlyHoursAllProjects();
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("year", objectsResult[0]);
-            map.put("month", objectsResult[1]);
-            map.put("yearMonth", objectsResult[2]);
-            map.put("projectCount", objectsResult[3]);
-            map.put("totalHours", objectsResult[4]);
-            map.put("avgHoursPerProject", objectsResult[5]);
-            map.put("totalEntries", objectsResult[6]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 8. ساعت اضافه کار همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    public List<EmployeeMonthlyOvertimeDTO> getAllEmployeesOvertimeFiltered(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesOvertimeFiltered(
+                employerId, contractorId, userId, contractId);
     }
 
-    // ۹. محاسبه میانگین همه افراد ماهانه
-    public List<Map<String, Object>> getAverageMonthlyHoursAllEmployees() {
-        List<Object[]> results = workTimeEntryRepository.findAverageMonthlyHoursAllEmployees();
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("year", objectsResult[0]);
-            map.put("month", objectsResult[1]);
-            map.put("yearMonth", objectsResult[2]);
-            map.put("avgMonthlyHoursAllEmployees", objectsResult[3]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 9. ساعت تاخیر برای هر کارمند به تفکیک ماه
+    public List<MonthlyDelayDTO> getMonthlyDelayByEmployee(Long employeeId) {
+        return workTimeEntryRepository.findMonthlyDelayByEmployee(employeeId);
     }
 
-    // ۱۰. محاسبه انحراف معیار هر فرد از میانگین خودش ماهانه
-    public List<EmployeeDeviationDTO> getEmployeeDeviationFromOwnAverage() {
-        return workTimeEntryRepository.findEmployeeDeviationFromOwnAverage();
+    // 10. ساعت تاخیر همه کارمندان به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    public List<MonthlyDelayDTO> getAllEmployeesDelayFiltered(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllEmployeesDelayFiltered(
+                employerId, contractorId, userId, contractId);
     }
 
-    // ۱۱. محاسبه انحراف معیار هر فرد از 160 ساعت ماهانه
-    public List<Map<String, Object>> getEmployeeDeviationFrom160Hours() {
-        List<Object[]> results = workTimeEntryRepository.findEmployeeDeviationFrom160Hours();
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("employeeId", objectsResult[0]);
-            map.put("employeeName", objectsResult[1]);
-            map.put("year", objectsResult[2]);
-            map.put("month", objectsResult[3]);
-            map.put("yearMonth", objectsResult[4]);
-            map.put("monthlyHours", objectsResult[5]);
-            map.put("deviationFrom160", objectsResult[6]);
-            map.put("absoluteDeviationFrom160", objectsResult[7]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 11. ساعت حضور قرارداد خاص به تفکیک ماه
+    public List<ContractMonthlyPresenceDTO> getMonthlyPresenceByContract(Long contractId) {
+        return workTimeEntryRepository.findMonthlyPresenceByContract(contractId);
     }
 
-    // ۱۲. محاسبه انحراف معیار هر فرد از میانگین حضور همه افراد
-    public List<Map<String, Object>> getEmployeeDeviationFromOverallAverage() {
-        List<Object[]> results = workTimeEntryRepository.findEmployeeDeviationFromOverallAverage();
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("employeeId", objectsResult[0]);
-            map.put("employeeName", objectsResult[1]);
-            map.put("year", objectsResult[2]);
-            map.put("month", objectsResult[3]);
-            map.put("yearMonth", objectsResult[4]);
-            map.put("monthlyHours", objectsResult[5]);
-            map.put("overallAverage", objectsResult[6]);
-            map.put("overallStdDev", objectsResult[7]);
-            map.put("deviationFromOverallAvg", objectsResult[8]);
-            map.put("zScore", objectsResult[9]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 12. ساعت اضافه کار یک قرارداد خاص به تفکیک ماه
+    public List<ContractMonthlyOvertimeDTO> getMonthlyOvertimeByContract(Long contractId) {
+        return workTimeEntryRepository.findMonthlyOvertimeByContract(contractId);
     }
 
-    // ۱۳. شناسایی افراد پرکار، کم کار و متوسط
-    public List<EmployeeCategoryDTO> categorizeEmployeesByWorkHours() {
-        return workTimeEntryRepository.categorizeEmployeesByWorkHours();
+    // 13. مقایسه ساعت حضور یک قرارداد خاص با میانگین حضورش در ماه
+    public List<ContractComparisonDTO> compareContractWithOwnAverage(Long contractId) {
+        return workTimeEntryRepository.compareContractWithOwnAverage(contractId);
     }
 
-    // ۱۴. محاسبه ساعت کاری در ماه‌های فروردین تا اردیبهشت برای همه پروژه‌ها
-    public List<Map<String, Object>> getHoursForFarvardinOrdibeheshtAllProjects() {
-        List<Object[]> results = workTimeEntryRepository.findHoursForFarvardinOrdibeheshtAllProjects();
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("contractId", objectsResult[0]);
-            map.put("year", objectsResult[1]);
-            map.put("month", objectsResult[2]);
-            map.put("monthName", objectsResult[3]);
-            map.put("totalHours", objectsResult[4]);
-            map.put("employeeCount", objectsResult[5]);
-            map.put("entryCount", objectsResult[6]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 14. لیست اختلاف ساعت حضور قرارداد خاص با میانگین (برای همه قراردادها)
+    public List<ContractComparisonDTO> getAllContractsDifferenceFromAverage(Long contractId) {
+        return workTimeEntryRepository.findAllContractsDifferenceFromAverage(contractId);
     }
 
-    // ۱۵. محاسبه ساعت کاری در ماه‌های فروردین تا اردیبهشت برای همه افراد
-    public List<Map<String, Object>> getHoursForFarvardinOrdibeheshtAllEmployees() {
-        List<Object[]> results = workTimeEntryRepository.findHoursForFarvardinOrdibeheshtAllEmployees();
-
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            Object[] objectsResult = results.get(i);
-            Map<String, Object> map = new HashMap<>();
-            map.put("employeeId", objectsResult[0]);
-            map.put("employeeName", objectsResult[1]);
-            map.put("year", objectsResult[2]);
-            map.put("month", objectsResult[3]);
-            map.put("monthName", objectsResult[4]);
-            map.put("totalHours", objectsResult[5]);
-            map.put("projectCount", objectsResult[6]);
-            map.put("entryCount", objectsResult[7]);
-            mapList.add(map);
-        }
-
-        return mapList;
+    // 15. لیست ساعت افرادی که در یک قرارداد خاص کار کرده‌اند برای هر قرارداد خاص به تفکیک ماه
+    public List<ContractEmployeesDTO> getContractEmployeesMonthly(Long contractId) {
+        return workTimeEntryRepository.findContractEmployeesMonthly(contractId);
     }
 
-    // ۱۶. آمار کلی ماهانه برای همه ماه‌ها
-    public List<MonthComparisonDTO> getMonthlyComparisonAllMonths() {
-        return workTimeEntryRepository.findMonthlyComparisonAllMonths();
+    // 16. لیست حضور همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری – قرارداد
+    public List<ContractMonthlyPresenceDTO> getAllContractsPresenceFiltered(
+            Long employerId, Long contractorId, Long userId, Long contractId) {
+        return workTimeEntryRepository.findAllContractsPresenceFiltered(
+                employerId, contractorId, userId, contractId);
     }
 
-    // تحلیل پیشرفته
-    public Map<String, Object> getAdvancedAnalysis(Integer year, Integer month) {
-        List<Object[]> monthlyStats = workTimeEntryRepository.findMonthlyHoursAllEmployees();
-        List<EmployeeCategoryDTO> categories = workTimeEntryRepository.categorizeEmployeesByWorkHours();
-        List<EmployeeDeviationDTO> deviations = workTimeEntryRepository.findEmployeeDeviationFromOwnAverage();
+    // 17. ساعت اضافه کار همه قراردادها به تفکیک ماه بر اساس انتخاب کارفرما – بهره بردار – مجری
+    public List<ContractMonthlyOvertimeDTO> getAllContractsOvertimeFiltered(
+            Long employerId, Long contractorId, Long userId) {
+        return workTimeEntryRepository.findAllContractsOvertimeFiltered(
+                employerId, contractorId, userId);
+    }
 
-        // فیلتر بر اساس سال و ماه اگر مشخص شده باشد
-        List<EmployeeCategoryDTO> filteredCategories = new ArrayList<>();
-        for (EmployeeCategoryDTO category : categories) {
-            if ((year == null || category.getYear().equals(year)) &&
-                    (month == null || category.getMonth().equals(month))) {
-                filteredCategories.add(category);
-            }
-        }
+    // کوئری‌های کمکی
+    public List<WorkTimeEntry> getByEmployeeIdAndContractId(Long employeeId, Long contractId) {
+        return workTimeEntryRepository.findByEmployeeIdAndContractId(employeeId, contractId);
+    }
 
-        long highPerformers = 0;
-        long lowPerformers = 0;
-        long averagePerformers = 0;
+    public List<WorkTimeEntry> getByEmployeeId(Long employeeId) {
+        return workTimeEntryRepository.findByEmployeeId(employeeId);
+    }
 
-        for (EmployeeCategoryDTO category : filteredCategories) {
-            if (category.getCategory().contains("پرکار")) {
-                highPerformers++;
-            } else if (category.getCategory().contains("کم کار")) {
-                lowPerformers++;
-            } else if (category.getCategory().contains("متوسط")) {
-                averagePerformers++;
-            }
-        }
+    public List<WorkTimeEntry> getByContractId(Long contractId) {
+        return workTimeEntryRepository.findByContractId(contractId);
+    }
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("totalEmployees", filteredCategories.stream().map(EmployeeCategoryDTO::getEmployeeId).distinct().count());
-        result.put("highPerformers", highPerformers);
-        result.put("lowPerformers", lowPerformers);
-        result.put("averagePerformers", averagePerformers);
+    public List<WorkTimeEntry> getByYearAndMonth(Integer year, Integer month) {
+        return workTimeEntryRepository.findByYearAndMonth(year, month);
+    }
 
-        Map<String, Double> performanceDistribution = new HashMap<>();
-        if (!filteredCategories.isEmpty()) {
-            performanceDistribution.put("high", (double) highPerformers / filteredCategories.size() * 100);
-            performanceDistribution.put("low", (double) lowPerformers / filteredCategories.size() * 100);
-            performanceDistribution.put("average", (double) averagePerformers / filteredCategories.size() * 100);
-        } else {
-            performanceDistribution.put("high", 0.0);
-            performanceDistribution.put("low", 0.0);
-            performanceDistribution.put("average", 0.0);
-        }
+    public List<Integer> getDistinctYears() {
+        return workTimeEntryRepository.findDistinctYears();
+    }
 
-        result.put("performanceDistribution", performanceDistribution);
+    public List<Integer> getDistinctMonths() {
+        return workTimeEntryRepository.findDistinctMonths();
+    }
 
-        return result;
+    public List<WorkTimeEntry> getAllByContractId(Long contractId) {
+        return workTimeEntryRepository.findAllByContractId(contractId);
     }
 }

@@ -28,9 +28,12 @@ public class WorkTimeEntry implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "entry_date", nullable = false)
+    @Column(name = "entry_date")
     private BigDecimal entryDate;
 
+
+    @Column(name = "time_start", nullable = false)
+    private Integer timeStart;
 
     @Column(name = "year", nullable = false)
     private Integer year;
@@ -143,6 +146,14 @@ public class WorkTimeEntry implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getTimeStart() {
+        return timeStart;
+    }
+
+    public void setTimeStart(Integer timeStart) {
+        this.timeStart = timeStart;
     }
 
     public Boolean getApproved() {
