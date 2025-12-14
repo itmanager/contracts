@@ -40,8 +40,8 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                 ((Number) row[3]).intValue(),
                 (String) row[4],
                 row[5] != null ? ((Number) row[5]).doubleValue() : 0.0,
-                (int) ((Number) row[6]).longValue(),
-                (int) ((Number) row[7]).longValue()
+                row[6] != null ? ((Number) row[6]).intValue() : 0,
+                row[7] != null ? ((Number) row[7]).intValue() : 0
         )).collect(Collectors.toList());
     }
 
@@ -233,24 +233,15 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "WHERE " +
                     "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
                     "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
-
+                    "  END) = 1 " +
                     "GROUP BY w.employee_id, w.employee_name, c.id, c.contract_number, w.year, w.month, " +
                     "   c.employer_name, c.contractor_name, c.user_name " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesPresenceFilteredNativeByEmployer(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId);
+    List<Object[]> findAllEmployeesPresenceFilteredNativeByEmployer(Long employerId);
 
-    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByEmployer(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByEmployer(
-                employerId, contractorId, userId, contractId);
+    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByEmployer(Long employerId) {
+        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByEmployer(employerId);
         return results.stream().map(row -> new FilteredPresenceDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -266,7 +257,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-    // 7. لیست حضور همه کارمندان بر اساس فیلترها -مجری
+    // 7. لیست حضور همه کارمندان بر اساس فیلترها - مجری
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -284,23 +275,16 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
                     "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.contract_id = ?1 THEN 1 ELSE 0 END " +
-                    "   END)" +
-
+                    "    CASE WHEN c.contractor_id = ?1 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
                     "GROUP BY w.employee_id, w.employee_name, c.id, c.contract_number, w.year, w.month, " +
                     "   c.employer_name, c.contractor_name, c.user_name " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesPresenceFilteredNativeByContractor(
-            Long contractorId);
+    List<Object[]> findAllEmployeesPresenceFilteredNativeByContractor(Long contractorId);
 
-    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByContractor(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByContractor(
-                contractorId);
+    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByContractor(Long contractorId) {
+        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByContractor(contractorId);
         return results.stream().map(row -> new FilteredPresenceDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -316,8 +300,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-
-    // 7. لیست حضور همه کارمندان بر اساس فیلترها بر اساس بهره بردار
+    // 7. لیست حضور همه کارمندان بر اساس فیلترها - بهره بردار
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -334,28 +317,17 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
-
-                    "   (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?1 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
                     "GROUP BY w.employee_id, w.employee_name, c.id, c.contract_number, w.year, w.month, " +
                     "   c.employer_name, c.contractor_name, c.user_name " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesPresenceFilteredNativeByUser(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId);
+    List<Object[]> findAllEmployeesPresenceFilteredNativeByUser(Long userId);
 
-    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByUser(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByUser(
-                employerId, contractorId, userId, contractId);
+    default List<FilteredPresenceDTO> findAllEmployeesPresenceFilteredByUser(Long userId) {
+        List<Object[]> results = findAllEmployeesPresenceFilteredNativeByUser(userId);
         return results.stream().map(row -> new FilteredPresenceDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -371,7 +343,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها -کارفرما
+    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها - کارفرما
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -386,23 +358,13 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
                     "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
                     "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesOvertimeFilteredNativeByEmployer(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId);
+    List<Object[]> findAllEmployeesOvertimeFilteredNativeByEmployer(Long employerId);
 
-    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByEmployer(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByEmployer(
-                employerId, contractorId, userId, contractId);
+    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByEmployer(Long employerId) {
+        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByEmployer(employerId);
         return results.stream().map(row -> new EmployeeMonthlyOvertimeDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -413,7 +375,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها -مجری
+    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها - مجری
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -425,22 +387,16 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
-
-                    "   (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
                     "    CASE WHEN c.contractor_id = ?1 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
                     "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
     List<Object[]> findAllEmployeesOvertimeFilteredNativeByContractor(Long contractorId);
 
-    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByContractor(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByContractor(contractId);
+    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByContractor(Long contractorId) {
+        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByContractor(contractorId);
         return results.stream().map(row -> new EmployeeMonthlyOvertimeDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -451,8 +407,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-
-    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها -کاربر
+    // 8. ساعت اضافه کار همه کارمندان بر اساس فیلترها - کاربر
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -464,27 +419,16 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
-
-                    "   (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?1 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
                     "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesOvertimeFilteredNativeByUser(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId);
+    List<Object[]> findAllEmployeesOvertimeFilteredNativeByUser(Long userId);
 
-    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByUser(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByUser(
-                employerId, contractorId, userId, contractId);
+    default List<EmployeeMonthlyOvertimeDTO> findAllEmployeesOvertimeFilteredByUser(Long userId) {
+        List<Object[]> results = findAllEmployeesOvertimeFilteredNativeByUser(userId);
         return results.stream().map(row -> new EmployeeMonthlyOvertimeDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -527,7 +471,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها- کارفرما
+    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها - کارفرما
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -546,23 +490,13 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
                     "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
                     "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesDelayFilteredNativeByEmployer(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId);
+    List<Object[]> findAllEmployeesDelayFilteredNativeByEmployer(Long employerId);
 
-    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByEmployer(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesDelayFilteredNativeByEmployer(
-                employerId, contractorId, userId, contractId);
+    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByEmployer(Long employerId) {
+        List<Object[]> results = findAllEmployeesDelayFilteredNativeByEmployer(employerId);
         return results.stream().map(row -> new MonthlyDelayDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -573,8 +507,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-
-    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها -مجری
+    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها - مجری
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -590,27 +523,16 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
-                    "(CASE WHEN ?2 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.contractor_id = ?2 THEN 1 ELSE 0 END " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.contractor_id = ?1 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
-
                     "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesDelayFilteredNativeByContractor(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId);
+    List<Object[]> findAllEmployeesDelayFilteredNativeByContractor(Long contractorId);
 
-    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByContractor(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesDelayFilteredNativeByContractor(
-                employerId, contractorId, userId, contractId);
+    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByContractor(Long contractorId) {
+        List<Object[]> results = findAllEmployeesDelayFilteredNativeByContractor(contractorId);
         return results.stream().map(row -> new MonthlyDelayDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -621,8 +543,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-
-    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها کاربر
+    // 10. ساعت تاخیر همه کارمندان بر اساس فیلترها - کاربر
     @Query(value =
             "SELECT " +
                     "    w.employee_id as employeeId, " +
@@ -638,27 +559,16 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
-
-                    "   (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.user_id = ?1 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
                     "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
                     "ORDER BY w.year DESC, w.month DESC, w.employee_name",
             nativeQuery = true)
-    List<Object[]> findAllEmployeesDelayFilteredNativeByUser(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId);
+    List<Object[]> findAllEmployeesDelayFilteredNativeByUser(Long userId);
 
-    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByUser(
-            Long employerId,
-            Long contractorId,
-            Long userId,
-            Long contractId) {
-        List<Object[]> results = findAllEmployeesDelayFilteredNativeByUser(
-                employerId, contractorId, userId, contractId);
+    default List<MonthlyDelayDTO> findAllEmployeesDelayFilteredByUser(Long userId) {
+        List<Object[]> results = findAllEmployeesDelayFilteredNativeByUser(userId);
         return results.stream().map(row -> new MonthlyDelayDTO(
                 ((Number) row[0]).longValue(),
                 (String) row[1],
@@ -668,7 +578,6 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                 row[5] != null ? ((Number) row[5]).doubleValue() : 0.0
         )).collect(Collectors.toList());
     }
-
 
     // 11. ساعت حضور قرارداد خاص به تفکیک ماه - Native Query
     @Query(value =
@@ -700,8 +609,8 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                 ((Number) row[4]).intValue(),
                 (String) row[5],
                 row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
-                ((Number) row[7]).doubleValue(),
-                ((Number) row[8]).doubleValue()
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0,
+                row[8] != null ? ((Number) row[8]).doubleValue() : 0
         )).collect(Collectors.toList());
     }
 
@@ -830,7 +739,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    CAST(SUM(w.hours_worked) AS float) as totalHours " +
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
-                    "WHERE c.id = CAST(?1 as bigint) " +
+                    "WHERE c.id = ?1 " +
                     "GROUP BY c.id, c.contract_number, c.title, w.employee_id, w.employee_name, w.year, w.month " +
                     "ORDER BY w.employee_name, w.year DESC, w.month DESC",
             nativeQuery = true)
@@ -851,7 +760,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
         )).collect(Collectors.toList());
     }
 
-/*    // 16. لیست حضور همه قراردادها بر اساس فیلترها - Native Query
+    // 16. لیست حضور همه قراردادها بر اساس فیلترها - Native Query
     @Query(value =
             "SELECT " +
                     "    c.id as contractId, " +
@@ -875,7 +784,9 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "  AND (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
                     "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
-
+                    "  AND (CASE WHEN ?4 IS NULL THEN 1 ELSE " +
+                    "    CASE WHEN c.id = ?4 THEN 1 ELSE 0 END " +
+                    "  END) = 1 " +
                     "GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
                     "ORDER BY c.contract_number, w.year DESC, w.month DESC",
             nativeQuery = true)
@@ -900,10 +811,10 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                 ((Number) row[4]).intValue(),
                 (String) row[5],
                 row[6] != null ? ((Number) row[6]).doubleValue() : 0.0,
-                ((Number) row[7]).doubleValue(),
-                ((Number) row[8]).doubleValue()
+                row[7] != null ? ((Number) row[7]).doubleValue() : 0,
+                row[8] != null ? ((Number) row[8]).doubleValue() : 0
         )).collect(Collectors.toList());
-    }*/
+    }
 
     // 17. ساعت اضافه کار همه قراردادها بر اساس فیلترها - Native Query با CASE WHEN و پارامترهای positional
     @Query(value =
@@ -919,13 +830,13 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
                     "  (CASE WHEN ?1 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.employer_id = ?1 THEN 1 ELSE 0 END " +
+                    "    CASE WHEN c.employer_id = CAST(?1 AS bigint) THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
                     "  AND (CASE WHEN ?2 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.contractor_id = ?2 THEN 1 ELSE 0 END " +
+                    "    CASE WHEN c.contractor_id = CAST(?2 AS bigint) THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
                     "  AND (CASE WHEN ?3 IS NULL THEN 1 ELSE " +
-                    "    CASE WHEN c.user_id = ?3 THEN 1 ELSE 0 END " +
+                    "    CASE WHEN c.user_id = CAST(?3 AS bigint) THEN 1 ELSE 0 END " +
                     "  END) = 1 " +
                     "GROUP BY c.id, c.contract_number, c.title, w.year, w.month " +
                     "ORDER BY c.contract_number, w.year DESC, w.month DESC",
