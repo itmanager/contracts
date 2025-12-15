@@ -53,7 +53,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.year as year, " +
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
-                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "    CAST(SUM(CASE WHEN ((w.hours_worked + w.time_start) > 16) THEN ((w.hours_worked + w.time_start) - 16)  ELSE 0 END) AS float) as overtimeHours " +
                     "FROM work_time_entry w " +
                     "WHERE w.employee_id = ?1 " +
                     "GROUP BY w.employee_id, w.employee_name, w.year, w.month " +
@@ -351,7 +351,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.year as year, " +
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
-                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "    CAST(SUM(CASE WHEN ((w.hours_worked + w.time_start) > 16) THEN ((w.hours_worked + w.time_start) - 16)  ELSE 0 END) AS float) as overtimeHours " +
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
@@ -383,7 +383,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.year as year, " +
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
-                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "    CAST(SUM(CASE WHEN ((w.hours_worked + w.time_start) > 16) THEN ((w.hours_worked + w.time_start) - 16)  ELSE 0 END) AS float) as overtimeHours " +
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
@@ -415,7 +415,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.year as year, " +
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
-                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "    CAST(SUM(CASE WHEN ((w.hours_worked + w.time_start) > 16) THEN ((w.hours_worked + w.time_start) - 16)  ELSE 0 END) AS float) as overtimeHours " +
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
@@ -448,8 +448,8 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
                     "    CAST(SUM(CASE " +
-                    "        WHEN w.time_start > 800 THEN " +
-                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        WHEN w.time_start > 8 THEN " +
+                    "            (w.time_start - 8)" +
                     "        ELSE 0 " +
                     "    END) AS float) as delayHours " +
                     "FROM work_time_entry w " +
@@ -480,8 +480,8 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
                     "    CAST(SUM(CASE " +
-                    "        WHEN w.time_start > 800 THEN " +
-                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        WHEN w.time_start > 8 THEN " +
+                    "            (w.time_start - 8) " +
                     "        ELSE 0 " +
                     "    END) AS float) as delayHours " +
                     "FROM work_time_entry w " +
@@ -516,8 +516,8 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
                     "    CAST(SUM(CASE " +
-                    "        WHEN w.time_start > 800 THEN " +
-                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        WHEN w.time_start > 8 THEN " +
+                    "            ((w.time_start  - 8) " +
                     "        ELSE 0 " +
                     "    END) AS float) as delayHours " +
                     "FROM work_time_entry w " +
@@ -552,8 +552,8 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
                     "    CAST(SUM(CASE " +
-                    "        WHEN w.time_start > 800 THEN " +
-                    "            ((w.time_start / 100 - 8) + (w.time_start % 100) / 60.0) " +
+                    "        WHEN w.time_start > 8 THEN " +
+                    "            (w.time_start - 8) " +
                     "        ELSE 0 " +
                     "    END) AS float) as delayHours " +
                     "FROM work_time_entry w " +
@@ -623,7 +623,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.year as year, " +
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
-                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "    CAST(SUM(CASE WHEN ((w.hours_worked + w.time_start) > 16) THEN ((w.hours_worked + w.time_start) - 16)  ELSE 0 END) AS float) as overtimeHours " +
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE c.id = ?1 " +
@@ -825,7 +825,7 @@ public interface WorkTimeEntryRepository extends JpaRepository<WorkTimeEntry, Lo
                     "    w.year as year, " +
                     "    w.month as month, " +
                     "    CONCAT(CAST(w.year AS varchar), '-', LPAD(CAST(w.month AS varchar), 2, '0')) as yearMonth, " +
-                    "    CAST(SUM(CASE WHEN w.hours_worked > 8 THEN w.hours_worked - 8 ELSE 0 END) AS float) as overtimeHours " +
+                    "    CAST(SUM(CASE WHEN ((w.hours_worked + w.time_start) > 16) THEN ((w.hours_worked + w.time_start) - 16)  ELSE 0 END) AS float) as overtimeHours " +
                     "FROM work_time_entry w " +
                     "JOIN contract c ON w.contract_id = c.id " +
                     "WHERE " +
